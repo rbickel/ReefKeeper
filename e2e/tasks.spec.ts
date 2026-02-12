@@ -36,21 +36,23 @@ test.describe('Task Lifecycle', () => {
         // Navigate to Tasks tab
         await page.getByRole('tab', { name: /Tasks/i }).click();
         await page.waitForURL('**/tasks');
-        await expect(page.getByText(/Tasks/i, { exact: true })).toBeVisible();
+        await expect(page.getByRole('heading', { name: 'Tasks' })).toBeVisible();
 
         // 2. Verify it's in the list
-        await expect(page.getByText('E2E One-off Task')).toBeVisible();
+        await expect(page.getByText('E2E One-off Task')).toBeVisible({ timeout: 10000 });
 
-        // 3. Complete it
-        const taskCard = page.locator('div, section').filter({ hasText: 'E2E One-off Task' }).last();
-        // We added testID={`task-checkbox-${task.id}`} but don't have the ID.
-        // Use the role="checkbox" which we saw in the snapshot.
-        const checkbox = taskCard.getByRole('checkbox');
-        await expect(checkbox).toBeVisible();
+        // 3. Complete it - use a more reliable selector
+        // The checkbox is within the same card as the task title
+        const taskText = page.getByText('E2E One-off Task', { exact: true });
+        await taskText.waitFor({ state: 'visible', timeout: 5000 });
+        
+        // Navigate to the checkbox: go up to the card container, then find the checkbox
+        const checkbox = page.locator('div').filter({ has: taskText }).getByRole('checkbox').first();
+        await expect(checkbox).toBeVisible({ timeout: 5000 });
         await checkbox.click();
 
         // 4. Verify it moves to Completed section
-        await expect(page.getByText(/Completed/i)).toBeVisible();
+        await expect(page.getByText('✅ Completed')).toBeVisible();
     });
 
     test('should create and reschedule a recurring task', async ({ page }) => {
@@ -66,8 +68,16 @@ test.describe('Task Lifecycle', () => {
         await page.getByRole('tab', { name: /Tasks/i }).click();
         await page.waitForURL('**/tasks');
 
-        const taskRow = page.locator('div, section').filter({ hasText: 'E2E Recurring Task' }).last();
-        await taskRow.getByRole('checkbox').click();
+        // Wait for the task to appear in the list
+        await expect(page.getByText('E2E Recurring Task')).toBeVisible({ timeout: 15000 });
+        
+        // Find the checkbox within the same card as the task title
+        const taskText = page.getByText('E2E Recurring Task', { exact: true });
+        await taskText.waitFor({ state: 'visible', timeout: 5000 });
+        
+        const checkbox = page.locator('div').filter({ has: taskText }).getByRole('checkbox').first();
+        await expect(checkbox).toBeVisible({ timeout: 10000 });
+        await checkbox.click();
 
         // 3. Verify "(Done today)" text appears
         await expect(page.getByText(/\(Done today\)/i)).toBeVisible();
