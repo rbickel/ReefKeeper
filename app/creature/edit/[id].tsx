@@ -21,25 +21,25 @@ export default function EditCreatureScreen() {
     const [error, setError] = useState('');
 
     useEffect(() => {
+        const loadCreature = async () => {
+            setLoading(true);
+            setNotFound(false);
+            const creatures = await creatureService.getCreatures();
+            const creature = creatures.find((c) => c.id === id);
+            if (creature) {
+                setName(creature.name);
+                setSpecies(creature.species);
+                setType(creature.type);
+                setQuantity(creature.quantity.toString());
+                setNotes(creature.notes || '');
+            } else {
+                setNotFound(true);
+            }
+            setLoading(false);
+        };
+        
         loadCreature();
     }, [id]);
-
-    const loadCreature = async () => {
-        setLoading(true);
-        setNotFound(false);
-        const creatures = await creatureService.getCreatures();
-        const creature = creatures.find((c) => c.id === id);
-        if (creature) {
-            setName(creature.name);
-            setSpecies(creature.species);
-            setType(creature.type);
-            setQuantity(creature.quantity.toString());
-            setNotes(creature.notes || '');
-        } else {
-            setNotFound(true);
-        }
-        setLoading(false);
-    };
 
     const canSave = name.trim().length > 0 && species.trim().length > 0;
 
@@ -48,11 +48,14 @@ export default function EditCreatureScreen() {
         setSaving(true);
         setError('');
         try {
+            const parsedQuantity = parseInt(quantity, 10);
+            const validQuantity = isNaN(parsedQuantity) ? 1 : Math.max(1, parsedQuantity);
+            
             await creatureService.updateCreature(id, {
                 name: name.trim(),
                 species: species.trim(),
                 type,
-                quantity: Math.max(1, parseInt(quantity) || 1),
+                quantity: validQuantity,
                 notes: notes.trim(),
             });
             router.back();
