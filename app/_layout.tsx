@@ -16,15 +16,20 @@ export default function RootLayout() {
     useNotifications();
 
     // Get Auth0 config from app.config.js
-    const auth0Domain = Constants.expoConfig?.extra?.auth0Domain || 'reefkeeper.eu.auth0.com';
+    const auth0Domain = Constants.expoConfig?.extra?.auth0Domain;
     const auth0ClientId = Platform.OS === 'android' 
-        ? (Constants.expoConfig?.extra?.auth0ClientIdApk || Constants.expoConfig?.extra?.auth0ClientId || 'UBtsC4v07Wvl8OqMB7wc9S8KVYncoYhB')
-        : (Constants.expoConfig?.extra?.auth0ClientId || 'UBtsC4v07Wvl8OqMB7wc9S8KVYncoYhB');
+        ? (Constants.expoConfig?.extra?.auth0ClientIdApk || Constants.expoConfig?.extra?.auth0ClientId)
+        : Constants.expoConfig?.extra?.auth0ClientId;
+
+    // Validate Auth0 configuration
+    if (!auth0Domain || !auth0ClientId) {
+        console.error('Auth0 configuration missing! Please set AUTH0_DOMAIN and AUTH0_CLIENT_ID in your .env file.');
+    }
 
     return (
         <Auth0Provider
-            domain={auth0Domain}
-            clientId={auth0ClientId}
+            domain={auth0Domain || 'placeholder.auth0.com'}
+            clientId={auth0ClientId || 'placeholder-client-id'}
         >
             <PaperProvider theme={theme}>
                 <StatusBar
