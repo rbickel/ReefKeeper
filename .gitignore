@@ -5,6 +5,8 @@ playwright-report/
 playwright-video/
 test-results/
 
+.env
+
 # dependencies
 node_modules/
 

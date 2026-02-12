@@ -2,10 +2,12 @@ import { Tabs } from 'expo-router';
 import { useColorScheme } from 'react-native';
 import { LightTheme, DarkTheme } from '../../constants/Colors';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useAuth0 } from 'react-native-auth0';
 
 export default function TabLayout() {
     const colorScheme = useColorScheme();
     const theme = colorScheme === 'dark' ? DarkTheme : LightTheme;
+    const { user } = useAuth0();
 
     return (
         <Tabs
@@ -19,12 +21,14 @@ export default function TabLayout() {
                     height: 60,
                     paddingBottom: 8,
                     paddingTop: 4,
+                    display: user ? 'flex' : 'none',
                 },
                 headerStyle: {
                     backgroundColor: theme.colors.surface,
                 },
                 headerTintColor: theme.colors.onSurface,
                 headerTitleStyle: { fontWeight: '700' },
+                headerShown: false,
             }}
         >
             <Tabs.Screen
@@ -43,6 +47,7 @@ export default function TabLayout() {
                     tabBarIcon: ({ color, size }) => (
                         <MaterialCommunityIcons name="fish" size={size} color={color} />
                     ),
+                    href: user ? undefined : null,
                 }}
             />
             <Tabs.Screen
@@ -52,6 +57,7 @@ export default function TabLayout() {
                     tabBarIcon: ({ color, size }) => (
                         <MaterialCommunityIcons name="wrench-clock" size={size} color={color} />
                     ),
+                    href: user ? undefined : null,
                 }}
             />
         </Tabs>
