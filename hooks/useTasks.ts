@@ -27,15 +27,16 @@ export function useTasks() {
             for (const template of DEFAULT_TASKS) {
                 // Calculate initial due date from now based on recurrence
                 const nextDue = new Date(now);
+                const interval = template.recurrenceInterval ?? 1;
                 switch (template.recurrenceUnit) {
                     case 'days':
-                        nextDue.setDate(nextDue.getDate() + template.recurrenceInterval);
+                        nextDue.setDate(nextDue.getDate() + interval);
                         break;
                     case 'weeks':
-                        nextDue.setDate(nextDue.getDate() + template.recurrenceInterval * 7);
+                        nextDue.setDate(nextDue.getDate() + interval * 7);
                         break;
                     case 'months':
-                        nextDue.setMonth(nextDue.getMonth() + template.recurrenceInterval);
+                        nextDue.setMonth(nextDue.getMonth() + interval);
                         break;
                 }
                 const newTask = await taskService.addTask({
