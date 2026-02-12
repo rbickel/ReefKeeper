@@ -1,4 +1,4 @@
-import { View, ScrollView, StyleSheet } from 'react-native';
+import { View, ScrollView, StyleSheet, Image } from 'react-native';
 import { Card, Text, useTheme, Surface, Icon, Button } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { useCreatures } from '../../hooks/useCreatures';
@@ -32,9 +32,16 @@ export default function DashboardScreen() {
         >
             {/* Header */}
             <View style={styles.header}>
-                <Text variant="headlineMedium" style={[styles.headerTitle, { color: theme.colors.primary }]}>
-                    🐠 ReefKeeper
-                </Text>
+                <View style={styles.headerTitleRow}>
+                    <Image 
+                        source={require('../../assets/icon.png')} 
+                        style={styles.logo}
+                        resizeMode="contain"
+                    />
+                    <Text variant="headlineMedium" style={[styles.headerTitle, { color: theme.colors.primary }]}>
+                        ReefKeeper
+                    </Text>
+                </View>
                 <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>
                     Your reef aquarium at a glance
                 </Text>
@@ -172,7 +179,9 @@ const styles = StyleSheet.create({
     container: { flex: 1 },
     content: { padding: 16, paddingBottom: 32 },
     header: { marginBottom: 20, paddingTop: 8 },
-    headerTitle: { fontWeight: '800', marginBottom: 4 },
+    headerTitleRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 4 },
+    logo: { width: 48, height: 48, marginRight: 12 },
+    headerTitle: { fontWeight: '800' },
     card: { marginBottom: 16, borderRadius: 16 },
     statsRow: {
         flexDirection: 'row',
