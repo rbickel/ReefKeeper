@@ -138,7 +138,7 @@ ReefKeeper/
 ├── e2e/                    # Playwright E2E tests (web)
 ├── maestro/                # Maestro UI tests (Android)
 ├── __tests__/              # Jest unit tests
-├── .github/workflows/      # CI/CD pipeline
+├── .github/workflows/      # CI/CD pipelines (ci, web, android)
 └── docs/screenshots/       # App screenshots
 ```
 
@@ -160,7 +160,7 @@ ReefKeeper/
    ```
 5. **Commit** with a clear message and **open a Pull Request**
 
-The CI pipeline will automatically run type-checking, unit tests, a web build, and Playwright E2E tests on every PR.
+The Shared CI pipeline automatically runs type-checking, unit tests, and dependency audits on every PR.
 
 ### Code Conventions
 
@@ -174,21 +174,39 @@ The CI pipeline will automatically run type-checking, unit tests, a web build, a
 
 ## CI/CD
 
-The GitHub Actions workflows run on every push and PR to `main`:
+Three-layer pipeline architecture for fast feedback and independent platform releases:
 
-### Web Pipeline (`.github/workflows/build.yml`)
+### 1. Shared CI (`.github/workflows/ci.yml`)
+
+Runs on **every push & PR** to `main`. Fast quality gate (<8 min).
+
+| Step | Description |
+|------|-------------|
+| TypeScript type-check | `tsc --noEmit` |
+| Lint | Expo lint (if configured) |
+| Unit tests | Jest with coverage |
+| Dependency audit | `npm audit` for known vulnerabilities |
+
+### 2. Web Pipeline (`.github/workflows/web.yml`)
+
+Runs on **merge to `main`** and **version tags** (`v*`). Calls Shared CI first.
 
 | Job | Steps |
 |-----|-------|
-| **build-and-test** | Install deps → TypeScript check → Unit tests → Expo web export |
-| **e2e** | Install deps → Install Playwright → Run E2E tests → Upload report artifact |
+| **web-build** | Version injection → Expo web export → Upload bundle artifact |
+| **web-e2e** | Install Playwright → Run E2E tests → Upload report |
+| **web-deploy** | Deploy placeholder — wire to your hosting (Vercel, Netlify, Azure, etc.) |
 
-### Android Pipeline (`.github/workflows/android.yml`)
+### 3. Android Pipeline (`.github/workflows/android.yml`)
+
+Runs on **merge to `main`** and **version tags** (`v*`). Calls Shared CI first.
 
 | Job | Steps |
 |-----|-------|
-| **android-build** | Install deps → Expo prebuild → Gradle build → Upload debug APK |
-| **android-test** | Build APK → Start Android emulator → Install APK → Run Maestro UI tests → Upload report |
+| **android-build** | Expo prebuild → Gradle build debug APK + release AAB (on tags) → Upload artifacts |
+| **android-test** | Download APK → Start emulator → Run Maestro E2E tests → Upload report |
+| **android-release-internal** | Upload to Google Play internal track (placeholder) |
+| **android-release-production** | Promote to production — **requires manual approval** via GitHub environment |
 
 ---
 
