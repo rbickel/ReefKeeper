@@ -2,11 +2,14 @@ module.exports = ({ config }) => {
   // Load environment variables - these should be set in .env or CI/CD secrets
   const AUTH0_DOMAIN = process.env.AUTH0_DOMAIN;
   const AUTH0_CLIENT_ID = process.env.AUTH0_CLIENT_ID;
+  // Android can use a separate client ID or fall back to the main one
   const AUTH0_CLIENT_ID_APK = process.env.AUTH0_CLIENT_ID_APK || AUTH0_CLIENT_ID;
 
   // Validate required Auth0 configuration
-  if (!AUTH0_DOMAIN || !AUTH0_CLIENT_ID) {
-    console.warn('⚠️  Auth0 configuration missing! Set AUTH0_DOMAIN and AUTH0_CLIENT_ID in your .env file.');
+  // At minimum, we need AUTH0_DOMAIN and at least one client ID
+  const hasClientId = AUTH0_CLIENT_ID || AUTH0_CLIENT_ID_APK;
+  if (!AUTH0_DOMAIN || !hasClientId) {
+    console.warn('⚠️  Auth0 configuration missing! Set AUTH0_DOMAIN and AUTH0_CLIENT_ID (or AUTH0_CLIENT_ID_APK) in your .env file.');
     console.warn('⚠️  Authentication will not work without proper configuration.');
   }
 
@@ -51,7 +54,7 @@ module.exports = ({ config }) => {
           },
         ],
         'expo-image-picker',
-        ...(AUTH0_DOMAIN ? [
+        ...(AUTH0_DOMAIN && hasClientId ? [
           [
             'react-native-auth0',
             {

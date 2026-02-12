@@ -21,15 +21,17 @@ export default function RootLayout() {
         ? (Constants.expoConfig?.extra?.auth0ClientIdApk || Constants.expoConfig?.extra?.auth0ClientId)
         : Constants.expoConfig?.extra?.auth0ClientId;
 
-    // Validate Auth0 configuration
+    // Validate Auth0 configuration - placeholder values will cause auth to fail gracefully
+    // The app will show the login screen and the error will be displayed to the user
     if (!auth0Domain || !auth0ClientId) {
-        console.error('Auth0 configuration missing! Please set AUTH0_DOMAIN and AUTH0_CLIENT_ID in your .env file.');
+        console.error('❌ Auth0 configuration missing! Please set AUTH0_DOMAIN and AUTH0_CLIENT_ID in your .env file.');
+        console.error('❌ Authentication will not work. The app will display an error when attempting to log in.');
     }
 
     return (
         <Auth0Provider
-            domain={auth0Domain || 'placeholder.auth0.com'}
-            clientId={auth0ClientId || 'placeholder-client-id'}
+            domain={auth0Domain || 'unconfigured.auth0.com'}
+            clientId={auth0ClientId || 'unconfigured-client-id'}
         >
             <PaperProvider theme={theme}>
                 <StatusBar
