@@ -82,8 +82,8 @@ When authentication is added, create test credentials and store them securely:
 
 1. **Local Development**: Use a `.env.local` file (already in .gitignore)
    ```
-   TEST_USER_EMAIL=test@example.com
-   TEST_USER_PASSWORD=test-password-123
+   TEST_USER_EMAIL=test.user@example.com
+   TEST_USER_PASSWORD=Test-SecureP@ssw0rd-2024!
    ```
 
 2. **CI/CD**: Add these as secrets in your CI environment
