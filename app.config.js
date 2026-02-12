@@ -43,7 +43,7 @@ module.exports = ({ config }) => {
         edgeToEdgeEnabled: true,
       },
       web: {
-        favicon: './assets/favicon.svg',
+        favicon: './assets/favicon.png',
         bundler: 'metro',
       },
       plugins: [
