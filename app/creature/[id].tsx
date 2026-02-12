@@ -132,6 +132,14 @@ export default function CreatureDetailScreen() {
             {/* Actions */}
             <View style={styles.actions}>
                 <Button
+                    mode="contained"
+                    icon="pencil"
+                    onPress={() => router.push(`/creature/edit/${id}`)}
+                    style={styles.actionBtn}
+                >
+                    Edit Creature
+                </Button>
+                <Button
                     mode="outlined"
                     icon="archive"
                     onPress={handleArchive}
