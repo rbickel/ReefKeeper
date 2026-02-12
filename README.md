@@ -109,6 +109,8 @@ npx expo start --android
 
 The app will be available at **http://localhost:8081**.
 
+**Note:** To build a standalone Android APK for testing without Metro, see the [Android Development Build Guide](docs/ANDROID_DEV_BUILD.md).
+
 ---
 
 ## Testing
