@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 
 // Helper timeout constants
 const TIMEOUTS = {
@@ -9,7 +9,7 @@ const TIMEOUTS = {
 };
 
 // Helper function to get checkbox for a specific task
-async function getTaskCheckbox(page: any, taskName: string) {
+async function getTaskCheckbox(page: Page, taskName: string) {
     const taskText = page.getByText(taskName, { exact: true });
     await taskText.waitFor({ state: 'visible', timeout: TIMEOUTS.SHORT });
     
