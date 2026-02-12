@@ -11,10 +11,13 @@ const { withAppBuildGradle } = require('@expo/config-plugins');
  * Adds bundleInDebug configuration to the project.ext.react block in build.gradle
  */
 const withBundleInDebug = (config) => {
-  return withAppBuildGradle(config, (config) => {
-    let contents = config.modResults.contents;
+  return withAppBuildGradle(config, (gradleConfig) => {
+    let contents = gradleConfig.modResults.contents;
 
     // Check if project.ext.react block exists
+    // Note: This pattern works for simple configurations. Complex nested brackets
+    // are not common in project.ext.react blocks, but if needed, a more robust
+    // parser could be implemented.
     const projectExtReactPattern = /project\.ext\.react\s*=\s*\[[\s\S]*?\]/;
     
     if (projectExtReactPattern.test(contents)) {
@@ -51,8 +54,8 @@ project.ext.react = [
       }
     }
 
-    config.modResults.contents = contents;
-    return config;
+    gradleConfig.modResults.contents = contents;
+    return gradleConfig;
   });
 };
 
