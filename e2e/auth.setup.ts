@@ -30,14 +30,14 @@ setup('authenticate', async ({ page }) => {
     // Navigate to the app
     await page.goto('/');
     
+    // Wait for app to be ready
+    await page.waitForLoadState('networkidle');
+    
     // Set test mode flag in localStorage
     // This can be used by the app to bypass authentication checks
     await page.evaluate(() => {
         localStorage.setItem('@reef_keeper:test_mode', 'true');
     });
-    
-    // Wait for app to be ready
-    await page.waitForTimeout(2000);
     
     // Save the storage state for reuse in tests
     await page.context().storageState({ path: authFile });
