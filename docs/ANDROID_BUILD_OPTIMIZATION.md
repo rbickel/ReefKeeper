@@ -63,7 +63,7 @@ android {
         dev {
             ...
             // The following configuration limits the "dev" flavor to using
-            // English stringresources and xxhdpi screen-density resources.
+            // English string resources and xxhdpi screen-density resources.
             resourceConfigurations "en", "xxhdpi"
         }
         ...
@@ -80,7 +80,7 @@ android {
         create("dev") {
             ...
             // The following configuration limits the "dev" flavor to using
-            // English stringresources and xxhdpi screen-density resources.
+            // English string resources and xxhdpi screen-density resources.
             resourceConfigurations("en", "xxhdpi")
         }
         ...
@@ -187,7 +187,7 @@ profile shows that a relatively long portion of the build time is spent in the \
 Projects\*\* phase, review your `build.gradle` scripts and look for
 code to include in a custom Gradle task. By moving some build logic
 into a task, you help ensure that the task runs only when required, results can be cached for
-subsequent builds, and that build logic becomes eligible to run in parallel if you enable <a href="https://docs.gradle.org/current/userguide/performance.html#parallel_execution">parallel project execution</a>. To learn more about taks for custom build
+subsequent builds, and that build logic becomes eligible to run in parallel if you enable <a href="https://docs.gradle.org/current/userguide/performance.html#parallel_execution">parallel project execution</a>. To learn more about tasks for custom build
 logic, read the <a href="https://docs.gradle.org/current/userguide/more_about_tasks.html">official Gradle documentation</a>.
 
 
@@ -408,10 +408,10 @@ Gradle 8.1 and higher, slowing build performance.
 The following are treated as cache inputs in AGP 8.1:
 
 | Input | Issue Tracker | Fixed in |
+|---|---|---|
 | $GRADLE_USER_HOME/android/FakeDependency.jar | <a href="https://issuetracker.google.com/289232054">Issue #289232054</a> | AGP 8.2 |
 | cmake output | <a href="https://issuetracker.google.com/287676077">Issue #287676077</a> | AGP 8.2 |
 | $GRADLE_USER_HOME/.android/analytics.settings | <a href="https://issuetracker.google.com/278767328">Issue #278767328</a> | AGP 8.3 |
-|---|---|---|
 
 
 If you use these APIs or a plugin that uses these APIs,
