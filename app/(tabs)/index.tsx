@@ -1,3 +1,4 @@
+import React from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { Card, Text, useTheme, Surface, Icon, Button, ActivityIndicator } from 'react-native-paper';
 import { useRouter } from 'expo-router';
@@ -8,13 +9,33 @@ import { CREATURE_TYPE_LABELS } from '../../models/Creature';
 import type { AppTheme } from '../../constants/Colors';
 import { useAuth0 } from 'react-native-auth0';
 import { Header } from '../../components/Header';
+import { Platform } from 'react-native';
+
+/**
+ * Check if the app is running in E2E test mode.
+ * In test mode, Auth0 authentication is bypassed.
+ */
+function useTestMode() {
+    const [isTestMode, setIsTestMode] = React.useState(false);
+    React.useEffect(() => {
+        if (Platform.OS === 'web' && typeof localStorage !== 'undefined') {
+            setIsTestMode(localStorage.getItem('@reef_keeper:test_mode') === 'true');
+        }
+    }, []);
+    return isTestMode;
+}
 
 export default function DashboardScreen() {
     const theme = useTheme<AppTheme>();
     const router = useRouter();
     const { creatures } = useCreatures();
     const { tasks } = useTasks();
-    const { user, authorize, isLoading, error } = useAuth0();
+    const { user: auth0User, authorize, isLoading: auth0Loading, error } = useAuth0();
+    const isTestMode = useTestMode();
+
+    // In test mode, treat user as authenticated with a mock user
+    const user = isTestMode ? (auth0User ?? { nickname: 'Test User', name: 'Test User' }) : auth0User;
+    const isLoading = isTestMode ? false : auth0Loading;
 
     const overdueTasks = tasks.filter((t) => getTaskUrgency(t) === 'overdue');
     const todayTasks = tasks.filter((t) => getTaskUrgency(t) === 'today');

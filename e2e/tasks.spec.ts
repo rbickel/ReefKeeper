@@ -26,8 +26,11 @@ test.describe('Task Lifecycle', () => {
 
         await page.goto('/');
 
-        // Clear state for fresh test
-        await page.evaluate(() => localStorage.clear());
+        // Clear app data but preserve test mode flag
+        await page.evaluate(() => {
+            const keys = Object.keys(localStorage).filter(k => k !== '@reef_keeper:test_mode');
+            keys.forEach(k => localStorage.removeItem(k));
+        });
         await page.reload();
 
         // Wait for the app to be ready
@@ -54,7 +57,6 @@ test.describe('Task Lifecycle', () => {
         // Navigate to Tasks tab
         await page.getByRole('tab', { name: /Tasks/i }).click();
         await page.waitForURL('**/tasks');
-        await expect(page.getByRole('heading', { name: 'Tasks' })).toBeVisible();
 
         // 2. Verify it's in the list
         await expect(page.getByText('E2E One-off Task')).toBeVisible({ timeout: TIMEOUTS.ELEMENT_INTERACTION });

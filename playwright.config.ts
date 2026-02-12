@@ -21,6 +21,12 @@ export default defineConfig({
         trace: 'on-first-retry',
         screenshot: 'only-on-failure',
     },
+    webServer: {
+        command: 'npx expo start --web --port 8081',
+        url: 'http://localhost:8081',
+        reuseExistingServer: !process.env.CI,
+        timeout: 120000,
+    },
     projects: [
         // Setup project - runs once before all tests
         {

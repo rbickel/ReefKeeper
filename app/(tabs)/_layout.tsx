@@ -1,13 +1,26 @@
+import React from 'react';
 import { Tabs } from 'expo-router';
-import { useColorScheme } from 'react-native';
+import { useColorScheme, Platform } from 'react-native';
 import { LightTheme, DarkTheme } from '../../constants/Colors';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAuth0 } from 'react-native-auth0';
 
+function useTestMode() {
+    const [isTestMode, setIsTestMode] = React.useState(false);
+    React.useEffect(() => {
+        if (Platform.OS === 'web' && typeof localStorage !== 'undefined') {
+            setIsTestMode(localStorage.getItem('@reef_keeper:test_mode') === 'true');
+        }
+    }, []);
+    return isTestMode;
+}
+
 export default function TabLayout() {
     const colorScheme = useColorScheme();
     const theme = colorScheme === 'dark' ? DarkTheme : LightTheme;
-    const { user } = useAuth0();
+    const { user: auth0User } = useAuth0();
+    const isTestMode = useTestMode();
+    const user = isTestMode ? (auth0User ?? { nickname: 'Test User' }) : auth0User;
 
     return (
         <Tabs
