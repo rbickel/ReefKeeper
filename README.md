@@ -67,11 +67,32 @@ cp .env.example .env
 | Variable | Description |
 |----------|-------------|
 | `AUTH0_DOMAIN` | Your Auth0 tenant domain |
-| `AUTH0_CLIENT_ID` | Auth0 application client ID |
+| `AUTH0_CLIENT_ID` | Auth0 application client ID (for web/iOS) |
+| `AUTH0_CLIENT_ID_APK` | Auth0 application client ID for Android (optional, defaults to AUTH0_CLIENT_ID) |
 | `AUTH0_CLIENT_SECRET` | Auth0 application client secret |
 | `AUTH0_CALLBACK_URL` | OAuth callback URL (`http://localhost:8081` for local dev) |
 | `TEST_USER_EMAIL` | Email for the E2E test user |
 | `TEST_USER_PASSWORD` | Password for the E2E test user |
+
+### Auth0 Configuration
+
+For Android authentication to work properly, you need to configure the following URLs in your Auth0 application settings:
+
+**Allowed Callback URLs:**
+```
+reef-keeper://{yourDomain}/android/com.reefkeeper.app/callback
+http://localhost:8081
+```
+
+**Allowed Logout URLs:**
+```
+reef-keeper://{yourDomain}/android/com.reefkeeper.app/callback
+http://localhost:8081
+```
+
+Replace `{yourDomain}` with your actual Auth0 domain (e.g., `reefkeeper.eu.auth0.com`).
+
+**Note:** The Android package name is `com.reefkeeper.app` and the custom scheme is `reef-keeper`.
 
 ### Running the App
 
