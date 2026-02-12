@@ -11,12 +11,14 @@ export default function EditCreatureScreen() {
     const router = useRouter();
     const { id } = useLocalSearchParams<{ id: string }>();
     const [loading, setLoading] = useState(true);
+    const [notFound, setNotFound] = useState(false);
     const [name, setName] = useState('');
     const [species, setSpecies] = useState('');
     const [type, setType] = useState<CreatureType>('fish');
     const [quantity, setQuantity] = useState('1');
     const [notes, setNotes] = useState('');
     const [saving, setSaving] = useState(false);
+    const [error, setError] = useState('');
 
     useEffect(() => {
         loadCreature();
@@ -24,6 +26,7 @@ export default function EditCreatureScreen() {
 
     const loadCreature = async () => {
         setLoading(true);
+        setNotFound(false);
         const creatures = await creatureService.getCreatures();
         const creature = creatures.find((c) => c.id === id);
         if (creature) {
@@ -32,6 +35,8 @@ export default function EditCreatureScreen() {
             setType(creature.type);
             setQuantity(creature.quantity.toString());
             setNotes(creature.notes || '');
+        } else {
+            setNotFound(true);
         }
         setLoading(false);
     };
@@ -41,6 +46,7 @@ export default function EditCreatureScreen() {
     const handleSave = async () => {
         if (!canSave || !id) return;
         setSaving(true);
+        setError('');
         try {
             await creatureService.updateCreature(id, {
                 name: name.trim(),
@@ -50,8 +56,9 @@ export default function EditCreatureScreen() {
                 notes: notes.trim(),
             });
             router.back();
-        } catch (error) {
-            console.error('Failed to update creature:', error);
+        } catch (err) {
+            console.error('Failed to update creature:', err);
+            setError('Failed to save changes. Please try again.');
         } finally {
             setSaving(false);
         }
@@ -65,6 +72,19 @@ export default function EditCreatureScreen() {
         );
     }
 
+    if (notFound) {
+        return (
+            <View style={[styles.center, { backgroundColor: theme.colors.background }]}>
+                <Text variant="titleMedium" style={{ color: theme.colors.onSurfaceVariant }}>
+                    Creature not found.
+                </Text>
+                <Button onPress={() => router.back()} style={{ marginTop: 12 }}>
+                    Go back
+                </Button>
+            </View>
+        );
+    }
+
     return (
         <ScrollView
             style={[styles.container, { backgroundColor: theme.colors.background }]}
@@ -74,6 +94,14 @@ export default function EditCreatureScreen() {
             <Text variant="titleLarge" style={[styles.header, { color: theme.colors.primary }]}>
                 ✏️ Edit Creature
             </Text>
+
+            {error ? (
+                <View style={[styles.errorContainer, { backgroundColor: theme.custom.overdue + '22' }]}>
+                    <Text variant="bodyMedium" style={{ color: theme.custom.overdue }}>
+                        {error}
+                    </Text>
+                </View>
+            ) : null}
 
             <TextInput
                 label="Name *"
@@ -155,6 +183,7 @@ const styles = StyleSheet.create({
     content: { padding: 16, paddingBottom: 32 },
     center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
     header: { fontWeight: '800', marginBottom: 16 },
+    errorContainer: { padding: 12, borderRadius: 8, marginBottom: 12 },
     input: { marginBottom: 12 },
     label: { marginBottom: 6, marginTop: 4 },
     segments: { marginBottom: 12 },
