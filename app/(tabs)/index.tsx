@@ -37,6 +37,8 @@ export default function DashboardScreen() {
                         source={require('../../assets/icon.png')} 
                         style={styles.logo}
                         resizeMode="contain"
+                        accessible={true}
+                        accessibilityLabel="ReefKeeper app logo"
                     />
                     <Text variant="headlineMedium" style={[styles.headerTitle, { color: theme.colors.primary }]}>
                         ReefKeeper
