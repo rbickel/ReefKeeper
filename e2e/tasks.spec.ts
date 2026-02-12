@@ -1,4 +1,22 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
+
+// Helper timeout constants
+const TIMEOUTS = {
+    APP_READY: 20000,
+    ELEMENT_VISIBLE: 15000,
+    ELEMENT_INTERACTION: 10000,
+    SHORT: 5000,
+};
+
+// Helper function to get checkbox for a specific task
+async function getTaskCheckbox(page: Page, taskName: string) {
+    const taskText = page.getByText(taskName, { exact: true });
+    await taskText.waitFor({ state: 'visible', timeout: TIMEOUTS.SHORT });
+    
+    const checkbox = page.locator('div').filter({ has: taskText }).getByRole('checkbox').first();
+    await expect(checkbox).toBeVisible({ timeout: TIMEOUTS.SHORT });
+    return checkbox;
+}
 
 test.describe('Task Lifecycle', () => {
     test.beforeEach(async ({ page }) => {
@@ -13,13 +31,13 @@ test.describe('Task Lifecycle', () => {
         await page.reload();
 
         // Wait for the app to be ready
-        await expect(page.getByText(/Maintenance/i)).toBeVisible({ timeout: 20000 });
+        await expect(page.getByText(/Maintenance/i)).toBeVisible({ timeout: TIMEOUTS.APP_READY });
     });
 
     test('should create and complete a non-recurring task', async ({ page }) => {
         // 1. Add Task from Dashboard
         const addTaskBtn = page.getByRole('button', { name: /Add Task/i });
-        await expect(addTaskBtn).toBeVisible({ timeout: 15000 });
+        await expect(addTaskBtn).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE });
         await addTaskBtn.click();
 
         await page.waitForURL('**/task/add');
@@ -36,21 +54,17 @@ test.describe('Task Lifecycle', () => {
         // Navigate to Tasks tab
         await page.getByRole('tab', { name: /Tasks/i }).click();
         await page.waitForURL('**/tasks');
-        await expect(page.getByText(/Tasks/i, { exact: true })).toBeVisible();
+        await expect(page.getByRole('heading', { name: 'Tasks' })).toBeVisible();
 
         // 2. Verify it's in the list
-        await expect(page.getByText('E2E One-off Task')).toBeVisible();
+        await expect(page.getByText('E2E One-off Task')).toBeVisible({ timeout: TIMEOUTS.ELEMENT_INTERACTION });
 
-        // 3. Complete it
-        const taskCard = page.locator('div, section').filter({ hasText: 'E2E One-off Task' }).last();
-        // We added testID={`task-checkbox-${task.id}`} but don't have the ID.
-        // Use the role="checkbox" which we saw in the snapshot.
-        const checkbox = taskCard.getByRole('checkbox');
-        await expect(checkbox).toBeVisible();
+        // 3. Complete it using helper function
+        const checkbox = await getTaskCheckbox(page, 'E2E One-off Task');
         await checkbox.click();
 
         // 4. Verify it moves to Completed section
-        await expect(page.getByText(/Completed/i)).toBeVisible();
+        await expect(page.getByText('✅ Completed')).toBeVisible();
     });
 
     test('should create and reschedule a recurring task', async ({ page }) => {
@@ -66,8 +80,12 @@ test.describe('Task Lifecycle', () => {
         await page.getByRole('tab', { name: /Tasks/i }).click();
         await page.waitForURL('**/tasks');
 
-        const taskRow = page.locator('div, section').filter({ hasText: 'E2E Recurring Task' }).last();
-        await taskRow.getByRole('checkbox').click();
+        // Wait for the task to appear in the list
+        await expect(page.getByText('E2E Recurring Task')).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE });
+        
+        // Complete it using helper function
+        const checkbox = await getTaskCheckbox(page, 'E2E Recurring Task');
+        await checkbox.click();
 
         // 3. Verify "(Done today)" text appears
         await expect(page.getByText(/\(Done today\)/i)).toBeVisible();
