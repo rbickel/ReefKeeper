@@ -3,6 +3,16 @@ import { Creature } from '../models/Creature';
 import { v4 as uuidv4 } from 'uuid';
 
 const STORAGE_KEY = '@reef_keeper_creatures';
+const INITIALIZED_KEY = '@reef_keeper_creatures_initialized';
+
+export async function isInitialized(): Promise<boolean> {
+    const val = await AsyncStorage.getItem(INITIALIZED_KEY);
+    return val === 'true';
+}
+
+export async function markInitialized(): Promise<void> {
+    await AsyncStorage.setItem(INITIALIZED_KEY, 'true');
+}
 
 export async function getCreatures(): Promise<Creature[]> {
     const json = await AsyncStorage.getItem(STORAGE_KEY);

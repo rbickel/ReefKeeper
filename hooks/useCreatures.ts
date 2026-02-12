@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Creature } from '../models/Creature';
 import * as creatureService from '../services/creatureService';
+import { DEFAULT_CREATURES } from '../constants/DefaultCreatures';
 
 export function useCreatures() {
     const [creatures, setCreatures] = useState<Creature[]>([]);
@@ -18,9 +19,23 @@ export function useCreatures() {
         }
     }, []);
 
+    const initializeDefaults = useCallback(async () => {
+        const initialized = await creatureService.isInitialized();
+        if (!initialized) {
+            const now = new Date().toISOString();
+            for (const template of DEFAULT_CREATURES) {
+                await creatureService.addCreature({ ...template, dateAcquired: now });
+            }
+            await creatureService.markInitialized();
+        }
+    }, []);
+
     useEffect(() => {
-        refresh();
-    }, [refresh]);
+        (async () => {
+            await initializeDefaults();
+            await refresh();
+        })();
+    }, [initializeDefaults, refresh]);
 
     const add = async (creature: Omit<Creature, 'id' | 'createdAt' | 'updatedAt'>) => {
         const newCreature = await creatureService.addCreature(creature);
