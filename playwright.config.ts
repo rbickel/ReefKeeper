@@ -1,5 +1,14 @@
 import { defineConfig, devices } from '@playwright/test';
 
+/**
+ * Playwright configuration with authentication bypass support
+ * 
+ * This config sets up:
+ * 1. A setup project that runs before tests to handle authentication
+ * 2. Storage state reuse to avoid re-authenticating for each test
+ * 3. Environment variables to control test behavior
+ */
+
 export default defineConfig({
     testDir: './e2e',
     fullyParallel: true,
@@ -13,9 +22,20 @@ export default defineConfig({
         screenshot: 'only-on-failure',
     },
     projects: [
+        // Setup project - runs once before all tests
+        {
+            name: 'setup',
+            testMatch: /.*\.setup\.ts/,
+        },
+        // Test project - depends on setup
         {
             name: 'chromium',
-            use: { ...devices['Desktop Chrome'] },
+            use: {
+                ...devices['Desktop Chrome'],
+                // Use the storage state from the setup project
+                storageState: 'e2e/.auth/user.json',
+            },
+            dependencies: ['setup'],
         },
     ],
 });

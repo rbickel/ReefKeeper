@@ -4,6 +4,7 @@
 playwright-report/
 playwright-video/
 test-results/
+e2e/.auth/
 
 .env
 
