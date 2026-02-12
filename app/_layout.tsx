@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Stack } from 'expo-router';
 import { PaperProvider } from 'react-native-paper';
-import { useColorScheme, StatusBar } from 'react-native';
+import { useColorScheme, StatusBar, Platform } from 'react-native';
 import { LightTheme, DarkTheme } from '../constants/Colors';
 import { useNotifications } from '../hooks/useNotifications';
 import { Auth0Provider } from 'react-native-auth0';
 import * as WebBrowser from 'expo-web-browser';
+import Constants from 'expo-constants';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -14,10 +15,16 @@ export default function RootLayout() {
     const theme = colorScheme === 'dark' ? DarkTheme : LightTheme;
     useNotifications();
 
+    // Get Auth0 config from app.config.js
+    const auth0Domain = Constants.expoConfig?.extra?.auth0Domain || 'reefkeeper.eu.auth0.com';
+    const auth0ClientId = Platform.OS === 'android' 
+        ? (Constants.expoConfig?.extra?.auth0ClientIdApk || Constants.expoConfig?.extra?.auth0ClientId || 'UBtsC4v07Wvl8OqMB7wc9S8KVYncoYhB')
+        : (Constants.expoConfig?.extra?.auth0ClientId || 'UBtsC4v07Wvl8OqMB7wc9S8KVYncoYhB');
+
     return (
         <Auth0Provider
-            domain="reefkeeper.eu.auth0.com"
-            clientId="UBtsC4v07Wvl8OqMB7wc9S8KVYncoYhB"
+            domain={auth0Domain}
+            clientId={auth0ClientId}
         >
             <PaperProvider theme={theme}>
                 <StatusBar

@@ -34,6 +34,9 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Generate native Android project
+        env:
+          AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+          AUTH0_CLIENT_ID_APK: ${{ secrets.AUTH0_CLIENT_ID_APK }}
         run: npx expo prebuild --platform android --clean
 
       - name: Cache Gradle packages
@@ -84,6 +87,9 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Generate native Android project
+        env:
+          AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+          AUTH0_CLIENT_ID_APK: ${{ secrets.AUTH0_CLIENT_ID_APK }}
         run: npx expo prebuild --platform android --clean
 
       - name: Cache Gradle packages
