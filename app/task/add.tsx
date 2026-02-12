@@ -11,6 +11,7 @@ export default function AddTaskScreen() {
     const router = useRouter();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
+    const [isRecurring, setIsRecurring] = useState(true);
     const [interval, setInterval] = useState('7');
     const [unit, setUnit] = useState<RecurrenceUnit>('days');
     const [reminderHours, setReminderHours] = useState('24');
@@ -23,28 +24,31 @@ export default function AddTaskScreen() {
         if (!canSave) return;
         setSaving(true);
         try {
-            const intervalNum = Math.max(1, parseInt(interval) || 1);
             const now = new Date();
+            let nextDue = new Date(now);
+            const intervalNum = Math.max(1, parseInt(interval) || 1);
 
-            // Calculate first due date
-            const nextDue = new Date(now);
-            switch (unit) {
-                case 'days':
-                    nextDue.setDate(nextDue.getDate() + intervalNum);
-                    break;
-                case 'weeks':
-                    nextDue.setDate(nextDue.getDate() + intervalNum * 7);
-                    break;
-                case 'months':
-                    nextDue.setMonth(nextDue.getMonth() + intervalNum);
-                    break;
+            if (isRecurring) {
+                // Calculate first due date based on recurrence
+                switch (unit) {
+                    case 'days':
+                        nextDue.setDate(nextDue.getDate() + intervalNum);
+                        break;
+                    case 'weeks':
+                        nextDue.setDate(nextDue.getDate() + intervalNum * 7);
+                        break;
+                    case 'months':
+                        nextDue.setMonth(nextDue.getMonth() + intervalNum);
+                        break;
+                }
             }
+            // If non-recurring, due date is 'now' (or we could add a date picker later)
 
             await taskService.addTask({
                 title: title.trim(),
                 description: description.trim(),
-                recurrenceInterval: intervalNum,
-                recurrenceUnit: unit,
+                recurrenceInterval: isRecurring ? intervalNum : undefined,
+                recurrenceUnit: isRecurring ? unit : undefined,
                 nextDueDate: nextDue.toISOString(),
                 reminderOffsetHours: Math.max(1, parseInt(reminderHours) || 24),
                 notificationsEnabled,
@@ -69,6 +73,7 @@ export default function AddTaskScreen() {
             </Text>
 
             <TextInput
+                testID="task-name-input"
                 label="Task name *"
                 value={title}
                 onChangeText={setTitle}
@@ -88,28 +93,43 @@ export default function AddTaskScreen() {
                 placeholder="What does this task involve?"
             />
 
-            <Text variant="labelLarge" style={[styles.label, { color: theme.colors.onSurface }]}>
-                Repeat every
-            </Text>
-            <View style={styles.recurrenceRow}>
-                <TextInput
-                    value={interval}
-                    onChangeText={setInterval}
-                    mode="outlined"
-                    keyboardType="number-pad"
-                    style={[styles.input, { flex: 1 }]}
-                />
-                <SegmentedButtons
-                    value={unit}
-                    onValueChange={(v) => setUnit(v as RecurrenceUnit)}
-                    buttons={[
-                        { value: 'days', label: 'Days' },
-                        { value: 'weeks', label: 'Weeks' },
-                        { value: 'months', label: 'Months' },
-                    ]}
-                    style={{ flex: 2 }}
+            <View style={styles.switchRow}>
+                <Text variant="labelLarge" style={{ color: theme.colors.onSurface }}>
+                    Repeating Task
+                </Text>
+                <Switch
+                    testID="task-recurring-switch"
+                    value={isRecurring}
+                    onValueChange={setIsRecurring}
                 />
             </View>
+
+            {isRecurring && (
+                <>
+                    <Text variant="labelLarge" style={[styles.label, { color: theme.colors.onSurface }]}>
+                        Repeat every
+                    </Text>
+                    <View style={styles.recurrenceRow}>
+                        <TextInput
+                            value={interval}
+                            onChangeText={setInterval}
+                            mode="outlined"
+                            keyboardType="number-pad"
+                            style={[styles.input, { flex: 1 }]}
+                        />
+                        <SegmentedButtons
+                            value={unit}
+                            onValueChange={(v) => setUnit(v as RecurrenceUnit)}
+                            buttons={[
+                                { value: 'days', label: 'Days' },
+                                { value: 'weeks', label: 'Weeks' },
+                                { value: 'months', label: 'Months' },
+                            ]}
+                            style={{ flex: 2 }}
+                        />
+                    </View>
+                </>
+            )}
 
             <TextInput
                 label="Remind me (hours before due)"
@@ -132,6 +152,7 @@ export default function AddTaskScreen() {
                     Cancel
                 </Button>
                 <Button
+                    testID="save-task-button"
                     mode="contained"
                     onPress={handleSave}
                     loading={saving}

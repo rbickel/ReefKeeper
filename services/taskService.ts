@@ -60,12 +60,18 @@ export async function completeTask(id: string, notes?: string): Promise<Maintena
         notes,
     });
 
-    // Calculate next due date
-    task.nextDueDate = calculateNextDueDate(
-        new Date(),
-        task.recurrenceInterval,
-        task.recurrenceUnit
-    ).toISOString();
+    if (task.recurrenceInterval && task.recurrenceInterval > 0 && task.recurrenceUnit) {
+        // Calculate next due date for recurring tasks
+        task.nextDueDate = calculateNextDueDate(
+            new Date(),
+            task.recurrenceInterval,
+            task.recurrenceUnit
+        ).toISOString();
+    } else {
+        // Mark non-recurring task as completed
+        task.isCompleted = true;
+        task.notificationsEnabled = false; // Disable notifications for completed tasks
+    }
 
     task.updatedAt = new Date().toISOString();
     await saveTasks(tasks);

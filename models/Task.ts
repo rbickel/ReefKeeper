@@ -11,13 +11,14 @@ export interface MaintenanceTask {
     id: string;
     title: string;
     description: string;
-    recurrenceInterval: number; // e.g. 7
-    recurrenceUnit: RecurrenceUnit; // e.g. 'days' → every 7 days
+    recurrenceInterval?: number; // optional, null/0 means non-recurring
+    recurrenceUnit?: RecurrenceUnit;
     nextDueDate: string; // ISO date string
     reminderOffsetHours: number; // how many hours before due date to notify
     notificationsEnabled: boolean;
     isPredefined: boolean;
     completionHistory: TaskCompletionRecord[];
+    isCompleted?: boolean; // for non-recurring tasks
     createdAt: string;
     updatedAt: string;
 }
@@ -43,11 +44,16 @@ export function createTask(partial: Partial<MaintenanceTask> & Pick<MaintenanceT
 export function getTaskUrgency(task: MaintenanceTask): 'overdue' | 'today' | 'upcoming' | 'later' {
     const now = new Date();
     const due = new Date(task.nextDueDate);
-    const diffMs = due.getTime() - now.getTime();
-    const diffDays = diffMs / (1000 * 60 * 60 * 24);
+
+    // Reset hours to compare dates only
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const dueDate = new Date(due.getFullYear(), due.getMonth(), due.getDate());
+
+    const diffTime = dueDate.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
     if (diffDays < 0) return 'overdue';
-    if (diffDays < 1) return 'today';
-    if (diffDays < 3) return 'upcoming';
+    if (diffDays === 0) return 'today';
+    if (diffDays <= 3) return 'upcoming';
     return 'later';
 }

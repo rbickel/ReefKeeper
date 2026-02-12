@@ -7,6 +7,7 @@ import type { AppTheme } from '../constants/Colors';
 interface Props {
     task: MaintenanceTask;
     isCompleting?: boolean;
+    renderAsCompleted?: boolean;
     onPress: () => void;
     onComplete: () => void;
 }
@@ -18,22 +19,47 @@ const URGENCY_COLORS: Record<string, string> = {
     later: '#95a5a6',
 };
 
-export function TaskCard({ task, isCompleting, onPress, onComplete }: Props) {
+export function TaskCard({ task, isCompleting, renderAsCompleted, onPress, onComplete }: Props) {
     const theme = useTheme<AppTheme>();
     const urgency = getTaskUrgency(task);
     const urgencyColor = URGENCY_COLORS[urgency];
     const dueDate = new Date(task.nextDueDate);
-    const isOverdue = urgency === 'overdue';
+    const completed = isCompleting || task.isCompleted || renderAsCompleted;
+
+    // For completed tasks, show completion date if available, or just "Completed"
+    const completionDate = task.completionHistory.length > 0
+        ? new Date(task.completionHistory[task.completionHistory.length - 1].completedAt)
+        : null;
 
     const formatDue = () => {
-        const now = new Date();
-        const diffMs = dueDate.getTime() - now.getTime();
-        const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+        if (task.isCompleted || renderAsCompleted) {
+            return completionDate ? `Completed ${completionDate.toLocaleDateString()}` : 'Completed';
+        }
 
-        if (diffDays < 0) return `${Math.abs(diffDays)}d overdue`;
-        if (diffDays === 0) return 'Due today';
-        if (diffDays === 1) return 'Due tomorrow';
-        return `Due in ${diffDays}d`;
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const dueDay = new Date(dueDate.getFullYear(), dueDate.getMonth(), dueDate.getDate());
+        const diffTime = dueDay.getTime() - today.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        let dueText = '';
+        if (diffDays < 0) dueText = `${Math.abs(diffDays)}d overdue`;
+        else if (diffDays === 0) dueText = 'Due today';
+        else if (diffDays === 1) dueText = 'Due tomorrow';
+        else dueText = `Due in ${diffDays}d`;
+
+        return dueText;
+    };
+
+    const getLastDoneText = () => {
+        if (!completionDate || task.isCompleted) return '';
+        const now = new Date();
+        const diffMs = now.getTime() - completionDate.getTime();
+        const diffHours = diffMs / (1000 * 60 * 60);
+
+        if (diffHours < 24) return ' (Done today)';
+        if (diffHours < 48) return ' (Done yesterday)';
+        return ` (Last: ${completionDate.toLocaleDateString()})`;
     };
 
     return (
@@ -43,19 +69,20 @@ export function TaskCard({ task, isCompleting, onPress, onComplete }: Props) {
                     styles.card,
                     {
                         backgroundColor: theme.colors.surface,
-                        borderLeftColor: urgencyColor,
+                        borderLeftColor: task.isCompleted ? theme.colors.outline : urgencyColor,
                         borderLeftWidth: 3,
-                        opacity: isCompleting ? 0.6 : 1,
+                        opacity: completed ? 0.6 : 1,
                     },
                 ]}
                 mode="elevated"
             >
                 <View style={styles.row}>
                     <Checkbox
-                        status={isCompleting ? 'checked' : 'unchecked'}
+                        testID={`task-checkbox-${task.id}`}
+                        status={completed ? 'checked' : 'unchecked'}
                         onPress={onComplete}
                         color={theme.colors.primary}
-                        disabled={isCompleting}
+                        disabled={completed}
                     />
                     <View style={styles.info}>
                         <Text
@@ -63,17 +90,17 @@ export function TaskCard({ task, isCompleting, onPress, onComplete }: Props) {
                             style={{
                                 color: theme.colors.onSurface,
                                 fontWeight: '700',
-                                textDecorationLine: isCompleting ? 'line-through' : 'none',
+                                textDecorationLine: completed ? 'line-through' : 'none',
                             }}
                         >
                             {task.title}
                         </Text>
                         <Text
                             variant="bodySmall"
-                            style={{ color: isOverdue ? urgencyColor : theme.colors.onSurfaceVariant }}
+                            style={{ color: task.isCompleted ? theme.colors.onSurfaceVariant : (urgency === 'overdue' ? urgencyColor : theme.colors.onSurfaceVariant) }}
                         >
-                            {formatDue()} · Every {task.recurrenceInterval}{' '}
-                            {task.recurrenceUnit}
+                            {formatDue()}
+                            {!task.isCompleted && task.recurrenceInterval !== undefined && task.recurrenceInterval > 0 && ` · Every ${task.recurrenceInterval} ${task.recurrenceUnit}${getLastDoneText()}`}
                         </Text>
                     </View>
                     <IconButton icon="chevron-right" size={18} iconColor={theme.colors.onSurfaceVariant} />

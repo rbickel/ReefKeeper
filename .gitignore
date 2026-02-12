@@ -1,5 +1,10 @@
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
+#playwright
+playwright-report/
+playwright-video/
+test-results/
+
 # dependencies
 node_modules/
 
