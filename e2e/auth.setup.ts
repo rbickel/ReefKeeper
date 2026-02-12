@@ -4,12 +4,24 @@ import { test as setup } from '@playwright/test';
  * Auth setup for Playwright tests
  * 
  * This file runs once before all tests to handle authentication.
- * When authentication is added to the app, update this file to:
- * 1. Navigate to login page
- * 2. Fill in test credentials
- * 3. Save the authenticated state
  * 
- * For now, it sets a flag in localStorage to indicate test mode.
+ * Current implementation:
+ * - Sets a test mode flag in localStorage
+ * - This flag can be checked by AuthGuard to bypass authentication
+ * 
+ * When authentication is added, update this to:
+ * 1. Navigate to login page
+ * 2. Fill in test credentials from environment variables
+ * 3. Save the authenticated state (cookies, localStorage)
+ * 
+ * Example implementation when auth is added:
+ * 
+ *   await page.goto('/login');
+ *   await page.getByLabel('Email').fill(process.env.TEST_USER_EMAIL!);
+ *   await page.getByLabel('Password').fill(process.env.TEST_USER_PASSWORD!);
+ *   await page.getByRole('button', { name: /log in/i }).click();
+ *   await page.waitForURL('/');
+ *   await page.context().storageState({ path: authFile });
  */
 
 const authFile = 'e2e/.auth/user.json';
