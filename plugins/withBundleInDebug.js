@@ -3,42 +3,49 @@
  * 
  * This plugin modifies the Android app's build.gradle to bundle JavaScript
  * in debug builds, allowing the APK to run without a Metro server.
+ * 
+ * It configures the new React Native Gradle Plugin's react {} block to
+ * set debuggableVariants to an empty list, ensuring debug builds are bundled.
  */
 
 const { withAppBuildGradle } = require('@expo/config-plugins');
 
 /**
- * Adds bundleInDebug configuration to the project.ext.react block in build.gradle
+ * Adds debuggableVariants configuration to the react {} block in build.gradle
+ * to ensure debug builds include bundled JavaScript
  */
 const withBundleInDebug = (config) => {
   return withAppBuildGradle(config, (gradleConfig) => {
     let contents = gradleConfig.modResults.contents;
 
-    // Check if project.ext.react block exists
-    // Note: This pattern works for simple configurations. Complex nested brackets
-    // are not common in project.ext.react blocks, but if needed, a more robust
-    // parser could be implemented.
-    const projectExtReactPattern = /project\.ext\.react\s*=\s*\[[\s\S]*?\]/;
+    // Find the react {} configuration block
+    const reactBlockPattern = /react\s*\{[\s\S]*?\n\}/;
     
-    if (projectExtReactPattern.test(contents)) {
-      // If project.ext.react exists, check if bundleInDebug is already present
-      const bundleInDebugPattern = /bundleInDebug\s*:/;
+    if (reactBlockPattern.test(contents)) {
+      // Check if debuggableVariants is already uncommented
+      const debuggableVariantsPattern = /^\s*debuggableVariants\s*=/m;
       
-      if (!bundleInDebugPattern.test(contents)) {
-        // Add bundleInDebug to existing project.ext.react block
+      if (!debuggableVariantsPattern.test(contents)) {
+        // Find the commented debuggableVariants line and uncomment it with empty array
         contents = contents.replace(
-          /project\.ext\.react\s*=\s*\[/,
-          'project.ext.react = [\n    bundleInDebug: true,'
+          /\/\/\s*debuggableVariants\s*=\s*\[["']liteDebug["'],\s*["']prodDebug["']\]/,
+          'debuggableVariants = [] // Bundle JS in all variants including debug'
         );
       } else {
-        // Update existing bundleInDebug value to true
+        // Update existing debuggableVariants to empty array
         contents = contents.replace(
-          /bundleInDebug\s*:\s*false/g,
-          'bundleInDebug: true'
+          /debuggableVariants\s*=\s*\[[^\]]*\]/,
+          'debuggableVariants = [] // Bundle JS in all variants including debug'
         );
       }
-    } else {
-      // If project.ext.react doesn't exist, add it before apply plugin
+    }
+
+    // Also add legacy project.ext.react for older React Native versions
+    // This ensures compatibility with both old and new Gradle plugins
+    const projectExtReactPattern = /project\.ext\.react\s*=\s*\[[\s\S]*?\]/;
+    
+    if (!projectExtReactPattern.test(contents)) {
+      // Add it before apply plugin
       const applyPluginPattern = /apply plugin:\s*["']com\.android\.application["']/;
       
       if (applyPluginPattern.test(contents)) {
