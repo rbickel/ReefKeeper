@@ -135,7 +135,8 @@ ReefKeeper/
 ├── hooks/                  # Custom React hooks (useCreatures, useTasks, etc.)
 ├── models/                 # TypeScript interfaces (Creature, Task)
 ├── services/               # Data layer (AsyncStorage CRUD, notifications)
-├── e2e/                    # Playwright E2E tests
+├── e2e/                    # Playwright E2E tests (web)
+├── maestro/                # Maestro UI tests (Android)
 ├── __tests__/              # Jest unit tests
 ├── .github/workflows/      # CI/CD pipeline
 └── docs/screenshots/       # App screenshots
@@ -173,12 +174,21 @@ The CI pipeline will automatically run type-checking, unit tests, a web build, a
 
 ## CI/CD
 
-The GitHub Actions workflow (`.github/workflows/build.yml`) runs on every push and PR to `main`:
+The GitHub Actions workflows run on every push and PR to `main`:
+
+### Web Pipeline (`.github/workflows/build.yml`)
 
 | Job | Steps |
 |-----|-------|
 | **build-and-test** | Install deps → TypeScript check → Unit tests → Expo web export |
 | **e2e** | Install deps → Install Playwright → Run E2E tests → Upload report artifact |
+
+### Android Pipeline (`.github/workflows/android.yml`)
+
+| Job | Steps |
+|-----|-------|
+| **android-build** | Install deps → Expo prebuild → Gradle build → Upload debug APK |
+| **android-test** | Build APK → Start Android emulator → Install APK → Run Maestro UI tests → Upload report |
 
 ---
 

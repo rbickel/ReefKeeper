@@ -17,6 +17,7 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.reefkeeper.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0a1628"

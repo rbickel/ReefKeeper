@@ -1,0 +1,11 @@
+appId: com.reefkeeper.app
+---
+# Smoke test: verify core screens render without crashes
+- launchApp
+
+# Login screen should be visible
+- assertVisible: "ReefKeeper"
+- assertVisible: "Login / Register"
+
+# Take a screenshot for the CI report
+- takeScreenshot: login_screen
