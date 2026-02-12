@@ -51,8 +51,11 @@ export default function DashboardScreen() {
 
     const handleLogin = async () => {
         try {
+            const redirectUrl = Platform.OS === 'web' && typeof window !== 'undefined'
+                ? window.location.origin
+                : undefined;
             await authorize({
-                redirectUrl: 'http://localhost:8081'
+                ...(redirectUrl ? { redirectUrl } : {}),
             });
         } catch (e) {
             console.error('Login failed', e);
