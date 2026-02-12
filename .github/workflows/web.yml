@@ -46,6 +46,10 @@ jobs:
           echo "::notice ::Building web version $VERSION"
 
       - name: Export web production build
+        env:
+          AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+          AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+          AUTH0_CLIENT_ID_APK: ${{ secrets.AUTH0_CLIENT_ID_APK }}
         run: npx expo export --platform web
 
       - name: Upload web bundle
