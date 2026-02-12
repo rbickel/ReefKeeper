@@ -9,7 +9,9 @@ module.exports = ({ config }) => {
   // At minimum, we need AUTH0_DOMAIN and at least one client ID
   const hasClientId = AUTH0_CLIENT_ID || AUTH0_CLIENT_ID_APK;
   if (!AUTH0_DOMAIN || !hasClientId) {
-    console.warn('⚠️  Auth0 configuration missing! Set AUTH0_DOMAIN and AUTH0_CLIENT_ID (or AUTH0_CLIENT_ID_APK) in your .env file.');
+    console.warn('⚠️  Auth0 configuration missing!');
+    console.warn('    Set AUTH0_DOMAIN and AUTH0_CLIENT_ID in your .env file.');
+    console.warn('    For Android-specific client: optionally set AUTH0_CLIENT_ID_APK.');
     console.warn('⚠️  Authentication will not work without proper configuration.');
   }
 

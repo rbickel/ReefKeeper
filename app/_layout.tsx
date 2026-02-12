@@ -24,7 +24,9 @@ export default function RootLayout() {
     // Validate Auth0 configuration - placeholder values will cause auth to fail gracefully
     // The app will show the login screen and the error will be displayed to the user
     if (!auth0Domain || !auth0ClientId) {
-        console.error('❌ Auth0 configuration missing! Please set AUTH0_DOMAIN and AUTH0_CLIENT_ID in your .env file.');
+        console.error('❌ Auth0 configuration missing!');
+        console.error('   Set AUTH0_DOMAIN and AUTH0_CLIENT_ID in your .env file.');
+        console.error('   For Android: AUTH0_CLIENT_ID_APK can be used instead of AUTH0_CLIENT_ID.');
         console.error('❌ Authentication will not work. The app will display an error when attempting to log in.');
     }
 
