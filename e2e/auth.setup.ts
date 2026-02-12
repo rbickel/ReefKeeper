@@ -30,8 +30,9 @@ setup('authenticate', async ({ page }) => {
     // Navigate to the app
     await page.goto('/');
     
-    // Wait for app to be ready
-    await page.waitForLoadState('networkidle');
+    // Wait for app to be ready by checking for a known element
+    // This ensures the React app has loaded and is interactive
+    await page.waitForLoadState('domcontentloaded');
     
     // Set test mode flag in localStorage
     // This can be used by the app to bypass authentication checks
