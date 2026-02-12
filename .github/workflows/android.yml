@@ -56,9 +56,14 @@ jobs:
           echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
           echo "::notice ::Building Android version $VERSION (code $VERSION_CODE)"
 
+      # Required repository secrets:
+      # - AUTH0_DOMAIN: Your Auth0 tenant domain (e.g., your-tenant.auth0.com)
+      # - AUTH0_CLIENT_ID: Auth0 application client ID
+      # - AUTH0_CLIENT_ID_APK: Auth0 application client ID for Android (can be same as AUTH0_CLIENT_ID)
       - name: Generate native Android project
         env:
           AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+          AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
           AUTH0_CLIENT_ID_APK: ${{ secrets.AUTH0_CLIENT_ID_APK }}
         run: npx expo prebuild --platform android --clean
 
