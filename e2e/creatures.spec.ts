@@ -40,14 +40,16 @@ test.describe('Creature CRUD Operations', () => {
         await page.waitForURL('**/creature/add');
 
         // Fill creature details
-        await page.getByLabel(/Name/i).fill('Clownfish Nemo');
-        await page.getByLabel(/Species/i).fill('Amphiprion ocellaris');
+        await page.getByPlaceholder(/e\.g\. Nemo/i).fill('Clownfish Nemo');
+        await page.getByPlaceholder(/e\.g\. Amphiprion/i).fill('Amphiprion ocellaris');
         
         // Select Fish type (should be default)
         await expect(page.getByRole('button', { name: /🐠 Fish/i })).toHaveAttribute('aria-checked', 'true');
         
-        await page.getByLabel(/Quantity/i).fill('2');
-        await page.getByLabel(/Notes/i).fill('Beautiful orange and white coloring');
+        // Fill quantity - find the input by its label container
+        const quantityInput = page.locator('input[inputmode="numeric"]').first();
+        await quantityInput.fill('2');
+        await page.getByPlaceholder(/additional notes/i).fill('Beautiful orange and white coloring');
 
         // Save the creature
         await page.getByRole('button', { name: /Save Creature/i }).click();
@@ -68,8 +70,8 @@ test.describe('Creature CRUD Operations', () => {
         // Create a Coral
         await page.getByTestId('add-creature-fab').click();
         await page.waitForURL('**/creature/add');
-        await page.getByLabel(/Name/i).fill('Hammer Coral');
-        await page.getByLabel(/Species/i).fill('Euphyllia ancora');
+        await page.getByPlaceholder(/e\.g\. Nemo/i).fill('Hammer Coral');
+        await page.getByPlaceholder(/e\.g\. Amphiprion/i).fill('Euphyllia ancora');
         await page.getByRole('button', { name: /🪸 Coral/i }).click();
         await page.getByRole('button', { name: /Save Creature/i }).click();
         await page.waitForURL('**/creatures');
@@ -78,8 +80,8 @@ test.describe('Creature CRUD Operations', () => {
         // Create an Invertebrate
         await page.getByTestId('add-creature-fab').click();
         await page.waitForURL('**/creature/add');
-        await page.getByLabel(/Name/i).fill('Cleaner Shrimp');
-        await page.getByLabel(/Species/i).fill('Lysmata amboinensis');
+        await page.getByPlaceholder(/e\.g\. Nemo/i).fill('Cleaner Shrimp');
+        await page.getByPlaceholder(/e\.g\. Amphiprion/i).fill('Lysmata amboinensis');
         await page.getByRole('button', { name: /🦀 Invert/i }).click();
         await page.getByRole('button', { name: /Save Creature/i }).click();
         await page.waitForURL('**/creatures');
@@ -97,10 +99,11 @@ test.describe('Creature CRUD Operations', () => {
         
         await page.getByTestId('add-creature-fab').click();
         await page.waitForURL('**/creature/add');
-        await page.getByLabel(/Name/i).fill('Tang Blue');
-        await page.getByLabel(/Species/i).fill('Paracanthurus hepatus');
-        await page.getByLabel(/Quantity/i).fill('1');
-        await page.getByLabel(/Notes/i).fill('Needs lots of swimming space');
+        await page.getByPlaceholder(/e\.g\. Nemo/i).fill('Tang Blue');
+        await page.getByPlaceholder(/e\.g\. Amphiprion/i).fill('Paracanthurus hepatus');
+        const quantityInput = page.locator('input[inputmode="numeric"]').first();
+        await quantityInput.fill('1');
+        await page.getByPlaceholder(/additional notes/i).fill('Needs lots of swimming space');
         await page.getByRole('button', { name: /Save Creature/i }).click();
         await page.waitForURL('**/creatures');
 
@@ -124,8 +127,8 @@ test.describe('Creature CRUD Operations', () => {
         
         await page.getByTestId('add-creature-fab').click();
         await page.waitForURL('**/creature/add');
-        await page.getByLabel(/Name/i).fill('Original Name');
-        await page.getByLabel(/Species/i).fill('Original Species');
+        await page.getByPlaceholder(/e\.g\. Nemo/i).fill('Original Name');
+        await page.getByPlaceholder(/e\.g\. Amphiprion/i).fill('Original Species');
         await page.getByRole('button', { name: /Save Creature/i }).click();
         await page.waitForURL('**/creatures');
 
@@ -137,9 +140,10 @@ test.describe('Creature CRUD Operations', () => {
         await expect(page).toHaveURL(/\/creature\/edit\/[^/]+$/);
         
         // Edit the creature
-        await page.getByLabel(/Name/i).fill('Updated Name');
-        await page.getByLabel(/Species/i).fill('Updated Species');
-        await page.getByLabel(/Quantity/i).fill('3');
+        await page.getByPlaceholder(/e\.g\. Nemo/i).fill('Updated Name');
+        await page.getByPlaceholder(/e\.g\. Amphiprion/i).fill('Updated Species');
+        const quantityInput = page.locator('input[inputmode="numeric"]').first();
+        await quantityInput.fill('3');
         await page.getByRole('button', { name: /🪸 Coral/i }).click();
         
         // Save changes
@@ -161,8 +165,8 @@ test.describe('Creature CRUD Operations', () => {
         
         await page.getByTestId('add-creature-fab').click();
         await page.waitForURL('**/creature/add');
-        await page.getByLabel(/Name/i).fill('To Be Archived');
-        await page.getByLabel(/Species/i).fill('Test Species');
+        await page.getByPlaceholder(/e\.g\. Nemo/i).fill('To Be Archived');
+        await page.getByPlaceholder(/e\.g\. Amphiprion/i).fill('Test Species');
         await page.getByRole('button', { name: /Save Creature/i }).click();
         await page.waitForURL('**/creatures');
 
@@ -190,16 +194,16 @@ test.describe('Creature CRUD Operations', () => {
         // Create fish
         await page.getByTestId('add-creature-fab').click();
         await page.waitForURL('**/creature/add');
-        await page.getByLabel(/Name/i).fill('Goldfish');
-        await page.getByLabel(/Species/i).fill('Carassius auratus');
+        await page.getByPlaceholder(/e\.g\. Nemo/i).fill('Goldfish');
+        await page.getByPlaceholder(/e\.g\. Amphiprion/i).fill('Carassius auratus');
         await page.getByRole('button', { name: /Save Creature/i }).click();
         await page.waitForURL('**/creatures');
         
         // Create coral
         await page.getByTestId('add-creature-fab').click();
         await page.waitForURL('**/creature/add');
-        await page.getByLabel(/Name/i).fill('Brain Coral');
-        await page.getByLabel(/Species/i).fill('Diploria labyrinthiformis');
+        await page.getByPlaceholder(/e\.g\. Nemo/i).fill('Brain Coral');
+        await page.getByPlaceholder(/e\.g\. Amphiprion/i).fill('Diploria labyrinthiformis');
         await page.getByRole('button', { name: /🪸 Coral/i }).click();
         await page.getByRole('button', { name: /Save Creature/i }).click();
         await page.waitForURL('**/creatures');
@@ -243,11 +247,11 @@ test.describe('Creature CRUD Operations', () => {
         await expect(saveButton).toBeDisabled();
 
         // Fill only name
-        await page.getByLabel(/Name/i).fill('Test Name');
+        await page.getByPlaceholder(/e\.g\. Nemo/i).fill('Test Name');
         await expect(saveButton).toBeDisabled();
 
         // Fill species too
-        await page.getByLabel(/Species/i).fill('Test Species');
+        await page.getByPlaceholder(/e\.g\. Amphiprion/i).fill('Test Species');
         await expect(saveButton).toBeEnabled();
     });
 });
