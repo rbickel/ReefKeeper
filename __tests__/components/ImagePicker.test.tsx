@@ -9,6 +9,9 @@ import { Alert } from 'react-native';
 jest.mock('expo-image-picker', () => ({
     requestMediaLibraryPermissionsAsync: jest.fn(),
     launchImageLibraryAsync: jest.fn(),
+    MediaTypeOptions: {
+        Images: 'Images',
+    },
 }));
 
 // Mock expo-constants
