@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { Button, Text, useTheme, ActivityIndicator, Chip } from 'react-native-paper';
 import * as ExpoImagePicker from 'expo-image-picker';
+import { MediaTypeOptions } from 'expo-image-picker';
 import Constants from 'expo-constants';
 import type { AppTheme } from '../constants/Colors';
 
@@ -42,7 +43,7 @@ export default function ImagePicker({ value, onChange, species }: ImagePickerPro
 
         // Launch image picker
         const result = await ExpoImagePicker.launchImageLibraryAsync({
-            mediaTypes: 'images' as any,
+            mediaTypes: MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [4, 3],
             quality: 0.8,
