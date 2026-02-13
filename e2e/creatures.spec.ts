@@ -250,4 +250,55 @@ test.describe('Creature CRUD Operations', () => {
         await page.getByLabel(/Species/i).fill('Test Species');
         await expect(saveButton).toBeEnabled();
     });
+
+    test('should display image picker on add creature page', async ({ page }) => {
+        // Navigate to Creatures tab
+        await page.getByRole('tab', { name: /Creatures/i }).click();
+        await page.waitForURL('**/creatures');
+        
+        // Open add creature form
+        await page.getByTestId('add-creature-fab').click();
+        await page.waitForURL('**/creature/add');
+
+        // Verify image picker elements are present
+        await expect(page.getByText('Photo')).toBeVisible();
+        await expect(page.getByRole('button', { name: /Upload Photo/i })).toBeVisible();
+        
+        // Find Images button should be present
+        const findImagesButton = page.getByRole('button', { name: /Find Images/i });
+        await expect(findImagesButton).toBeVisible();
+        
+        // Find Images button should be disabled when species is empty
+        await expect(findImagesButton).toBeDisabled();
+        
+        // Fill in species field
+        await page.getByLabel(/Species/i).fill('Clownfish');
+        
+        // Find Images button should now be enabled
+        await expect(findImagesButton).toBeEnabled();
+    });
+
+    test('should display image picker on edit creature page', async ({ page }) => {
+        // Navigate to Creatures tab and create a creature first
+        await page.getByRole('tab', { name: /Creatures/i }).click();
+        await page.waitForURL('**/creatures');
+        
+        // Create a creature
+        await page.getByTestId('add-creature-fab').click();
+        await page.waitForURL('**/creature/add');
+        await page.getByLabel(/Name/i).fill('Test Fish');
+        await page.getByLabel(/Species/i).fill('Test Species');
+        await page.getByRole('button', { name: /Save Creature/i }).click();
+        await page.waitForURL('**/creatures');
+        
+        // Open the creature for editing
+        await page.getByText('Test Fish').click();
+        await page.getByRole('button', { name: /✏️/i }).click();
+        await page.waitForURL('**/creature/edit/**');
+        
+        // Verify image picker elements are present
+        await expect(page.getByText('Photo')).toBeVisible();
+        await expect(page.getByRole('button', { name: /Upload Photo/i })).toBeVisible();
+        await expect(page.getByRole('button', { name: /Find Images/i })).toBeVisible();
+    });
 });
