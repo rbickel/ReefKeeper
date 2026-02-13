@@ -146,6 +146,8 @@ describe('useCreatures', () => {
             dateAcquired: '2026-01-01',
             quantity: 1,
             notes: '',
+            healthLog: [],
+            archived: false,
         };
 
         const addedCreature = {
