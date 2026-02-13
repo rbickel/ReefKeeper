@@ -4,7 +4,7 @@ appId: com.reefkeeper.app
 - launchApp
 
 # Login screen should be visible
-- assertVisible: "ReefKeeper"
+- assertVisible: "🐠 ReefKeeper"
 - assertVisible: "Login / Register"
 
 # Take a screenshot for the CI report
