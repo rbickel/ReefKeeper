@@ -2,5 +2,5 @@ appId: com.reefkeeper.app
 ---
 # Verify the app launches and the login screen is displayed
 - launchApp
-- assertVisible: "ReefKeeper"
+- assertVisible: "🐠 ReefKeeper"
 - assertVisible: "Login / Register"
