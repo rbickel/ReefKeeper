@@ -56,6 +56,7 @@ module.exports = ({ config }) => {
           },
         ],
         'expo-image-picker',
+        './plugins/withBundleInDebug.js',
         ...(AUTH0_DOMAIN && hasClientId ? [
           [
             'react-native-auth0',
