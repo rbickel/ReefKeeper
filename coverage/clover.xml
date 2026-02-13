@@ -1,148 +1,148 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1770994765103" clover="3.2.0">
-  <project timestamp="1770994765103" name="All files">
-    <metrics statements="211" coveredstatements="68" conditionals="69" coveredconditionals="18" methods="54" coveredmethods="22" elements="334" coveredelements="108" complexity="0" loc="211" ncloc="211" packages="3" files="8" classes="8"/>
+<coverage generated="1770995028532" clover="3.2.0">
+  <project timestamp="1770995028532" name="All files">
+    <metrics statements="211" coveredstatements="211" conditionals="69" coveredconditionals="67" methods="54" coveredmethods="54" elements="334" coveredelements="332" complexity="0" loc="211" ncloc="211" packages="3" files="8" classes="8"/>
     <package name="hooks">
-      <metrics statements="102" coveredstatements="0" conditionals="25" coveredconditionals="0" methods="24" coveredmethods="0"/>
+      <metrics statements="102" coveredstatements="102" conditionals="25" coveredconditionals="23" methods="24" coveredmethods="24"/>
       <file name="useCreatures.ts" path="/home/runner/work/ReefKeeper/ReefKeeper/hooks/useCreatures.ts">
-        <metrics statements="34" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="10" coveredmethods="0"/>
-        <line num="7" count="0" type="stmt"/>
-        <line num="8" count="0" type="stmt"/>
-        <line num="10" count="0" type="stmt"/>
-        <line num="11" count="0" type="stmt"/>
-        <line num="12" count="0" type="stmt"/>
-        <line num="13" count="0" type="stmt"/>
-        <line num="14" count="0" type="stmt"/>
-        <line num="16" count="0" type="stmt"/>
-        <line num="18" count="0" type="stmt"/>
-        <line num="22" count="0" type="stmt"/>
-        <line num="23" count="0" type="stmt"/>
-        <line num="24" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="25" count="0" type="stmt"/>
-        <line num="26" count="0" type="stmt"/>
-        <line num="27" count="0" type="stmt"/>
-        <line num="29" count="0" type="stmt"/>
-        <line num="33" count="0" type="stmt"/>
-        <line num="34" count="0" type="stmt"/>
-        <line num="35" count="0" type="stmt"/>
-        <line num="36" count="0" type="stmt"/>
-        <line num="40" count="0" type="stmt"/>
-        <line num="41" count="0" type="stmt"/>
-        <line num="42" count="0" type="stmt"/>
-        <line num="43" count="0" type="stmt"/>
-        <line num="46" count="0" type="stmt"/>
-        <line num="47" count="0" type="stmt"/>
-        <line num="48" count="0" type="stmt"/>
-        <line num="51" count="0" type="stmt"/>
-        <line num="52" count="0" type="stmt"/>
-        <line num="53" count="0" type="stmt"/>
-        <line num="56" count="0" type="stmt"/>
-        <line num="57" count="0" type="stmt"/>
-        <line num="58" count="0" type="stmt"/>
-        <line num="61" count="0" type="stmt"/>
+        <metrics statements="34" coveredstatements="34" conditionals="2" coveredconditionals="2" methods="10" coveredmethods="10"/>
+        <line num="7" count="27" type="stmt"/>
+        <line num="8" count="27" type="stmt"/>
+        <line num="10" count="27" type="stmt"/>
+        <line num="11" count="16" type="stmt"/>
+        <line num="12" count="16" type="stmt"/>
+        <line num="13" count="16" type="stmt"/>
+        <line num="14" count="15" type="stmt"/>
+        <line num="16" count="1" type="stmt"/>
+        <line num="18" count="16" type="stmt"/>
+        <line num="22" count="27" type="stmt"/>
+        <line num="23" count="11" type="stmt"/>
+        <line num="24" count="11" type="cond" truecount="2" falsecount="0"/>
+        <line num="25" count="1" type="stmt"/>
+        <line num="26" count="1" type="stmt"/>
+        <line num="27" count="1" type="stmt"/>
+        <line num="29" count="1" type="stmt"/>
+        <line num="33" count="27" type="stmt"/>
+        <line num="34" count="11" type="stmt"/>
+        <line num="35" count="11" type="stmt"/>
+        <line num="36" count="11" type="stmt"/>
+        <line num="40" count="27" type="stmt"/>
+        <line num="41" count="1" type="stmt"/>
+        <line num="42" count="1" type="stmt"/>
+        <line num="43" count="1" type="stmt"/>
+        <line num="46" count="27" type="stmt"/>
+        <line num="47" count="1" type="stmt"/>
+        <line num="48" count="1" type="stmt"/>
+        <line num="51" count="27" type="stmt"/>
+        <line num="52" count="1" type="stmt"/>
+        <line num="53" count="1" type="stmt"/>
+        <line num="56" count="27" type="stmt"/>
+        <line num="57" count="1" type="stmt"/>
+        <line num="58" count="1" type="stmt"/>
+        <line num="61" count="27" type="stmt"/>
       </file>
       <file name="useNotifications.ts" path="/home/runner/work/ReefKeeper/ReefKeeper/hooks/useNotifications.ts">
-        <metrics statements="14" coveredstatements="0" conditionals="4" coveredconditionals="0" methods="5" coveredmethods="0"/>
-        <line num="7" count="0" type="stmt"/>
-        <line num="9" count="0" type="stmt"/>
-        <line num="11" count="0" type="stmt"/>
-        <line num="13" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="16" count="0" type="stmt"/>
-        <line num="17" count="0" type="stmt"/>
-        <line num="20" count="0" type="stmt"/>
-        <line num="21" count="0" type="stmt"/>
-        <line num="22" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="23" count="0" type="stmt"/>
-        <line num="27" count="0" type="stmt"/>
-        <line num="28" count="0" type="stmt"/>
-        <line num="29" count="0" type="stmt"/>
-        <line num="33" count="0" type="stmt"/>
+        <metrics statements="14" coveredstatements="14" conditionals="4" coveredconditionals="4" methods="5" coveredmethods="5"/>
+        <line num="7" count="17" type="stmt"/>
+        <line num="9" count="17" type="stmt"/>
+        <line num="11" count="10" type="stmt"/>
+        <line num="13" count="10" type="cond" truecount="2" falsecount="0"/>
+        <line num="16" count="8" type="stmt"/>
+        <line num="17" count="1" type="stmt"/>
+        <line num="20" count="8" type="stmt"/>
+        <line num="21" count="2" type="stmt"/>
+        <line num="22" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="23" count="1" type="stmt"/>
+        <line num="27" count="8" type="stmt"/>
+        <line num="28" count="8" type="stmt"/>
+        <line num="29" count="8" type="stmt"/>
+        <line num="33" count="17" type="stmt"/>
       </file>
       <file name="useTasks.ts" path="/home/runner/work/ReefKeeper/ReefKeeper/hooks/useTasks.ts">
-        <metrics statements="54" coveredstatements="0" conditionals="19" coveredconditionals="0" methods="9" coveredmethods="0"/>
-        <line num="8" count="0" type="stmt"/>
-        <line num="9" count="0" type="stmt"/>
-        <line num="11" count="0" type="stmt"/>
-        <line num="12" count="0" type="stmt"/>
-        <line num="13" count="0" type="stmt"/>
-        <line num="14" count="0" type="stmt"/>
-        <line num="15" count="0" type="stmt"/>
-        <line num="17" count="0" type="stmt"/>
-        <line num="19" count="0" type="stmt"/>
-        <line num="23" count="0" type="stmt"/>
-        <line num="24" count="0" type="stmt"/>
-        <line num="25" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="26" count="0" type="stmt"/>
-        <line num="27" count="0" type="stmt"/>
-        <line num="29" count="0" type="stmt"/>
-        <line num="30" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="31" count="0" type="cond" truecount="0" falsecount="3"/>
-        <line num="33" count="0" type="stmt"/>
-        <line num="34" count="0" type="stmt"/>
-        <line num="36" count="0" type="stmt"/>
-        <line num="37" count="0" type="stmt"/>
-        <line num="39" count="0" type="stmt"/>
-        <line num="40" count="0" type="stmt"/>
-        <line num="42" count="0" type="stmt"/>
-        <line num="46" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="47" count="0" type="stmt"/>
-        <line num="50" count="0" type="stmt"/>
-        <line num="54" count="0" type="stmt"/>
-        <line num="55" count="0" type="stmt"/>
-        <line num="56" count="0" type="stmt"/>
-        <line num="57" count="0" type="stmt"/>
-        <line num="61" count="0" type="stmt"/>
-        <line num="62" count="0" type="stmt"/>
-        <line num="64" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="65" count="0" type="stmt"/>
-        <line num="67" count="0" type="stmt"/>
-        <line num="68" count="0" type="stmt"/>
-        <line num="71" count="0" type="stmt"/>
-        <line num="72" count="0" type="stmt"/>
-        <line num="74" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="75" count="0" type="stmt"/>
-        <line num="76" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="77" count="0" type="stmt"/>
-        <line num="80" count="0" type="stmt"/>
-        <line num="83" count="0" type="stmt"/>
-        <line num="84" count="0" type="stmt"/>
-        <line num="85" count="0" type="cond" truecount="0" falsecount="4"/>
-        <line num="87" count="0" type="stmt"/>
-        <line num="89" count="0" type="stmt"/>
-        <line num="92" count="0" type="stmt"/>
-        <line num="94" count="0" type="stmt"/>
-        <line num="95" count="0" type="stmt"/>
-        <line num="96" count="0" type="stmt"/>
-        <line num="99" count="0" type="stmt"/>
+        <metrics statements="54" coveredstatements="54" conditionals="19" coveredconditionals="17" methods="9" coveredmethods="9"/>
+        <line num="8" count="34" type="stmt"/>
+        <line num="9" count="34" type="stmt"/>
+        <line num="11" count="34" type="stmt"/>
+        <line num="12" count="21" type="stmt"/>
+        <line num="13" count="21" type="stmt"/>
+        <line num="14" count="21" type="stmt"/>
+        <line num="15" count="20" type="stmt"/>
+        <line num="17" count="1" type="stmt"/>
+        <line num="19" count="21" type="stmt"/>
+        <line num="23" count="34" type="stmt"/>
+        <line num="24" count="13" type="stmt"/>
+        <line num="25" count="13" type="cond" truecount="2" falsecount="0"/>
+        <line num="26" count="1" type="stmt"/>
+        <line num="27" count="1" type="stmt"/>
+        <line num="29" count="3" type="stmt"/>
+        <line num="30" count="3" type="cond" truecount="1" falsecount="1"/>
+        <line num="31" count="3" type="cond" truecount="3" falsecount="0"/>
+        <line num="33" count="1" type="stmt"/>
+        <line num="34" count="1" type="stmt"/>
+        <line num="36" count="1" type="stmt"/>
+        <line num="37" count="1" type="stmt"/>
+        <line num="39" count="1" type="stmt"/>
+        <line num="40" count="1" type="stmt"/>
+        <line num="42" count="3" type="stmt"/>
+        <line num="46" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="47" count="2" type="stmt"/>
+        <line num="50" count="1" type="stmt"/>
+        <line num="54" count="34" type="stmt"/>
+        <line num="55" count="13" type="stmt"/>
+        <line num="56" count="13" type="stmt"/>
+        <line num="57" count="13" type="stmt"/>
+        <line num="61" count="34" type="stmt"/>
+        <line num="62" count="2" type="stmt"/>
+        <line num="64" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="65" count="1" type="stmt"/>
+        <line num="67" count="2" type="stmt"/>
+        <line num="68" count="2" type="stmt"/>
+        <line num="71" count="34" type="stmt"/>
+        <line num="72" count="2" type="stmt"/>
+        <line num="74" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="75" count="2" type="stmt"/>
+        <line num="76" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="77" count="1" type="stmt"/>
+        <line num="80" count="2" type="stmt"/>
+        <line num="83" count="34" type="stmt"/>
+        <line num="84" count="2" type="stmt"/>
+        <line num="85" count="2" type="cond" truecount="4" falsecount="0"/>
+        <line num="87" count="1" type="stmt"/>
+        <line num="89" count="2" type="stmt"/>
+        <line num="92" count="34" type="stmt"/>
+        <line num="94" count="1" type="stmt"/>
+        <line num="95" count="1" type="stmt"/>
+        <line num="96" count="1" type="stmt"/>
+        <line num="99" count="34" type="stmt"/>
       </file>
     </package>
     <package name="models">
-      <metrics statements="16" coveredstatements="0" conditionals="6" coveredconditionals="0" methods="3" coveredmethods="0"/>
+      <metrics statements="16" coveredstatements="16" conditionals="6" coveredconditionals="6" methods="3" coveredmethods="3"/>
       <file name="Creature.ts" path="/home/runner/work/ReefKeeper/ReefKeeper/models/Creature.ts">
-        <metrics statements="4" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
-        <line num="25" count="0" type="stmt"/>
-        <line num="32" count="0" type="stmt"/>
-        <line num="40" count="0" type="stmt"/>
-        <line num="41" count="0" type="stmt"/>
+        <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="25" count="1" type="stmt"/>
+        <line num="32" count="1" type="stmt"/>
+        <line num="40" count="4" type="stmt"/>
+        <line num="41" count="4" type="stmt"/>
       </file>
       <file name="Task.ts" path="/home/runner/work/ReefKeeper/ReefKeeper/models/Task.ts">
-        <metrics statements="12" coveredstatements="0" conditionals="6" coveredconditionals="0" methods="2" coveredmethods="0"/>
-        <line num="27" count="0" type="stmt"/>
-        <line num="28" count="0" type="stmt"/>
-        <line num="45" count="0" type="stmt"/>
-        <line num="46" count="0" type="stmt"/>
-        <line num="49" count="0" type="stmt"/>
-        <line num="50" count="0" type="stmt"/>
-        <line num="52" count="0" type="stmt"/>
-        <line num="53" count="0" type="stmt"/>
-        <line num="55" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="56" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="57" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="58" count="0" type="stmt"/>
+        <metrics statements="12" coveredstatements="12" conditionals="6" coveredconditionals="6" methods="2" coveredmethods="2"/>
+        <line num="27" count="19" type="stmt"/>
+        <line num="28" count="19" type="stmt"/>
+        <line num="45" count="7" type="stmt"/>
+        <line num="46" count="7" type="stmt"/>
+        <line num="49" count="7" type="stmt"/>
+        <line num="50" count="7" type="stmt"/>
+        <line num="52" count="7" type="stmt"/>
+        <line num="53" count="7" type="stmt"/>
+        <line num="55" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="56" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="57" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="58" count="1" type="stmt"/>
       </file>
     </package>
     <package name="services">
-      <metrics statements="93" coveredstatements="68" conditionals="38" coveredconditionals="18" methods="27" coveredmethods="22"/>
+      <metrics statements="93" coveredstatements="93" conditionals="38" coveredconditionals="38" methods="27" coveredmethods="27"/>
       <file name="creatureService.ts" path="/home/runner/work/ReefKeeper/ReefKeeper/services/creatureService.ts">
         <metrics statements="24" coveredstatements="24" conditionals="4" coveredconditionals="4" methods="10" coveredmethods="10"/>
         <line num="5" count="1" type="stmt"/>
@@ -171,32 +171,32 @@
         <line num="60" count="3" type="stmt"/>
       </file>
       <file name="notificationService.ts" path="/home/runner/work/ReefKeeper/ReefKeeper/services/notificationService.ts">
-        <metrics statements="25" coveredstatements="0" conditionals="20" coveredconditionals="0" methods="5" coveredmethods="0"/>
-        <line num="9" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="10" count="0" type="stmt"/>
-        <line num="11" count="0" type="stmt"/>
-        <line num="13" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="14" count="0" type="stmt"/>
-        <line num="15" count="0" type="stmt"/>
-        <line num="18" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="19" count="0" type="stmt"/>
-        <line num="23" count="0" type="stmt"/>
-        <line num="24" count="0" type="stmt"/>
-        <line num="33" count="0" type="stmt"/>
-        <line num="40" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="41" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="43" count="0" type="stmt"/>
-        <line num="44" count="0" type="stmt"/>
-        <line num="47" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="49" count="0" type="stmt"/>
-        <line num="62" count="0" type="stmt"/>
-        <line num="69" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="70" count="0" type="stmt"/>
-        <line num="71" count="0" type="stmt"/>
-        <line num="72" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="73" count="0" type="stmt"/>
-        <line num="82" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="83" count="0" type="stmt"/>
+        <metrics statements="25" coveredstatements="25" conditionals="20" coveredconditionals="20" methods="5" coveredmethods="5"/>
+        <line num="9" count="5" type="cond" truecount="2" falsecount="0"/>
+        <line num="10" count="4" type="stmt"/>
+        <line num="11" count="4" type="stmt"/>
+        <line num="13" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="14" count="2" type="stmt"/>
+        <line num="15" count="2" type="stmt"/>
+        <line num="18" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="19" count="1" type="stmt"/>
+        <line num="23" count="3" type="stmt"/>
+        <line num="24" count="1" type="stmt"/>
+        <line num="33" count="3" type="stmt"/>
+        <line num="40" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="41" count="5" type="cond" truecount="2" falsecount="0"/>
+        <line num="43" count="4" type="stmt"/>
+        <line num="44" count="4" type="stmt"/>
+        <line num="47" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="49" count="3" type="stmt"/>
+        <line num="62" count="3" type="stmt"/>
+        <line num="69" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="70" count="2" type="stmt"/>
+        <line num="71" count="2" type="stmt"/>
+        <line num="72" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="73" count="2" type="stmt"/>
+        <line num="82" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="83" count="1" type="stmt"/>
       </file>
       <file name="taskService.ts" path="/home/runner/work/ReefKeeper/ReefKeeper/services/taskService.ts">
         <metrics statements="44" coveredstatements="44" conditionals="14" coveredconditionals="14" methods="12" coveredmethods="12"/>
