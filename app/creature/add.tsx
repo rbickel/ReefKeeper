@@ -52,6 +52,7 @@ export default function AddCreatureScreen() {
             </Text>
 
             <TextInput
+                testID="creature-name-input"
                 label="Name *"
                 value={name}
                 onChangeText={setName}
@@ -61,6 +62,7 @@ export default function AddCreatureScreen() {
             />
 
             <TextInput
+                testID="creature-species-input"
                 label="Species *"
                 value={species}
                 onChangeText={setSpecies}
@@ -85,6 +87,7 @@ export default function AddCreatureScreen() {
             />
 
             <TextInput
+                testID="creature-quantity-input"
                 label="Quantity"
                 value={quantity}
                 onChangeText={setQuantity}
@@ -94,6 +97,7 @@ export default function AddCreatureScreen() {
             />
 
             <TextInput
+                testID="creature-notes-input"
                 label="Notes"
                 value={notes}
                 onChangeText={setNotes}

@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { ScrollView, View, StyleSheet, Image } from 'react-native';
 import { Text, useTheme, Button, Card, Divider, IconButton, ActivityIndicator } from 'react-native-paper';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useFocusEffect } from '@react-navigation/native';
 import { Creature, CREATURE_TYPE_LABELS } from '../../models/Creature';
 import * as creatureService from '../../services/creatureService';
 import type { AppTheme } from '../../constants/Colors';
@@ -13,17 +14,24 @@ export default function CreatureDetailScreen() {
     const [creature, setCreature] = useState<Creature | null>(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        loadCreature();
-    }, [id]);
-
-    const loadCreature = async () => {
+    const loadCreature = useCallback(async () => {
         setLoading(true);
         const creatures = await creatureService.getCreatures();
         const found = creatures.find((c) => c.id === id);
         setCreature(found || null);
         setLoading(false);
-    };
+    }, [id]);
+
+    useEffect(() => {
+        loadCreature();
+    }, [loadCreature]);
+
+    // Refresh data when screen gains focus (e.g., after editing)
+    useFocusEffect(
+        useCallback(() => {
+            loadCreature();
+        }, [loadCreature])
+    );
 
     const handleArchive = async () => {
         if (!id) return;

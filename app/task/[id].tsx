@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { ScrollView, View, StyleSheet } from 'react-native';
 import { Text, useTheme, Card, Button, Divider, ActivityIndicator } from 'react-native-paper';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useFocusEffect } from '@react-navigation/native';
 import { MaintenanceTask, getTaskUrgency } from '../../models/Task';
 import * as taskService from '../../services/taskService';
 import type { AppTheme } from '../../constants/Colors';
@@ -20,17 +21,24 @@ export default function TaskDetailScreen() {
     const [task, setTask] = useState<MaintenanceTask | null>(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        loadTask();
-    }, [id]);
-
-    const loadTask = async () => {
+    const loadTask = useCallback(async () => {
         setLoading(true);
         const tasks = await taskService.getTasks();
         const found = tasks.find((t) => t.id === id);
         setTask(found || null);
         setLoading(false);
-    };
+    }, [id]);
+
+    useEffect(() => {
+        loadTask();
+    }, [loadTask]);
+
+    // Refresh data when screen gains focus
+    useFocusEffect(
+        useCallback(() => {
+            loadTask();
+        }, [loadTask])
+    );
 
     const handleComplete = async () => {
         if (!id) return;
