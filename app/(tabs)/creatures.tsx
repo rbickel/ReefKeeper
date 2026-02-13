@@ -96,6 +96,7 @@ export default function CreaturesScreen() {
 
             {/* FAB */}
             <FAB
+                testID="add-creature-fab"
                 icon="plus"
                 onPress={() => router.push('/creature/add')}
                 style={[styles.fab, { backgroundColor: theme.colors.primary }]}

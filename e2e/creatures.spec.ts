@@ -33,7 +33,7 @@ test.describe('Creature CRUD Operations', () => {
         await page.waitForURL('**/creatures');
 
         // Click Add button (FAB)
-        const addButton = page.getByRole('button', { name: /plus/i });
+        const addButton = page.getByTestId('add-creature-fab');
         await expect(addButton).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE });
         await addButton.click();
 
@@ -66,7 +66,7 @@ test.describe('Creature CRUD Operations', () => {
         await page.waitForURL('**/creatures');
 
         // Create a Coral
-        await page.getByRole('button', { name: /plus/i }).click();
+        await page.getByTestId('add-creature-fab').click();
         await page.waitForURL('**/creature/add');
         await page.getByLabel(/Name/i).fill('Hammer Coral');
         await page.getByLabel(/Species/i).fill('Euphyllia ancora');
@@ -76,7 +76,7 @@ test.describe('Creature CRUD Operations', () => {
         await expect(page.getByText('Hammer Coral')).toBeVisible({ timeout: TIMEOUTS.ELEMENT_INTERACTION });
 
         // Create an Invertebrate
-        await page.getByRole('button', { name: /plus/i }).click();
+        await page.getByTestId('add-creature-fab').click();
         await page.waitForURL('**/creature/add');
         await page.getByLabel(/Name/i).fill('Cleaner Shrimp');
         await page.getByLabel(/Species/i).fill('Lysmata amboinensis');
@@ -95,7 +95,7 @@ test.describe('Creature CRUD Operations', () => {
         await page.getByRole('tab', { name: /Creatures/i }).click();
         await page.waitForURL('**/creatures');
         
-        await page.getByRole('button', { name: /plus/i }).click();
+        await page.getByTestId('add-creature-fab').click();
         await page.waitForURL('**/creature/add');
         await page.getByLabel(/Name/i).fill('Tang Blue');
         await page.getByLabel(/Species/i).fill('Paracanthurus hepatus');
@@ -122,7 +122,7 @@ test.describe('Creature CRUD Operations', () => {
         await page.getByRole('tab', { name: /Creatures/i }).click();
         await page.waitForURL('**/creatures');
         
-        await page.getByRole('button', { name: /plus/i }).click();
+        await page.getByTestId('add-creature-fab').click();
         await page.waitForURL('**/creature/add');
         await page.getByLabel(/Name/i).fill('Original Name');
         await page.getByLabel(/Species/i).fill('Original Species');
@@ -159,7 +159,7 @@ test.describe('Creature CRUD Operations', () => {
         await page.getByRole('tab', { name: /Creatures/i }).click();
         await page.waitForURL('**/creatures');
         
-        await page.getByRole('button', { name: /plus/i }).click();
+        await page.getByTestId('add-creature-fab').click();
         await page.waitForURL('**/creature/add');
         await page.getByLabel(/Name/i).fill('To Be Archived');
         await page.getByLabel(/Species/i).fill('Test Species');
@@ -188,7 +188,7 @@ test.describe('Creature CRUD Operations', () => {
         await page.waitForURL('**/creatures');
         
         // Create fish
-        await page.getByRole('button', { name: /plus/i }).click();
+        await page.getByTestId('add-creature-fab').click();
         await page.waitForURL('**/creature/add');
         await page.getByLabel(/Name/i).fill('Goldfish');
         await page.getByLabel(/Species/i).fill('Carassius auratus');
@@ -196,7 +196,7 @@ test.describe('Creature CRUD Operations', () => {
         await page.waitForURL('**/creatures');
         
         // Create coral
-        await page.getByRole('button', { name: /plus/i }).click();
+        await page.getByTestId('add-creature-fab').click();
         await page.waitForURL('**/creature/add');
         await page.getByLabel(/Name/i).fill('Brain Coral');
         await page.getByLabel(/Species/i).fill('Diploria labyrinthiformis');
@@ -235,7 +235,7 @@ test.describe('Creature CRUD Operations', () => {
         await page.getByRole('tab', { name: /Creatures/i }).click();
         await page.waitForURL('**/creatures');
         
-        await page.getByRole('button', { name: /plus/i }).click();
+        await page.getByTestId('add-creature-fab').click();
         await page.waitForURL('**/creature/add');
 
         // Save button should be disabled without required fields

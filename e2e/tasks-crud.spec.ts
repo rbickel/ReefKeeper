@@ -76,7 +76,7 @@ test.describe('Task CRUD Operations', () => {
         await page.waitForURL('**/tasks');
 
         // Create task with weeks interval
-        await page.getByRole('button', { name: /plus/i }).click();
+        await page.getByTestId('add-task-fab').click();
         await page.waitForURL('**/task/add');
         await page.getByTestId('task-name-input').fill('Bi-weekly Filter Check');
         await page.getByLabel(/Repeat every/i).fill('2');
