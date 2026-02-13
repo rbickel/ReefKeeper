@@ -182,6 +182,9 @@ test.describe('Task CRUD Operations', () => {
         // Should navigate back to tasks list
         await page.waitForURL('**/tasks');
         
+        // Wait a moment for UI to update after deletion
+        await page.waitForTimeout(500);
+        
         // Task should not be visible
         await expect(page.getByText('Task To Delete')).not.toBeVisible();
     });
