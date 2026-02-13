@@ -4,6 +4,7 @@ module.exports = ({ config }) => {
   const AUTH0_CLIENT_ID = process.env.AUTH0_CLIENT_ID;
   // Android can use a separate client ID or fall back to the main one
   const AUTH0_CLIENT_ID_APK = process.env.AUTH0_CLIENT_ID_APK || AUTH0_CLIENT_ID;
+  const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY;
 
   // Validate required Auth0 configuration
   // At minimum, we need AUTH0_DOMAIN and at least one client ID
@@ -71,6 +72,7 @@ module.exports = ({ config }) => {
         auth0Domain: AUTH0_DOMAIN,
         auth0ClientId: AUTH0_CLIENT_ID,
         auth0ClientIdApk: AUTH0_CLIENT_ID_APK,
+        unsplashAccessKey: UNSPLASH_ACCESS_KEY,
       },
     },
   };

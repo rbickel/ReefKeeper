@@ -5,6 +5,7 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { CreatureType, CREATURE_TYPE_LABELS } from '../../../models/Creature';
 import * as creatureService from '../../../services/creatureService';
 import type { AppTheme } from '../../../constants/Colors';
+import ImagePicker from '../../../components/ImagePicker';
 
 export default function EditCreatureScreen() {
     const theme = useTheme<AppTheme>();
@@ -17,6 +18,7 @@ export default function EditCreatureScreen() {
     const [type, setType] = useState<CreatureType>('fish');
     const [quantity, setQuantity] = useState('1');
     const [notes, setNotes] = useState('');
+    const [photoUri, setPhotoUri] = useState<string | undefined>(undefined);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
 
@@ -32,6 +34,7 @@ export default function EditCreatureScreen() {
                 setType(creature.type);
                 setQuantity(creature.quantity.toString());
                 setNotes(creature.notes || '');
+                setPhotoUri(creature.photoUri);
             } else {
                 setNotFound(true);
             }
@@ -57,6 +60,7 @@ export default function EditCreatureScreen() {
                 type,
                 quantity: validQuantity,
                 notes: notes.trim(),
+                photoUri,
             });
             router.back();
         } catch (err) {
@@ -122,6 +126,12 @@ export default function EditCreatureScreen() {
                 mode="outlined"
                 style={styles.input}
                 placeholder="e.g. Amphiprion ocellaris"
+            />
+
+            <ImagePicker
+                value={photoUri}
+                onChange={setPhotoUri}
+                species={species}
             />
 
             <Text variant="labelLarge" style={[styles.label, { color: theme.colors.onSurface }]}>
