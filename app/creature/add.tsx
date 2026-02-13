@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 import { CreatureType, CREATURE_TYPE_LABELS } from '../../models/Creature';
 import * as creatureService from '../../services/creatureService';
 import type { AppTheme } from '../../constants/Colors';
+import ImagePicker from '../../components/ImagePicker';
 
 export default function AddCreatureScreen() {
     const theme = useTheme<AppTheme>();
@@ -14,6 +15,7 @@ export default function AddCreatureScreen() {
     const [type, setType] = useState<CreatureType>('fish');
     const [quantity, setQuantity] = useState('1');
     const [notes, setNotes] = useState('');
+    const [photoUri, setPhotoUri] = useState<string | undefined>(undefined);
     const [saving, setSaving] = useState(false);
 
     const canSave = name.trim().length > 0 && species.trim().length > 0;
@@ -31,7 +33,7 @@ export default function AddCreatureScreen() {
                 dateAcquired: new Date().toISOString(),
                 healthLog: [],
                 archived: false,
-                photoUri: undefined,
+                photoUri,
             });
             router.back();
         } catch (error) {
@@ -67,6 +69,12 @@ export default function AddCreatureScreen() {
                 mode="outlined"
                 style={styles.input}
                 placeholder="e.g. Amphiprion ocellaris"
+            />
+
+            <ImagePicker
+                value={photoUri}
+                onChange={setPhotoUri}
+                species={species}
             />
 
             <Text variant="labelLarge" style={[styles.label, { color: theme.colors.onSurface }]}>
