@@ -50,9 +50,8 @@ test.describe('Task CRUD Operations', () => {
         await page.getByTestId('task-name-input').fill('Weekly Water Change');
         await page.getByPlaceholder(/What does this task involve/i).fill('Change 20% of tank water');
         
-        // Verify recurring is on by default - use aria-checked since Switch isn't a standard checkbox
-        const recurringSwitch = page.getByTestId('task-recurring-switch');
-        await expect(recurringSwitch).toHaveAttribute('aria-checked', 'true');
+        // Verify recurring is on by default - check that interval input is visible
+        await expect(page.getByTestId('task-interval-input')).toBeVisible();
         
         // Set interval to 7 days
         const intervalInput = page.locator('input[inputmode="numeric"]').first();
@@ -85,23 +84,21 @@ test.describe('Task CRUD Operations', () => {
         await intervalInput1.fill('2');
         await page.getByRole('button', { name: /Weeks/i }).click();
         await page.getByTestId('save-task-button').click();
-        await page.waitForURL('/');
+        await page.waitForURL('**/tasks');
 
         // Create task with months interval
-        await page.getByRole('button', { name: /Add Task/i }).click();
+        await page.getByTestId('add-task-fab').click();
         await page.waitForURL('**/task/add');
         await page.getByTestId('task-name-input').fill('Monthly Deep Clean');
         const intervalInput2 = page.locator('input[inputmode="numeric"]').first();
         await intervalInput2.fill('1');
         await page.getByRole('button', { name: /Months/i }).click();
         await page.getByTestId('save-task-button').click();
-        await page.waitForURL('/');
-
-        // Verify both tasks in the list
-        await page.getByRole('tab', { name: /Tasks/i }).click();
         await page.waitForURL('**/tasks');
-        await expect(page.getByText('Bi-weekly Filter Check')).toBeVisible({ timeout: TIMEOUTS.ELEMENT_INTERACTION });
-        await expect(page.getByText('Monthly Deep Clean')).toBeVisible();
+
+        // Verify both tasks in the list (use .first() to avoid strict mode violations)
+        await expect(page.getByText('Bi-weekly Filter Check').first()).toBeVisible({ timeout: TIMEOUTS.ELEMENT_INTERACTION });
+        await expect(page.getByText('Monthly Deep Clean').first()).toBeVisible();
     });
 
     test('should create a non-recurring task', async ({ page }) => {
@@ -118,10 +115,11 @@ test.describe('Task CRUD Operations', () => {
 
         // Toggle Repeating Task OFF
         await page.getByTestId('task-recurring-switch').click();
-        const recurringSwitch = page.getByTestId('task-recurring-switch');
-        await expect(recurringSwitch).toHaveAttribute('aria-checked', 'false');
+        
+        // Interval fields should be hidden when recurring is off
+        await expect(page.getByTestId('task-interval-input')).not.toBeVisible();
 
-        // Interval fields should be hidden - just verify save works
+        // Save should work
         await page.getByTestId('save-task-button').click();
 
         // Navigate to Tasks tab
@@ -148,17 +146,17 @@ test.describe('Task CRUD Operations', () => {
         await page.getByRole('tab', { name: /Tasks/i }).click();
         await page.waitForURL('**/tasks');
 
-        // Click on the task
-        await page.getByText('Test Task Details').click();
+        // Click on the task (use .first() to handle potential duplicate elements)
+        await page.getByText('Test Task Details').first().click();
         
         // Verify we're on the detail page
         await expect(page).toHaveURL(/\/task\/[^/]+$/);
         
-        // Verify details are displayed
-        await expect(page.getByText('Test Task Details')).toBeVisible();
-        await expect(page.getByText('This is a test description')).toBeVisible();
-        await expect(page.getByText(/Every 5 days/i)).toBeVisible();
-        await expect(page.getByText(/Times completed/i)).toBeVisible();
+        // Verify details are displayed (use .last() to get visible element - React Native Web renders hidden duplicates)
+        await expect(page.getByText('Test Task Details').last()).toBeVisible();
+        await expect(page.getByText('This is a test description').last()).toBeVisible();
+        await expect(page.getByText(/Every 5 days/i).last()).toBeVisible();
+        await expect(page.getByText(/Times completed/i).last()).toBeVisible();
     });
 
     test('should delete a task', async ({ page }) => {
@@ -271,8 +269,8 @@ test.describe('Task Lifecycle and States', () => {
         await page.waitForURL('**/task/add');
         await page.getByTestId('task-name-input').fill('Recurring Task');
         
-        // Recurring is on by default - use aria-checked since Switch isn't a standard checkbox
-        await expect(page.getByTestId('task-recurring-switch')).toHaveAttribute('aria-checked', 'true');
+        // Recurring is on by default - verify interval input is visible
+        await expect(page.getByTestId('task-interval-input')).toBeVisible();
         
         await page.getByTestId('save-task-button').click();
 

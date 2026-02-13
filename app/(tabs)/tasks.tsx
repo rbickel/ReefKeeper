@@ -1,7 +1,8 @@
 import { View, SectionList, StyleSheet } from 'react-native';
 import { FAB, Text, useTheme, ActivityIndicator, Snackbar } from 'react-native-paper';
 import { useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { useTasks } from '../../hooks/useTasks';
 import { getTaskUrgency, MaintenanceTask } from '../../models/Task';
 import { TaskCard } from '../../components/TaskCard';
@@ -18,9 +19,16 @@ const URGENCY_LABELS: Record<string, string> = {
 export default function TasksScreen() {
     const theme = useTheme<AppTheme>();
     const router = useRouter();
-    const { tasks, loading, complete } = useTasks();
+    const { tasks, loading, complete, refresh } = useTasks();
     const [completingIds, setCompletingIds] = useState<Set<string>>(new Set());
     const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
+
+    // Refresh data when screen gains focus (e.g., after adding a task)
+    useFocusEffect(
+        useCallback(() => {
+            refresh();
+        }, [refresh])
+    );
 
     const handleComplete = async (id: string, title?: string) => {
         setCompletingIds((prev) => new Set(prev).add(id));
@@ -53,6 +61,14 @@ export default function TasksScreen() {
             if (!grouped[category]) grouped[category] = [];
             grouped[category].push(task);
         }
+
+        // Sort tasks within each category by newest first
+        for (const category of Object.keys(grouped)) {
+            grouped[category].sort((a, b) => 
+                new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
+        }
+
         return URGENCY_ORDER
             .filter((u) => grouped[u]?.length)
             .map((u) => ({

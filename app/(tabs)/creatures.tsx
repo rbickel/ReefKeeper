@@ -1,7 +1,8 @@
 import { View, FlatList, StyleSheet } from 'react-native';
 import { FAB, Text, Searchbar, Chip, useTheme, ActivityIndicator } from 'react-native-paper';
 import { useRouter } from 'expo-router';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { useCreatures } from '../../hooks/useCreatures';
 import { CreatureType, CREATURE_TYPE_LABELS } from '../../models/Creature';
 import { CreatureCard } from '../../components/CreatureCard';
@@ -12,9 +13,16 @@ const TYPES: (CreatureType | 'all')[] = ['all', 'fish', 'coral', 'invertebrate',
 export default function CreaturesScreen() {
     const theme = useTheme<AppTheme>();
     const router = useRouter();
-    const { creatures, loading } = useCreatures();
+    const { creatures, loading, refresh } = useCreatures();
     const [search, setSearch] = useState('');
     const [selectedType, setSelectedType] = useState<CreatureType | 'all'>('all');
+
+    // Refresh data when screen gains focus (e.g., after adding a creature)
+    useFocusEffect(
+        useCallback(() => {
+            refresh();
+        }, [refresh])
+    );
 
     const filtered = useMemo(() => {
         let result = creatures;
@@ -29,7 +37,10 @@ export default function CreaturesScreen() {
                     c.species.toLowerCase().includes(q)
             );
         }
-        return result;
+        // Sort by newest first so recently added creatures appear at top
+        return result.sort((a, b) => 
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
     }, [creatures, search, selectedType]);
 
     if (loading) {
