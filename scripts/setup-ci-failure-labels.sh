@@ -47,7 +47,8 @@ else
 fi
 
 # Check if bug label exists (it usually does by default)
-if ! gh label list | grep -q "^bug[[:space:]]"; then
+# gh label list output format: "label-name\tdescription\tcolor"
+if ! gh label list | grep -q "^bug"$'\t'; then
     if gh label create "bug" \
         --description "Something isn't working" \
         --color "d73a4a" 2>/dev/null; then

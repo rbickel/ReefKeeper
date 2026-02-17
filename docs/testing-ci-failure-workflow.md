@@ -21,11 +21,14 @@ This method creates a temporary failing test that you can easily revert.
    cat > __tests__/test-ci-failure.test.ts << 'EOF'
    describe('CI Failure Test', () => {
      it('should fail to test CI failure workflow', () => {
-       expect(true).toBe(false); // Intentional failure
+       // Intentional failure to trigger CI failure workflow
+       expect(true).toBe(false);
      });
    });
    EOF
    ```
+
+   **Note**: This uses Jest's global `describe`, `it`, and `expect` which are automatically available in the test environment. No imports needed.
 
 2. **Commit and push:**
    ```bash

@@ -141,7 +141,7 @@ jobs:
             const failedJobsCount = '${{ steps.workflow-info.outputs.failed_jobs_count }}';
 
             // Get failure logs from step outputs (avoiding template interpolation for multi-line content)
-            const failureLogs = process.env.FAILURE_LOGS || 'No detailed logs available';
+            const failureLogs = process.env.FAILURE_LOGS || 'Failure logs could not be retrieved. Please check the workflow run link above.';
 
             const title = `CI Failure: ${workflowName} (Run #${runNumber})`;
 
@@ -223,7 +223,7 @@ jobs:
             const runNumber = '${{ steps.workflow-info.outputs.run_number }}';
 
             // Get failure logs from environment variable (avoiding template interpolation for multi-line content)
-            const failureLogs = process.env.FAILURE_LOGS || 'No detailed logs available';
+            const failureLogs = process.env.FAILURE_LOGS || 'Failure logs could not be retrieved. Please check the workflow run link above.';
 
             const comment = [
               '## Additional Failure Detected',
