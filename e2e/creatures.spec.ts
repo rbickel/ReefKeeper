@@ -46,9 +46,8 @@ test.describe('Creature CRUD Operations', () => {
         // Fish type is selected by default - just verify the button is visible
         await expect(page.getByRole('button', { name: /🐠 Fish/i })).toBeVisible();
         
-        // Fill quantity - find the input by its label container
-        const quantityInput = page.locator('input[inputmode="numeric"]').first();
-        await quantityInput.fill('2');
+        // Fill quantity using the dedicated test ID for robustness
+        await page.getByTestId('creature-quantity-input').fill('2');
         await page.getByPlaceholder(/additional notes/i).fill('Beautiful orange and white coloring');
 
         // Save the creature
@@ -101,8 +100,7 @@ test.describe('Creature CRUD Operations', () => {
         await page.waitForURL('**/creature/add');
         await page.getByPlaceholder(/e\.g\. Nemo/i).fill('Tang Blue');
         await page.getByPlaceholder(/e\.g\. Amphiprion/i).fill('Paracanthurus hepatus');
-        const quantityInput = page.locator('input[inputmode="numeric"]').first();
-        await quantityInput.fill('1');
+        await page.getByTestId('creature-quantity-input').fill('1');
         await page.getByPlaceholder(/additional notes/i).fill('Needs lots of swimming space');
         await page.getByRole('button', { name: /Save Creature/i }).click();
         await page.waitForURL('**/creatures');
@@ -142,8 +140,7 @@ test.describe('Creature CRUD Operations', () => {
         // Edit the creature
         await page.getByPlaceholder(/e\.g\. Nemo/i).fill('Updated Name');
         await page.getByPlaceholder(/e\.g\. Amphiprion/i).fill('Updated Species');
-        const quantityInput = page.locator('input[inputmode="numeric"]').first();
-        await quantityInput.fill('3');
+        await page.getByTestId('creature-quantity-input').fill('3');
         await page.getByRole('button', { name: /🪸 Coral/i }).click();
         
         // Save changes

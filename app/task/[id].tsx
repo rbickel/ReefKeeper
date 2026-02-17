@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { ScrollView, View, StyleSheet } from 'react-native';
 import { Text, useTheme, Card, Button, Divider, ActivityIndicator } from 'react-native-paper';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -29,11 +29,7 @@ export default function TaskDetailScreen() {
         setLoading(false);
     }, [id]);
 
-    useEffect(() => {
-        loadTask();
-    }, [loadTask]);
-
-    // Refresh data when screen gains focus
+    // Refresh data when screen gains focus (handles both initial mount and subsequent focus)
     useFocusEffect(
         useCallback(() => {
             loadTask();

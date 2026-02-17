@@ -54,7 +54,7 @@ test.describe('Task CRUD Operations', () => {
         await expect(page.getByTestId('task-interval-input')).toBeVisible();
         
         // Set interval to 7 days
-        const intervalInput = page.locator('input[inputmode="numeric"]').first();
+        const intervalInput = page.getByTestId('task-interval-input');
         await intervalInput.fill('7');
         await page.getByRole('button', { name: /Days/i }).click();
         
@@ -80,7 +80,7 @@ test.describe('Task CRUD Operations', () => {
         await page.getByTestId('add-task-fab').click();
         await page.waitForURL('**/task/add');
         await page.getByTestId('task-name-input').fill('Bi-weekly Filter Check');
-        const intervalInput1 = page.locator('input[inputmode="numeric"]').first();
+        const intervalInput1 = page.getByTestId('task-interval-input');
         await intervalInput1.fill('2');
         await page.getByRole('button', { name: /Weeks/i }).click();
         await page.getByTestId('save-task-button').click();
@@ -90,7 +90,7 @@ test.describe('Task CRUD Operations', () => {
         await page.getByTestId('add-task-fab').click();
         await page.waitForURL('**/task/add');
         await page.getByTestId('task-name-input').fill('Monthly Deep Clean');
-        const intervalInput2 = page.locator('input[inputmode="numeric"]').first();
+        const intervalInput2 = page.getByTestId('task-interval-input');
         await intervalInput2.fill('1');
         await page.getByRole('button', { name: /Months/i }).click();
         await page.getByTestId('save-task-button').click();
@@ -136,7 +136,7 @@ test.describe('Task CRUD Operations', () => {
         await page.waitForURL('**/task/add');
         await page.getByTestId('task-name-input').fill('Test Task Details');
         await page.getByPlaceholder(/What does this task involve/i).fill('This is a test description');
-        const intervalInput = page.locator('input[inputmode="numeric"]').first();
+        const intervalInput = page.getByTestId('task-interval-input');
         await intervalInput.fill('5');
         await page.getByRole('button', { name: /Days/i }).click();
         await page.getByTestId('save-task-button').click();

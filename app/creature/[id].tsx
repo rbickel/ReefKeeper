@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { ScrollView, View, StyleSheet, Image } from 'react-native';
 import { Text, useTheme, Button, Card, Divider, IconButton, ActivityIndicator } from 'react-native-paper';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -22,11 +22,7 @@ export default function CreatureDetailScreen() {
         setLoading(false);
     }, [id]);
 
-    useEffect(() => {
-        loadCreature();
-    }, [loadCreature]);
-
-    // Refresh data when screen gains focus (e.g., after editing)
+    // Refresh data when screen gains focus (handles both initial mount and subsequent focus)
     useFocusEffect(
         useCallback(() => {
             loadCreature();
