@@ -108,12 +108,13 @@ This script uses the GitHub CLI (`gh`) to create the required labels. Make sure 
 
 ### Copilot Assignment
 
-The workflow assigns issues to the `copilot` user. Ensure this user has appropriate access to your repository.
+The workflow assigns issues to the `copilot` user. If the user doesn't exist or doesn't have access to the repository, the workflow will create the issue without an assignee and log a warning.
 
 ## Testing
 
-To test this workflow:
+For detailed testing instructions, see [testing-ci-failure-workflow.md](testing-ci-failure-workflow.md).
 
+Quick test:
 1. Create a failing test or intentionally break the build
 2. Push the changes to trigger CI
 3. Wait for the CI workflow to fail
