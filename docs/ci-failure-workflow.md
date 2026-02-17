@@ -88,9 +88,23 @@ The workflow requires the following permissions:
 ### Labels
 
 The workflow uses the following labels (ensure they exist in your repository):
-- `ci-failure` - Indicates this is an automated CI failure issue
-- `auto-created` - Indicates this issue was automatically created
-- `bug` - Indicates this is a bug that needs fixing
+- `ci-failure` - Indicates this is an automated CI failure issue (red, #d73a4a)
+- `auto-created` - Indicates this issue was automatically created (blue, #0366d6)
+- `bug` - Indicates this is a bug that needs fixing (red, #d73a4a)
+
+**Quick Setup**: Run the setup script to automatically create these labels:
+```bash
+./scripts/setup-ci-failure-labels.sh
+```
+
+This script uses the GitHub CLI (`gh`) to create the required labels. Make sure you have:
+1. GitHub CLI installed ([installation instructions](https://cli.github.com/))
+2. Authenticated with `gh auth login`
+
+**Alternative - Manual Setup**: You can also create these labels manually:
+1. Go to your repository on GitHub
+2. Navigate to **Issues** → **Labels**
+3. Click **New label** and create each label with the specified name and color
 
 ### Copilot Assignment
 
