@@ -157,7 +157,7 @@ jobs:
               '',
               '### Links',
               `- [View Workflow Run](${workflowUrl})`,
-              `- [View Commit](https://github.com/${{ github.repository }}/commit/${headShaFull})`,
+              `- [View Commit](https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${headShaFull})`,
               '',
               '### Failure Details',
               '',
