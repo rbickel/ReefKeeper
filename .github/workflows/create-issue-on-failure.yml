@@ -85,6 +85,7 @@ jobs:
             core.setOutput('workflow_name', workflowRun.data.name);
             core.setOutput('workflow_url', workflowRun.data.html_url);
             core.setOutput('head_branch', workflowRun.data.head_branch);
+            core.setOutput('head_sha_full', workflowRun.data.head_sha);
             core.setOutput(
               'head_sha',
               workflowRun.data.head_sha.substring(0, 7)
@@ -134,47 +135,51 @@ jobs:
             const workflowUrl = '${{ steps.workflow-info.outputs.workflow_url }}';
             const headBranch = '${{ steps.workflow-info.outputs.head_branch }}';
             const headSha = '${{ steps.workflow-info.outputs.head_sha }}';
+            const headShaFull = '${{ steps.workflow-info.outputs.head_sha_full }}';
             const actor = '${{ steps.workflow-info.outputs.actor }}';
             const runNumber = '${{ steps.workflow-info.outputs.run_number }}';
-            const failureLogs = `${{ steps.workflow-info.outputs.failure_logs }}`;
             const failedJobsCount = '${{ steps.workflow-info.outputs.failed_jobs_count }}';
+
+            // Get failure logs from step outputs (avoiding template interpolation for multi-line content)
+            const failureLogs = process.env.FAILURE_LOGS || 'No detailed logs available';
 
             const title = `CI Failure: ${workflowName} (Run #${runNumber})`;
 
-            const body = `## CI Pipeline Failure Report
-
-            Workflow: ${workflowName}
-            Run Number: #${runNumber}
-            Branch: \`${headBranch}\`
-            Commit: \`${headSha}\`
-            Triggered by: @${actor}
-            Failed Jobs: ${failedJobsCount}
-
-            ### Links
-            - [View Workflow Run](${workflowUrl})
-            - [View Commit](https://github.com/${{ github.repository }}/commit/${{ steps.workflow-info.outputs.head_sha }})
-
-            ### Failure Details
-
-            ${failureLogs}
-
-            ---
-
-            ### Action Required
-
-            @copilot Please analyze this CI failure and provide a fix.
-
-            Steps to fix:
-            1. Review the failure logs above
-            2. Identify the root cause of the failure
-            3. Make the necessary code changes to fix the issue
-            4. Ensure all tests pass
-
-            ---
-
-            This issue was automatically created by the CI failure detection workflow.
-            If this is a flaky test or infrastructure issue, please close this issue and document the problem.
-            `;
+            const body = [
+              '## CI Pipeline Failure Report',
+              '',
+              `Workflow: ${workflowName}`,
+              `Run Number: #${runNumber}`,
+              `Branch: \`${headBranch}\``,
+              `Commit: \`${headSha}\``,
+              `Triggered by: ${actor}`,
+              `Failed Jobs: ${failedJobsCount}`,
+              '',
+              '### Links',
+              `- [View Workflow Run](${workflowUrl})`,
+              `- [View Commit](https://github.com/${{ github.repository }}/commit/${headShaFull})`,
+              '',
+              '### Failure Details',
+              '',
+              failureLogs,
+              '',
+              '---',
+              '',
+              '### Action Required',
+              '',
+              '@copilot Please analyze this CI failure and provide a fix.',
+              '',
+              'Steps to fix:',
+              '1. Review the failure logs above',
+              '2. Identify the root cause of the failure',
+              '3. Make the necessary code changes to fix the issue',
+              '4. Ensure all tests pass',
+              '',
+              '---',
+              '',
+              'This issue was automatically created by the CI failure detection workflow.',
+              'If this is a flaky test or infrastructure issue, please close this issue and document the problem.'
+            ].join('\n');
 
             const issue = await github.rest.issues.create({
               owner: context.repo.owner,
@@ -187,6 +192,8 @@ jobs:
 
             console.log(`Created issue #${issue.data.number}: ${title}`);
             core.setOutput('issue_number', issue.data.number);
+        env:
+          FAILURE_LOGS: ${{ steps.workflow-info.outputs.failure_logs }}
 
       - name: Update existing issue
         if: steps.check-issue.outputs.issue_exists == 'true'
@@ -197,22 +204,25 @@ jobs:
             const workflowUrl = '${{ steps.workflow-info.outputs.workflow_url }}';
             const headSha = '${{ steps.workflow-info.outputs.head_sha }}';
             const runNumber = '${{ steps.workflow-info.outputs.run_number }}';
-            const failureLogs = `${{ steps.workflow-info.outputs.failure_logs }}`;
 
-            const comment = `## Additional Failure Detected
+            // Get failure logs from environment variable (avoiding template interpolation for multi-line content)
+            const failureLogs = process.env.FAILURE_LOGS || 'No detailed logs available';
 
-            Run Number: #${runNumber}
-            Commit: \`${headSha}\`
-            Workflow Run: [View Details](${workflowUrl})
-
-            ### Failure Details
-
-            ${failureLogs}
-
-            ---
-
-            This workflow is still failing. Please review the latest failure information above.
-            `;
+            const comment = [
+              '## Additional Failure Detected',
+              '',
+              `Run Number: #${runNumber}`,
+              `Commit: \`${headSha}\``,
+              `Workflow Run: [View Details](${workflowUrl})`,
+              '',
+              '### Failure Details',
+              '',
+              failureLogs,
+              '',
+              '---',
+              '',
+              'This workflow is still failing. Please review the latest failure information above.'
+            ].join('\n');
 
             await github.rest.issues.createComment({
               owner: context.repo.owner,
@@ -224,3 +234,5 @@ jobs:
             console.log(
               `Updated existing issue #${issueNumber} with new failure information`
             );
+        env:
+          FAILURE_LOGS: ${{ steps.workflow-info.outputs.failure_logs }}
