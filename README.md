@@ -231,6 +231,20 @@ Runs on **merge to `main`** and **version tags** (`v*`). Calls Shared CI first.
 | **android-release-internal** | Upload to Google Play internal track (placeholder) |
 | **android-release-production** | Promote to production — **requires manual approval** via GitHub environment |
 
+### 4. CI Failure Issue Creation (`.github/workflows/create-issue-on-failure.yml`)
+
+Automatically creates GitHub issues when CI pipelines fail. **Triggered on workflow completion**.
+
+| Feature | Description |
+|---------|-------------|
+| **Auto-detection** | Monitors Shared CI, Web, and Android workflows for failures |
+| **Detailed reporting** | Extracts failed job details, error logs, and traces |
+| **Copilot assignment** | Assigns issues to @copilot for automatic fixing |
+| **Duplicate prevention** | Checks for existing open issues before creating new ones |
+| **Update tracking** | Adds comments to existing issues for repeated failures |
+
+See [docs/ci-failure-workflow.md](docs/ci-failure-workflow.md) for detailed documentation.
+
 ---
 
 ## License
