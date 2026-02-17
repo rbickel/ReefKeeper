@@ -181,17 +181,34 @@ jobs:
               'If this is a flaky test or infrastructure issue, please close this issue and document the problem.'
             ].join('\n');
 
-            const issue = await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: title,
-              body: body,
-              labels: ['ci-failure', 'auto-created', 'bug'],
-              assignees: ['copilot']
-            });
-
-            console.log(`Created issue #${issue.data.number}: ${title}`);
-            core.setOutput('issue_number', issue.data.number);
+            // Try to create the issue with copilot assignee, fall back to no assignee if it fails
+            try {
+              const issue = await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: ['ci-failure', 'auto-created', 'bug'],
+                assignees: ['copilot']
+              });
+              console.log(`Created issue #${issue.data.number}: ${title}`);
+              core.setOutput('issue_number', issue.data.number);
+            } catch (error) {
+              if (error.message.includes('assignee')) {
+                console.log('Warning: Could not assign to copilot user. Creating issue without assignee.');
+                const issue = await github.rest.issues.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: title,
+                  body: body,
+                  labels: ['ci-failure', 'auto-created', 'bug']
+                });
+                console.log(`Created issue #${issue.data.number}: ${title}`);
+                core.setOutput('issue_number', issue.data.number);
+              } else {
+                throw error;
+              }
+            }
         env:
           FAILURE_LOGS: ${{ steps.workflow-info.outputs.failure_logs }}
 

@@ -47,7 +47,7 @@ else
 fi
 
 # Check if bug label exists (it usually does by default)
-if ! gh label list | grep -q "^bug"; then
+if ! gh label list | grep -qw "^bug"; then
     if gh label create "bug" \
         --description "Something isn't working" \
         --color "d73a4a" 2>/dev/null; then
