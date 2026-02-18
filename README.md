@@ -58,15 +58,18 @@ npm install
 
 ### Environment Variables
 
+**IMPORTANT:** Create a `.env` file before running the app, especially for Android development. Without this file, authentication will fail with "Unknown Host unconfigured.auth0.com".
+
 Copy the example env file and fill in your Auth0 credentials:
 
 ```bash
 cp .env.example .env
+# Edit .env with your actual Auth0 credentials
 ```
 
 | Variable | Description |
 |----------|-------------|
-| `AUTH0_DOMAIN` | Your Auth0 tenant domain |
+| `AUTH0_DOMAIN` | Your Auth0 tenant domain (e.g., `yourapp.eu.auth0.com`) |
 | `AUTH0_CLIENT_ID` | Auth0 application client ID (for web/iOS) |
 | `AUTH0_CLIENT_ID_APK` | Auth0 application client ID for Android (optional, defaults to AUTH0_CLIENT_ID) |
 | `AUTH0_CLIENT_SECRET` | Auth0 application client secret |
