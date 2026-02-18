@@ -16,22 +16,32 @@ By default, React Native and Expo debug builds load JavaScript from a Metro deve
 - Java 17
 - Android SDK (via Android Studio)
 - All dependencies installed: `npm install`
+- **A `.env` file with Auth0 credentials** (copy from `.env.example` and fill in your values)
 
 ### Build Steps
 
-1. **Generate the native Android project:**
+1. **Ensure .env file exists:**
+   ```bash
+   # If you haven't already, create a .env file with your Auth0 credentials
+   cp .env.example .env
+   # Edit .env with your actual Auth0 domain and client IDs
+   ```
+   
+   **Important:** Without a properly configured `.env` file, the build will succeed but authentication will fail with "Unknown Host unconfigured.auth0.com".
+
+2. **Generate the native Android project:**
    ```bash
    npx expo prebuild --platform android --clean
    ```
-   This creates the `android/` directory with native Android project files.
+   This creates the `android/` directory with native Android project files and embeds your Auth0 configuration.
 
-2. **Build the debug APK:**
+3. **Build the debug APK:**
    ```bash
    cd android
    ./gradlew assembleDebug --no-daemon
    ```
 
-3. **Locate the APK:**
+4. **Locate the APK:**
    ```
    android/app/build/outputs/apk/debug/app-debug.apk
    ```
@@ -104,6 +114,16 @@ The GitHub Actions workflow (`.github/workflows/android.yml`) automatically:
 The bundleInDebug plugin ensures that CI-built APKs work correctly when downloaded and tested locally.
 
 ## Troubleshooting
+
+### "Unknown Host unconfigured.auth0.com" error
+
+If you see this error when trying to log in:
+1. Ensure you have created a `.env` file in the project root with valid Auth0 credentials
+2. Delete the android folder: `rm -rf android`
+3. Regenerate with prebuild: `npx expo prebuild --platform android --clean`
+4. Rebuild: `cd android && ./gradlew assembleDebug`
+
+The error occurs when the `.env` file is missing or incomplete during the prebuild step. The Auth0 configuration is embedded during prebuild, so you must have a valid `.env` file before running `npx expo prebuild`.
 
 ### APK still shows Metro error
 

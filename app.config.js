@@ -1,3 +1,6 @@
+// Load environment variables from .env file
+require('dotenv').config();
+
 module.exports = ({ config }) => {
   // Load environment variables - these should be set in .env or CI/CD secrets
   const AUTH0_DOMAIN = process.env.AUTH0_DOMAIN;
