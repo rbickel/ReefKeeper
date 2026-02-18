@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet, Platform } from 'react-native';
 import { Surface, Text, IconButton, Menu, Avatar, useTheme } from 'react-native-paper';
 import { useAuth0 } from 'react-native-auth0';
 import type { AppTheme } from '../constants/Colors';
@@ -15,7 +15,10 @@ export const Header = () => {
     const handleLogout = async () => {
         closeMenu();
         try {
-            await clearSession();
+            await clearSession(
+                {},
+                Platform.OS === 'android' ? { customScheme: 'reef-keeper' } : undefined
+            );
         } catch (e) {
             console.error('Logout failed', e);
         }

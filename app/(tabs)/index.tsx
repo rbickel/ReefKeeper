@@ -54,9 +54,13 @@ export default function DashboardScreen() {
             const redirectUrl = Platform.OS === 'web' && typeof window !== 'undefined'
                 ? window.location.origin
                 : undefined;
-            await authorize({
-                ...(redirectUrl ? { redirectUrl } : {}),
-            });
+            await authorize(
+                {
+                    scope: 'openid profile email',
+                    ...(redirectUrl ? { redirectUrl } : {}),
+                },
+                Platform.OS === 'android' ? { customScheme: 'reef-keeper' } : undefined
+            );
         } catch (e) {
             console.error('Login failed', e);
         }
