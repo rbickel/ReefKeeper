@@ -2,6 +2,12 @@
 
 ## Learnings
 
+### 2026-04-02: Phase 2+3 UI complete — tests needed (cross-agent update from Scribe)
+- **Phase 2 (Tank Management UI) is implemented.** New screens: `app/tank/add.tsx`, `app/tank/[id].tsx`, `app/tank/edit/[id].tsx`. New component: `components/TankSelector.tsx`. Modified: tab layout, dashboard, creatures, tasks, settings — all scoped to active tank.
+- **Phase 3 (Water Parameters UI) is implemented.** New screens: `app/(tabs)/parameters.tsx`, `app/waterlog/add.tsx`, `app/waterlog/[id].tsx`, `app/waterlog/history.tsx`. New components: `components/WaterSummaryCard.tsx`, `components/ParameterStatusBadge.tsx`, `components/AlertBanner.tsx`. Dashboard now shows water summary + alerts.
+- **Key UI decisions to test against:** TankSelector uses Modal/Portal (react-native-paper). Volume inputs are unit-aware (convert on save/load). Delete tank blocked when only one. Custom bar visualization (no chart lib). AlertBanner uses fixed color tints. Parameters tab between Creatures and Tasks.
+- **248 tests currently passing.** New UI screens have no test coverage yet.
+
 ### 2026-04-02: Metric-first unit conversion — test suite update
 - **Updated 6 existing test files** for metric-first defaults:
   - `__tests__/models/Tank.test.ts` — `volumeGallons`→`volumeLiters`, `totalSystemGallons`→`totalSystemLiters`, values converted (75gal→284L, 40→151, 20→76, 10→38, 50→189, 100→378, 55→208)

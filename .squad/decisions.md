@@ -73,6 +73,35 @@ Default to metric units (liters, Celsius) throughout the app and documentation. 
 2. getParameterStatus boundary tests assert exact critical boundary values return 'warning' (strict inequality < / >).
 3. getTasksByTank tests verify global tasks (scope: 'global') always included regardless of tankId filter.
 
+### 2026-04-02T00:00:00Z: Metric-First Test Coverage Complete
+
+**By:** Basher (Tester)
+**Status:** Implemented
+
+All tests updated for metric-first defaults. 6 existing test files updated (volumeGallons→volumeLiters, °F→°C throughout), 2 new test files created (UnitPreference model + unitPreferenceService). 123 tests passing. migrationService tests needed `getTanks.mockResolvedValue([])` for production idempotency check. Pre-existing Task.test.ts timing failure in `getTaskUrgency` unrelated.
+
+### 2026-04-02T00:03:00Z: Phase 2 Tank UI Decisions
+
+**By:** Linus (Frontend Dev)
+**Status:** Implemented
+
+1. TankSelector uses react-native-paper Modal + Portal — no external bottom-sheet libraries. Chip triggers the modal, List.Item for each tank.
+2. Tab layout wraps Tabs in a View. TankSelector sits above `<Tabs>`, auth-gated.
+3. Tank type picker uses Menu (not SegmentedButtons) — 12 types overflow SegmentedButtons. Binary choices still use SegmentedButtons.
+4. Volume inputs are display-unit-aware — forms convert to metric on save via `convertVolumeForStorage()`, convert for display on load.
+5. Delete tank blocked when only one tank — disabled button + service layer enforcement.
+
+### 2026-04-02T00:03:00Z: Phase 3 Water Parameter UI Decisions
+
+**By:** Linus (Frontend Dev)
+**Status:** Implemented
+
+1. No chart library — custom bar visualization with colored View bars and reef-range overlay. Avoids victory-native/react-native-svg dependency.
+2. Parameters tab placed between Creatures and Tasks (4 tabs: Dashboard, Creatures, Parameters, Tasks). Uses "flask" icon.
+3. Water log entry defaults to current date/time. No date picker for v1.
+4. AlertBanner uses fixed color tints (#fde8e8 critical, #fef9e7 warning, #e6f9f0 ok) — not theme colors.
+5. Shared file conflict avoidance — only added water-related content to layouts and dashboard, did not touch Phase 2 sections.
+
 ## Governance
 
 - All meaningful changes require team consensus
