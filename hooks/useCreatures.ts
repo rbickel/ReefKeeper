@@ -22,22 +22,31 @@ export function useCreatures(tankId?: string) {
     }, [tankId]);
 
     const initializeDefaults = useCallback(async () => {
+        if (!tankId) return; // Wait for tank to be ready before creating defaults
         const initialized = await creatureService.isInitialized();
         if (!initialized) {
             const now = new Date().toISOString();
             for (const template of DEFAULT_CREATURES) {
-                await creatureService.addCreature({ ...template, dateAcquired: now });
+                await creatureService.addCreature({ ...template, dateAcquired: now, tankId });
             }
             await creatureService.markInitialized();
         }
-    }, []);
+    }, [tankId]);
 
     useEffect(() => {
         (async () => {
             await initializeDefaults();
+            // Repair any creatures with missing tankId (from pre-fix race condition)
+            if (tankId) {
+                const all = await creatureService.getCreatures();
+                const orphaned = all.filter(c => !c.tankId);
+                for (const c of orphaned) {
+                    await creatureService.updateCreature(c.id, { tankId });
+                }
+            }
             await refresh();
         })();
-    }, [initializeDefaults, refresh]);
+    }, [initializeDefaults, refresh, tankId]);
 
     const add = async (creature: Omit<Creature, 'id' | 'createdAt' | 'updatedAt'>) => {
         const newCreature = await creatureService.addCreature(creature);

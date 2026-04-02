@@ -23,6 +23,7 @@ export function useTasks(tankId?: string) {
     }, [tankId]);
 
     const initializeDefaults = useCallback(async () => {
+        if (!tankId) return; // Wait for tank to be ready before creating defaults
         const initialized = await taskService.isInitialized();
         if (!initialized) {
             const now = new Date();
@@ -43,6 +44,7 @@ export function useTasks(tankId?: string) {
                 }
                 const newTask = await taskService.addTask({
                     ...template,
+                    tankId: template.scope === 'global' ? null : tankId,
                     nextDueDate: nextDue.toISOString(),
                 });
                 if (newTask.notificationsEnabled) {
@@ -51,14 +53,22 @@ export function useTasks(tankId?: string) {
             }
             await taskService.markInitialized();
         }
-    }, []);
+    }, [tankId]);
 
     useEffect(() => {
         (async () => {
             await initializeDefaults();
+            // Repair tasks with missing tankId (from pre-fix race condition or legacy data)
+            if (tankId) {
+                const all = await taskService.getTasks();
+                const orphaned = all.filter(t => !t.tankId && t.scope !== 'global');
+                for (const t of orphaned) {
+                    await taskService.updateTask(t.id, { tankId, scope: t.scope || 'tank' });
+                }
+            }
             await refresh();
         })();
-    }, [initializeDefaults, refresh]);
+    }, [initializeDefaults, refresh, tankId]);
 
     const add = async (task: Omit<MaintenanceTask, 'id' | 'createdAt' | 'updatedAt' | 'completionHistory'>) => {
         const newTask = await taskService.addTask(task);

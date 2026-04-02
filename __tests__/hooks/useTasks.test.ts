@@ -102,7 +102,7 @@ describe('useTasks', () => {
             Promise.resolve({ ...task, id: 'new-id', completionHistory: [], createdAt: '2026-01-01', updatedAt: '2026-01-01' })
         );
 
-        renderHook(() => useTasks());
+        renderHook(() => useTasks('tank-1'));
 
         await waitFor(() => {
             expect(taskService.addTask).toHaveBeenCalled();

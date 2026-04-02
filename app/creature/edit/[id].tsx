@@ -49,7 +49,7 @@ export default function EditCreatureScreen() {
         loadCreature();
     }, [id]);
 
-    const canSave = name.trim().length > 0 && species.trim().length > 0;
+    const canSave = name.trim().length > 0 && species.trim().length > 0 && !!activeTank;
 
     const handleSave = async () => {
         if (!canSave || !id) return;
@@ -65,7 +65,7 @@ export default function EditCreatureScreen() {
                 type,
                 quantity: validQuantity,
                 notes: notes.trim(),
-                tankId: activeTank?.id ?? '',
+                tankId: activeTank!.id,
                 careLevel,
                 compatibilityNotes: compatibilityNotes.trim(),
                 minTankSizeLiters: minTankSizeLiters ? Number.parseFloat(minTankSizeLiters) : undefined,
@@ -119,6 +119,7 @@ export default function EditCreatureScreen() {
             ) : null}
 
             <TextInput
+                testID="creature-name-input"
                 label="Name *"
                 value={name}
                 onChangeText={setName}
@@ -128,6 +129,7 @@ export default function EditCreatureScreen() {
             />
 
             <TextInput
+                testID="creature-species-input"
                 label="Species *"
                 value={species}
                 onChangeText={setSpecies}
@@ -152,6 +154,7 @@ export default function EditCreatureScreen() {
             />
 
             <TextInput
+                testID="creature-quantity-input"
                 label="Quantity"
                 value={quantity}
                 onChangeText={setQuantity}
@@ -161,6 +164,7 @@ export default function EditCreatureScreen() {
             />
 
             <TextInput
+                testID="creature-notes-input"
                 label="Notes"
                 value={notes}
                 onChangeText={setNotes}

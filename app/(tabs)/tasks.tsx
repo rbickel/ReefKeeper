@@ -1,7 +1,7 @@
 import { View, SectionList, StyleSheet } from 'react-native';
 import { FAB, Text, useTheme, ActivityIndicator, Snackbar } from 'react-native-paper';
-import { useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useRouter, useFocusEffect } from 'expo-router';
+import { useCallback, useMemo, useState } from 'react';
 import { useTasks } from '../../hooks/useTasks';
 import { useTanks } from '../../hooks/useTanks';
 import { getTaskUrgency, MaintenanceTask } from '../../models/Task';
@@ -20,9 +20,12 @@ export default function TasksScreen() {
     const theme = useTheme<AppTheme>();
     const router = useRouter();
     const { activeTank } = useTanks();
-    const { tasks, loading, complete } = useTasks(activeTank?.id);
+    const { tasks, loading, complete, refresh } = useTasks(activeTank?.id);
     const [completingIds, setCompletingIds] = useState<Set<string>>(new Set());
     const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
+
+    // Refresh data when screen gains focus (e.g., after navigating back from add/detail)
+    useFocusEffect(useCallback(() => { refresh(); }, [refresh]));
 
     const handleComplete = async (id: string, title?: string) => {
         setCompletingIds((prev) => new Set(prev).add(id));

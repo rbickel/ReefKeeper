@@ -96,6 +96,7 @@ export default function AddTaskScreen() {
             />
 
             <TextInput
+                testID="task-description-input"
                 label="Description"
                 value={description}
                 onChangeText={setDescription}
@@ -124,6 +125,7 @@ export default function AddTaskScreen() {
                     </Text>
                     <View style={styles.recurrenceRow}>
                         <TextInput
+                            testID="task-interval-input"
                             value={interval}
                             onChangeText={setInterval}
                             mode="outlined"
@@ -145,6 +147,7 @@ export default function AddTaskScreen() {
             )}
 
             <TextInput
+                testID="task-reminder-input"
                 label="Remind me (hours before due)"
                 value={reminderHours}
                 onChangeText={setReminderHours}

@@ -21,7 +21,7 @@ export default function AddCreatureScreen() {
     const [minTankSizeLiters, setMinTankSizeLiters] = useState('');
     const [saving, setSaving] = useState(false);
 
-    const canSave = name.trim().length > 0 && species.trim().length > 0;
+    const canSave = name.trim().length > 0 && species.trim().length > 0 && !!activeTank;
 
     const handleSave = async () => {
         if (!canSave) return;
@@ -37,7 +37,7 @@ export default function AddCreatureScreen() {
                 healthLog: [],
                 archived: false,
                 photoUri: undefined,
-                tankId: activeTank?.id ?? '',
+                tankId: activeTank!.id,
                 careLevel,
                 compatibilityNotes: compatibilityNotes.trim(),
                 minTankSizeLiters: minTankSizeLiters ? Number.parseFloat(minTankSizeLiters) : undefined,
@@ -61,6 +61,7 @@ export default function AddCreatureScreen() {
             </Text>
 
             <TextInput
+                testID="creature-name-input"
                 label="Name *"
                 value={name}
                 onChangeText={setName}
@@ -70,6 +71,7 @@ export default function AddCreatureScreen() {
             />
 
             <TextInput
+                testID="creature-species-input"
                 label="Species *"
                 value={species}
                 onChangeText={setSpecies}
@@ -94,6 +96,7 @@ export default function AddCreatureScreen() {
             />
 
             <TextInput
+                testID="creature-quantity-input"
                 label="Quantity"
                 value={quantity}
                 onChangeText={setQuantity}
@@ -103,6 +106,7 @@ export default function AddCreatureScreen() {
             />
 
             <TextInput
+                testID="creature-notes-input"
                 label="Notes"
                 value={notes}
                 onChangeText={setNotes}

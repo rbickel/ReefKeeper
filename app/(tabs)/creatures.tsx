@@ -1,7 +1,7 @@
 import { View, FlatList, StyleSheet } from 'react-native';
 import { FAB, Text, Searchbar, Chip, useTheme, ActivityIndicator } from 'react-native-paper';
-import { useRouter } from 'expo-router';
-import { useState, useMemo } from 'react';
+import { useRouter, useFocusEffect } from 'expo-router';
+import { useState, useMemo, useCallback } from 'react';
 import { useCreatures } from '../../hooks/useCreatures';
 import { useTanks } from '../../hooks/useTanks';
 import { CreatureType, CREATURE_TYPE_LABELS } from '../../models/Creature';
@@ -14,9 +14,12 @@ export default function CreaturesScreen() {
     const theme = useTheme<AppTheme>();
     const router = useRouter();
     const { activeTank } = useTanks();
-    const { creatures, loading } = useCreatures(activeTank?.id);
+    const { creatures, loading, refresh } = useCreatures(activeTank?.id);
     const [search, setSearch] = useState('');
     const [selectedType, setSelectedType] = useState<CreatureType | 'all'>('all');
+
+    // Refresh data when screen gains focus (e.g., after navigating back from add/edit)
+    useFocusEffect(useCallback(() => { refresh(); }, [refresh]));
 
     const filtered = useMemo(() => {
         let result = creatures;

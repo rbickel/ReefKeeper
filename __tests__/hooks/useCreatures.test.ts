@@ -116,7 +116,7 @@ describe('useCreatures', () => {
             Promise.resolve({ ...creature, id: 'new-id' })
         );
 
-        renderHook(() => useCreatures());
+        renderHook(() => useCreatures('tank-1'));
 
         await waitFor(() => {
             expect(creatureService.addCreature).toHaveBeenCalled();

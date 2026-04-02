@@ -31,6 +31,11 @@ test.describe('Task Lifecycle', () => {
             const keys = Object.keys(localStorage).filter(k => k !== '@reef_keeper:test_mode');
             keys.forEach(k => localStorage.removeItem(k));
         });
+        // Prevent default creature/task initialization to keep test lists clean
+        await page.evaluate(() => {
+            localStorage.setItem('@reef_keeper_creatures_initialized', 'true');
+            localStorage.setItem('@reef_keeper_tasks_initialized', 'true');
+        });
         await page.reload();
 
         // Wait for the app to be ready
