@@ -3,6 +3,7 @@ import { FAB, Text, Searchbar, Chip, useTheme, ActivityIndicator } from 'react-n
 import { useRouter } from 'expo-router';
 import { useState, useMemo } from 'react';
 import { useCreatures } from '../../hooks/useCreatures';
+import { useTanks } from '../../hooks/useTanks';
 import { CreatureType, CREATURE_TYPE_LABELS } from '../../models/Creature';
 import { CreatureCard } from '../../components/CreatureCard';
 import type { AppTheme } from '../../constants/Colors';
@@ -12,7 +13,8 @@ const TYPES: (CreatureType | 'all')[] = ['all', 'fish', 'coral', 'invertebrate',
 export default function CreaturesScreen() {
     const theme = useTheme<AppTheme>();
     const router = useRouter();
-    const { creatures, loading } = useCreatures();
+    const { activeTank } = useTanks();
+    const { creatures, loading } = useCreatures(activeTank?.id);
     const [search, setSearch] = useState('');
     const [selectedType, setSelectedType] = useState<CreatureType | 'all'>('all');
 

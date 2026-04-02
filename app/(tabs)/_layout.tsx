@@ -1,9 +1,11 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
-import { useColorScheme, Platform } from 'react-native';
+import { View, useColorScheme, Platform } from 'react-native';
 import { LightTheme, DarkTheme } from '../../constants/Colors';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAuth0 } from 'react-native-auth0';
+import { useTanks } from '../../hooks/useTanks';
+import { TankSelector } from '../../components/TankSelector';
 
 function useTestMode() {
     const [isTestMode, setIsTestMode] = React.useState(false);
@@ -21,9 +23,12 @@ export default function TabLayout() {
     const { user: auth0User } = useAuth0();
     const isTestMode = useTestMode();
     const user = isTestMode ? (auth0User ?? { nickname: 'Test User' }) : auth0User;
+    const { tanks, activeTank, setActive } = useTanks();
 
     return (
-        <Tabs
+        <View style={{ flex: 1 }}>
+            {user && <TankSelector tanks={tanks} activeTank={activeTank} onSelect={setActive} />}
+            <Tabs
             screenOptions={{
                 tabBarActiveTintColor: theme.colors.primary,
                 tabBarInactiveTintColor: theme.colors.onSurfaceVariant,
@@ -64,6 +69,16 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
+                name="parameters"
+                options={{
+                    title: 'Parameters',
+                    tabBarIcon: ({ color, size }) => (
+                        <MaterialCommunityIcons name="flask" size={size} color={color} />
+                    ),
+                    href: user ? undefined : null,
+                }}
+            />
+            <Tabs.Screen
                 name="tasks"
                 options={{
                     title: 'Tasks',
@@ -74,5 +89,6 @@ export default function TabLayout() {
                 }}
             />
         </Tabs>
+        </View>
     );
 }

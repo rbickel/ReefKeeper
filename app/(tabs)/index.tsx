@@ -1,15 +1,19 @@
 import React from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
+import { View, ScrollView, StyleSheet, Platform } from 'react-native';
 import { Card, Text, useTheme, Surface, Icon, Button, ActivityIndicator } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { useCreatures } from '../../hooks/useCreatures';
 import { useTasks } from '../../hooks/useTasks';
+import { useTanks } from '../../hooks/useTanks';
+import { useWaterLogs } from '../../hooks/useWaterLogs';
+import { useUnitPreferences } from '../../hooks/useUnitPreferences';
 import { getTaskUrgency } from '../../models/Task';
 import { CREATURE_TYPE_LABELS } from '../../models/Creature';
+import { WaterSummaryCard } from '../../components/WaterSummaryCard';
+import { AlertBanner } from '../../components/AlertBanner';
 import type { AppTheme } from '../../constants/Colors';
 import { useAuth0 } from 'react-native-auth0';
 import { Header } from '../../components/Header';
-import { Platform } from 'react-native';
 
 /**
  * Check if the app is running in E2E test mode.
@@ -28,8 +32,11 @@ function useTestMode() {
 export default function DashboardScreen() {
     const theme = useTheme<AppTheme>();
     const router = useRouter();
-    const { creatures } = useCreatures();
-    const { tasks } = useTasks();
+    const { activeTank } = useTanks();
+    const { creatures } = useCreatures(activeTank?.id);
+    const { tasks } = useTasks(activeTank?.id);
+    const { latestReadings } = useWaterLogs(activeTank?.id ?? '');
+    const { preferences } = useUnitPreferences();
     const { user: auth0User, authorize, isLoading: auth0Loading, error } = useAuth0();
     const isTestMode = useTestMode();
 
@@ -123,8 +130,31 @@ export default function DashboardScreen() {
                         Welcome back, {user.nickname || user.name}!
                     </Text>
                     <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>
-                        Your reef aquarium at a glance
+                        {activeTank ? activeTank.name : 'Your reef aquarium'} at a glance
                     </Text>
+                </View>
+
+                {/* Water Parameters Summary */}
+                <AlertBanner latestReadings={latestReadings} temperatureUnit={preferences.temperature} />
+                <WaterSummaryCard latestReadings={latestReadings} temperatureUnit={preferences.temperature} />
+                <View style={styles.waterActions}>
+                    <Button
+                        mode="contained-tonal"
+                        icon="flask-plus"
+                        onPress={() => router.push('/waterlog/add')}
+                        style={styles.waterActionButton}
+                        compact
+                    >
+                        Log Water Test
+                    </Button>
+                    <Button
+                        mode="text"
+                        icon="chart-line"
+                        onPress={() => router.push('/waterlog/history')}
+                        compact
+                    >
+                        View History
+                    </Button>
                 </View>
 
                 {/* Creature Summary */}
@@ -234,6 +264,9 @@ export default function DashboardScreen() {
                 </Card>
 
                 {/* Quick Actions */}
+                <Text variant="titleMedium" style={{ fontWeight: '700', color: theme.colors.onSurface, marginTop: 8, marginBottom: 8 }}>
+                    Quick Actions
+                </Text>
                 <View style={styles.quickActions}>
                     <Button
                         mode="contained"
@@ -253,6 +286,18 @@ export default function DashboardScreen() {
                     >
                         Add Task
                     </Button>
+                </View>
+                <View style={[styles.quickActions, { marginTop: 0 }]}>
+                    <Button
+                        mode="contained-tonal"
+                        icon="plus"
+                        onPress={() => router.push('/tank/add')}
+                        style={styles.actionButton}
+                        labelStyle={{ fontWeight: '700' }}
+                    >
+                        New Tank
+                    </Button>
+                    <View style={styles.actionButton} />
                 </View>
             </ScrollView>
         </View>
@@ -320,6 +365,15 @@ const styles = StyleSheet.create({
         opacity: 0.7,
     },
     loginButton: {
+        borderRadius: 12,
+    },
+    waterActions: {
+        flexDirection: 'row',
+        gap: 8,
+        marginBottom: 16,
+        alignItems: 'center',
+    },
+    waterActionButton: {
         borderRadius: 12,
     },
 });

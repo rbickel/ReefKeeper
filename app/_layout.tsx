@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React from 'react';
 import { Stack } from 'expo-router';
 import { PaperProvider } from 'react-native-paper';
 import { useColorScheme, StatusBar, Platform } from 'react-native';
@@ -68,6 +68,30 @@ export default function RootLayout() {
                     <Stack.Screen
                         name="settings"
                         options={{ title: 'Settings' }}
+                    />
+                    <Stack.Screen
+                        name="tank/add"
+                        options={{ title: 'Add Tank', presentation: 'modal' }}
+                    />
+                    <Stack.Screen
+                        name="tank/[id]"
+                        options={{ title: 'Tank Details' }}
+                    />
+                    <Stack.Screen
+                        name="tank/edit/[id]"
+                        options={{ title: 'Edit Tank' }}
+                    />
+                    <Stack.Screen
+                        name="waterlog/add"
+                        options={{ title: 'Log Water Test', presentation: 'modal' }}
+                    />
+                    <Stack.Screen
+                        name="waterlog/[id]"
+                        options={{ title: 'Water Log Detail' }}
+                    />
+                    <Stack.Screen
+                        name="waterlog/history"
+                        options={{ title: 'Parameter History' }}
                     />
                 </Stack>
             </PaperProvider>

@@ -3,6 +3,7 @@ import { FAB, Text, useTheme, ActivityIndicator, Snackbar } from 'react-native-p
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTasks } from '../../hooks/useTasks';
+import { useTanks } from '../../hooks/useTanks';
 import { getTaskUrgency, MaintenanceTask } from '../../models/Task';
 import { TaskCard } from '../../components/TaskCard';
 import type { AppTheme } from '../../constants/Colors';
@@ -18,7 +19,8 @@ const URGENCY_LABELS: Record<string, string> = {
 export default function TasksScreen() {
     const theme = useTheme<AppTheme>();
     const router = useRouter();
-    const { tasks, loading, complete } = useTasks();
+    const { activeTank } = useTanks();
+    const { tasks, loading, complete } = useTasks(activeTank?.id);
     const [completingIds, setCompletingIds] = useState<Set<string>>(new Set());
     const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
 
