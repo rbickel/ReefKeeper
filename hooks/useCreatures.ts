@@ -3,21 +3,23 @@ import { Creature } from '../models/Creature';
 import * as creatureService from '../services/creatureService';
 import { DEFAULT_CREATURES } from '../constants/DefaultCreatures';
 
-export function useCreatures() {
+export function useCreatures(tankId?: string) {
     const [creatures, setCreatures] = useState<Creature[]>([]);
     const [loading, setLoading] = useState(true);
 
     const refresh = useCallback(async () => {
         setLoading(true);
         try {
-            const data = await creatureService.getCreatures();
+            const data = tankId
+                ? await creatureService.getCreaturesByTank(tankId)
+                : await creatureService.getCreatures();
             setCreatures(data.filter((c) => !c.archived));
         } catch (error) {
             console.error('Failed to load creatures:', error);
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [tankId]);
 
     const initializeDefaults = useCallback(async () => {
         const initialized = await creatureService.isInitialized();

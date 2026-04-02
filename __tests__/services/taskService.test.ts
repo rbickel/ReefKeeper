@@ -498,4 +498,281 @@ describe('taskService', () => {
             );
         });
     });
+
+    describe('getTasksByTank', () => {
+        it('should return matching tank tasks plus global tasks', async () => {
+            const mockTasks: MaintenanceTask[] = [
+                {
+                    id: 'task-1',
+                    title: 'Water Change',
+                    description: '',
+                    recurrenceInterval: 7,
+                    recurrenceUnit: 'days',
+                    nextDueDate: new Date().toISOString(),
+                    reminderOffsetHours: 24,
+                    notificationsEnabled: true,
+                    isPredefined: true,
+                    completionHistory: [],
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    tankId: 'tank-1',
+                    scope: 'tank',
+                } as any,
+                {
+                    id: 'task-2',
+                    title: 'Clean Skimmer',
+                    description: '',
+                    recurrenceInterval: 3,
+                    recurrenceUnit: 'days',
+                    nextDueDate: new Date().toISOString(),
+                    reminderOffsetHours: 24,
+                    notificationsEnabled: true,
+                    isPredefined: true,
+                    completionHistory: [],
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    tankId: 'tank-2',
+                    scope: 'tank',
+                } as any,
+                {
+                    id: 'task-3',
+                    title: 'Mix Saltwater',
+                    description: '',
+                    recurrenceInterval: 7,
+                    recurrenceUnit: 'days',
+                    nextDueDate: new Date().toISOString(),
+                    reminderOffsetHours: 24,
+                    notificationsEnabled: true,
+                    isPredefined: false,
+                    completionHistory: [],
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    tankId: null,
+                    scope: 'global',
+                } as any,
+            ];
+            (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify(mockTasks));
+
+            const result = await taskService.getTasksByTank('tank-1');
+
+            expect(result).toHaveLength(2);
+            expect(result.map((t: any) => t.title)).toContain('Water Change');
+            expect(result.map((t: any) => t.title)).toContain('Mix Saltwater');
+            expect(result.map((t: any) => t.title)).not.toContain('Clean Skimmer');
+        });
+
+        it('should return only global tasks when no tank-specific tasks match', async () => {
+            const mockTasks: MaintenanceTask[] = [
+                {
+                    id: 'task-1',
+                    title: 'Water Change',
+                    description: '',
+                    recurrenceInterval: 7,
+                    recurrenceUnit: 'days',
+                    nextDueDate: new Date().toISOString(),
+                    reminderOffsetHours: 24,
+                    notificationsEnabled: true,
+                    isPredefined: true,
+                    completionHistory: [],
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    tankId: 'tank-2',
+                    scope: 'tank',
+                } as any,
+                {
+                    id: 'task-2',
+                    title: 'Mix Saltwater',
+                    description: '',
+                    recurrenceInterval: 7,
+                    recurrenceUnit: 'days',
+                    nextDueDate: new Date().toISOString(),
+                    reminderOffsetHours: 24,
+                    notificationsEnabled: true,
+                    isPredefined: false,
+                    completionHistory: [],
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    tankId: null,
+                    scope: 'global',
+                } as any,
+            ];
+            (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify(mockTasks));
+
+            const result = await taskService.getTasksByTank('tank-999');
+
+            expect(result).toHaveLength(1);
+            expect(result[0].title).toBe('Mix Saltwater');
+        });
+
+        it('should return empty array when no tasks exist', async () => {
+            (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
+
+            const result = await taskService.getTasksByTank('tank-1');
+
+            expect(result).toEqual([]);
+        });
+    });
+
+    describe('evaluateThresholds', () => {
+        it('should return alerts when readings exceed thresholds', async () => {
+            const mockTasks = [
+                {
+                    id: 'task-1',
+                    title: 'Emergency Water Change',
+                    description: '',
+                    recurrenceInterval: undefined,
+                    recurrenceUnit: undefined,
+                    nextDueDate: new Date().toISOString(),
+                    reminderOffsetHours: 24,
+                    notificationsEnabled: true,
+                    isPredefined: false,
+                    completionHistory: [],
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    tankId: 'tank-1',
+                    scope: 'tank',
+                    triggerThreshold: {
+                        parameterId: 'ammonia',
+                        operator: 'above',
+                        value: 0.25,
+                    },
+                },
+                {
+                    id: 'task-2',
+                    title: 'Dose Alkalinity',
+                    description: '',
+                    recurrenceInterval: undefined,
+                    recurrenceUnit: undefined,
+                    nextDueDate: new Date().toISOString(),
+                    reminderOffsetHours: 24,
+                    notificationsEnabled: true,
+                    isPredefined: false,
+                    completionHistory: [],
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    tankId: 'tank-1',
+                    scope: 'tank',
+                    triggerThreshold: {
+                        parameterId: 'alkalinity',
+                        operator: 'below',
+                        value: 7.0,
+                    },
+                },
+            ];
+            (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify(mockTasks));
+
+            const readings = [
+                { parameterId: 'ammonia', value: 0.5 },   // above threshold
+                { parameterId: 'alkalinity', value: 6.5 }, // below threshold
+            ];
+
+            const alerts = await taskService.evaluateThresholds('tank-1', readings);
+
+            expect(alerts).toHaveLength(2);
+            expect(alerts[0].task.title).toBe('Emergency Water Change');
+            expect(alerts[1].task.title).toBe('Dose Alkalinity');
+        });
+
+        it('should return empty when all readings are within thresholds', async () => {
+            const mockTasks = [
+                {
+                    id: 'task-1',
+                    title: 'Emergency Water Change',
+                    description: '',
+                    recurrenceInterval: undefined,
+                    recurrenceUnit: undefined,
+                    nextDueDate: new Date().toISOString(),
+                    reminderOffsetHours: 24,
+                    notificationsEnabled: true,
+                    isPredefined: false,
+                    completionHistory: [],
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    tankId: 'tank-1',
+                    scope: 'tank',
+                    triggerThreshold: {
+                        parameterId: 'ammonia',
+                        operator: 'above',
+                        value: 0.25,
+                    },
+                },
+            ];
+            (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify(mockTasks));
+
+            const readings = [
+                { parameterId: 'ammonia', value: 0.0 },  // within threshold
+            ];
+
+            const alerts = await taskService.evaluateThresholds('tank-1', readings);
+
+            expect(alerts).toEqual([]);
+        });
+
+        it('should ignore tasks without triggerThreshold', async () => {
+            const mockTasks = [
+                {
+                    id: 'task-1',
+                    title: 'Water Change',
+                    description: '',
+                    recurrenceInterval: 7,
+                    recurrenceUnit: 'days',
+                    nextDueDate: new Date().toISOString(),
+                    reminderOffsetHours: 24,
+                    notificationsEnabled: true,
+                    isPredefined: true,
+                    completionHistory: [],
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    tankId: 'tank-1',
+                    scope: 'tank',
+                    // no triggerThreshold
+                },
+            ];
+            (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify(mockTasks));
+
+            const readings = [
+                { parameterId: 'nitrate', value: 50 },
+            ];
+
+            const alerts = await taskService.evaluateThresholds('tank-1', readings);
+
+            expect(alerts).toEqual([]);
+        });
+
+        it('should ignore thresholds when matching reading is not present', async () => {
+            const mockTasks = [
+                {
+                    id: 'task-1',
+                    title: 'Reduce Nitrates',
+                    description: '',
+                    recurrenceInterval: undefined,
+                    recurrenceUnit: undefined,
+                    nextDueDate: new Date().toISOString(),
+                    reminderOffsetHours: 24,
+                    notificationsEnabled: true,
+                    isPredefined: false,
+                    completionHistory: [],
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    tankId: 'tank-1',
+                    scope: 'tank',
+                    triggerThreshold: {
+                        parameterId: 'nitrate',
+                        operator: 'above',
+                        value: 20,
+                    },
+                },
+            ];
+            (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify(mockTasks));
+
+            // Reading for a different parameter — no nitrate reading
+            const readings = [
+                { parameterId: 'temperature', value: 78.0 },
+            ];
+
+            const alerts = await taskService.evaluateThresholds('tank-1', readings);
+
+            expect(alerts).toEqual([]);
+        });
+    });
 });

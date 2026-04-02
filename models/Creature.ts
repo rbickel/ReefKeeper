@@ -1,5 +1,13 @@
 export type CreatureType = 'fish' | 'coral' | 'invertebrate' | 'other';
 
+export type CareLevel = 'beginner' | 'intermediate' | 'expert';
+
+export const CARE_LEVEL_LABELS: Record<CareLevel, string> = {
+  beginner: '🟢 Beginner',
+  intermediate: '🟡 Intermediate',
+  expert: '🔴 Expert',
+};
+
 export interface HealthLogEntry {
   id: string;
   creatureId: string;
@@ -18,6 +26,10 @@ export interface Creature {
   notes: string;
   healthLog: HealthLogEntry[];
   archived: boolean;
+  tankId: string;
+  careLevel: CareLevel;
+  compatibilityNotes: string;
+  minTankSizeLiters?: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -42,6 +54,10 @@ export function createCreature(partial: Partial<Creature> & Pick<Creature, 'name
     id: '',
     photoUri: undefined,
     dateAcquired: now,
+    tankId: '',
+    careLevel: 'intermediate',
+    compatibilityNotes: '',
+    minTankSizeLiters: undefined,
     quantity: 1,
     notes: '',
     healthLog: [],

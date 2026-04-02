@@ -17,7 +17,8 @@
 6. [Dashboard Redesign](#6-dashboard-redesign)
 7. [Data Migration](#7-data-migration)
 8. [Screen Flows & Navigation](#8-screen-flows--navigation)
-9. [Implementation Phases](#9-implementation-phases)
+9. [Unit Preferences](#9-unit-preferences)
+10. [Implementation Phases](#10-implementation-phases)
 
 ---
 
@@ -53,7 +54,7 @@ export type TankType =
   | 'lps-dominant'    // Euphyllia, Acans — moderate light/flow
   | 'soft-coral'      // Leathers, mushrooms, zoanthids — forgiving
   | 'fowlr'           // Fish-Only With Live Rock — no coral
-  | 'nano'            // Under 30 gallons — any coral mix
+  | 'nano'            // Under 114 litres — any coral mix
   | 'quarantine'      // Temporary holding — bare-bottom, medication-safe
   | 'frag'            // Propagation tank — grow-out racks
   | 'predator'        // Large aggressive fish — groupers, triggers, eels
@@ -67,8 +68,8 @@ export interface Tank {
   id: string;
   name: string;
   type: TankType;
-  volumeGallons: number;         // display tank volume
-  totalSystemGallons?: number;   // including sump, refugium, etc.
+  volumeLiters: number;          // display tank volume (stored in metric)
+  totalSystemLiters?: number;    // including sump, refugium, etc.
   salinityUnit: SalinityUnit;    // user preference per tank
   photoUri?: string;
   notes: string;
@@ -93,12 +94,12 @@ export const TANK_TYPE_LABELS: Record<TankType, string> = {
 };
 
 export function createTank(
-  partial: Partial<Tank> & Pick<Tank, 'name' | 'type' | 'volumeGallons'>
+  partial: Partial<Tank> & Pick<Tank, 'name' | 'type' | 'volumeLiters'>
 ): Tank {
   const now = new Date().toISOString();
   return {
     id: '',
-    totalSystemGallons: undefined,
+    totalSystemLiters: undefined,
     salinityUnit: 'ppt',
     photoUri: undefined,
     notes: '',
@@ -174,7 +175,7 @@ A persistent pill/chip at the top of every tab showing the active tank name. Tap
 │ [Tank Photo or Placeholder]         │
 │                                     │
 │ Type: 🪸 Mixed Reef                │
-│ Volume: 75 gal (system: 95 gal)    │
+│ Volume: 284 L (system: 360 L)      │
 │ Salinity Unit: ppt                  │
 │                                     │
 │ ── Stats ──                         │
@@ -200,7 +201,7 @@ These are the standard reef aquarium parameters and their acceptable ranges. Ran
 
 | Parameter | Unit | Reef Range (Low) | Reef Range (High) | Critical Low | Critical High | Notes |
 |-----------|------|-------------------|--------------------|--------------|---------------|-------|
-| Temperature | °F | 76.0 | 80.0 | 74.0 | 82.0 | 78°F ideal. Stability > exact number |
+| Temperature | °C | 24.4 | 26.7 | 23.3 | 27.8 | 25.6°C ideal. Stability > exact number |
 | Salinity (ppt) | ppt | 34.0 | 36.0 | 32.0 | 38.0 | 35 ppt / 1.025 SG ideal |
 | Salinity (SG) | SG | 1.024 | 1.026 | 1.022 | 1.028 | Refractometer or digital |
 | pH | — | 7.8 | 8.4 | 7.6 | 8.6 | Naturally rises during photoperiod |
@@ -250,9 +251,9 @@ export const WATER_PARAMETERS: WaterParameterDefinition[] = [
   {
     id: 'temperature',
     label: 'Temperature',
-    unit: '°F',
+    unit: '°C',
     emoji: '🌡️',
-    ranges: { reefLow: 76.0, reefHigh: 80.0, criticalLow: 74.0, criticalHigh: 82.0 },
+    ranges: { reefLow: 24.4, reefHigh: 26.7, criticalLow: 23.3, criticalHigh: 27.8 },
     decimalPlaces: 1,
   },
   {
@@ -421,7 +422,7 @@ export function useWaterLogs(tankId: string) {
 │ Date/Time: [Apr 2, 2026 7:30 PM ▾] │
 │                                     │
 │ ── Quick Test (tap to enter) ──     │
-│ 🌡️ Temperature   [ 78.2 ] °F   ✅ │
+│ 🌡️ Temperature   [ 25.7 ] °C   ✅ │
 │ 🧂 Salinity      [ 35.0 ] ppt  ✅ │
 │ ⚗️ pH             [ 8.21 ]      ✅ │
 │ ⚠️ Ammonia       [      ] ppm     │
@@ -453,7 +454,7 @@ Color-coded feedback appears instantly as the user types a value. Users only fil
 │ [🪸 My Reef Tank ▾]                │
 │                                     │
 │ ── Current Readings ──              │
-│ 🌡️ 78.2°F  🧂 35.0ppt  ⚗️ 8.21   │
+│ 🌡️ 25.7°C  🧂 35.0ppt  ⚗️ 8.21   │
 │ 📊 NO₃ 4.0  🔬 PO₄ 0.03           │
 │ 🦴 Ca 420   🧪 Alk 8.5  💎 Mg 1350│
 │ (all ✅ in range)                   │
@@ -527,7 +528,7 @@ export interface Creature {
   tankId: string;                       // NEW — required, references Tank.id
   careLevel: CareLevel;                 // NEW — defaults to 'intermediate'
   compatibilityNotes: string;           // NEW — free-text, e.g. "May nip SPS corals"
-  minTankSizeGallons?: number;          // NEW — optional, e.g. 75 for a Yellow Tang
+  minTankSizeLiters?: number;           // NEW — optional, e.g. 284 for a Yellow Tang
 }
 
 export const CARE_LEVEL_LABELS: Record<CareLevel, string> = {
@@ -555,26 +556,26 @@ export function useCreatures(tankId: string) {
 
 ### 4.4 Default Creatures Enhancement
 
-Update `constants/DefaultCreatures.ts` — add `careLevel`, `compatibilityNotes`, and `minTankSizeGallons` to each default creature. Examples:
+Update `constants/DefaultCreatures.ts` — add `careLevel`, `compatibilityNotes`, and `minTankSizeLiters` to each default creature. Examples:
 
-| Creature | Care Level | Min Tank | Compatibility |
+| Creature | Care Level | Min Tank (L) | Compatibility |
 |----------|-----------|----------|---------------|
-| Ocellaris Clownfish | beginner | 20 | Reef-safe. May host anemones. Semi-aggressive to other clowns. |
-| Royal Gramma | beginner | 30 | Peaceful. Stays near caves. May squabble with similar-shaped fish. |
-| Flame Angelfish | intermediate | 55 | May nip LPS/SPS coral. Monitor with expensive corals. |
-| Yellow Tang | intermediate | 75 | Reef-safe. Can be aggressive to other tangs. Needs swimming room. |
-| Mandarin Dragonet | expert | 30 | Needs mature tank (6+ months) with copepod population. Slow feeder. |
+| Ocellaris Clownfish | beginner | 76 | Reef-safe. May host anemones. Semi-aggressive to other clowns. |
+| Royal Gramma | beginner | 114 | Peaceful. Stays near caves. May squabble with similar-shaped fish. |
+| Flame Angelfish | intermediate | 208 | May nip LPS/SPS coral. Monitor with expensive corals. |
+| Yellow Tang | intermediate | 284 | Reef-safe. Can be aggressive to other tangs. Needs swimming room. |
+| Mandarin Dragonet | expert | 114 | Needs mature tank (6+ months) with copepod population. Slow feeder. |
 | Hammer Coral | intermediate | — | LPS. 6"+ sweeper tentacles — keep distance from neighbors. |
-| Bubble Tip Anemone | intermediate | 40 | Stings nearby corals. May wander. Needs stable params 6+ months. |
-| Fire Shrimp | beginner | 20 | Reef-safe cleaner. Shy; needs caves. Keep singly or in mated pairs. |
-| Peppermint Shrimp | beginner | 10 | Eats Aiptasia anemones. Reef-safe. Peaceful. |
+| Bubble Tip Anemone | intermediate | 151 | Stings nearby corals. May wander. Needs stable params 6+ months. |
+| Fire Shrimp | beginner | 76 | Reef-safe cleaner. Shy; needs caves. Keep singly or in mated pairs. |
+| Peppermint Shrimp | beginner | 38 | Eats Aiptasia anemones. Reef-safe. Peaceful. |
 
 ### 4.5 Creature Card Enhancement
 
 The `CreatureCard` component gains:
 - A colored care-level badge (🟢🟡🔴)
 - Compatibility warning icon if `compatibilityNotes` is non-empty
-- Subtle tank-size warning if creature's `minTankSizeGallons` exceeds the active tank's `volumeGallons`
+- Subtle tank-size warning if creature's `minTankSizeLiters` exceeds the active tank's `volumeLiters`
 
 ---
 
@@ -709,7 +710,7 @@ export function useTasks(tankId: string) {
 │ ── Water Summary ──                 │
 │ Last tested: 2 hours ago            │
 │ ┌─────┬─────┬─────┬─────┐          │
-│ │🌡️78F│🧂35 │⚗️8.2│📊4  │          │
+│ │🌡️26C│🧂35 │⚗️8.2│📊4  │          │
 │ │ ✅  │ ✅  │ ✅  │ ✅  │          │
 │ └─────┴─────┴─────┴─────┘          │
 │ ┌─────┬─────┬─────┐                │
@@ -793,7 +794,7 @@ async function migrateToMultiTank(): Promise<void> {
   const defaultTank = await tankService.addTank({
     name: 'My Reef Tank',
     type: 'mixed-reef',
-    volumeGallons: 75,           // reasonable default
+    volumeLiters: 284,            // reasonable default (was 75 gal)
     salinityUnit: 'ppt',
     notes: 'Auto-created during upgrade. Edit to match your setup!',
     isDefault: true,
@@ -883,7 +884,7 @@ After migration, show a one-time welcome modal:
 | `app/creature/[id].tsx` | Show new fields. Show tank name. |
 | `app/task/add.tsx` | Add scope selector (tank/global), trigger threshold builder. |
 | `app/task/[id].tsx` | Show scope, threshold info, tank name. |
-| `app/settings.tsx` | Add tank management section. Export includes tank + water log data. |
+| `app/settings.tsx` | Add tank management section, unit preferences toggle. Export includes tank + water log data. |
 
 ### 8.3 Navigation Map
 
@@ -913,7 +914,7 @@ waterlog/
 ├── [id].tsx           ← Water Log Detail (NEW)
 └── history.tsx        ← Parameter History Charts (NEW)
 
-settings.tsx           ← Settings (modified — add tank management)
+settings.tsx           ← Settings (modified — add tank management, unit preferences)
 ```
 
 ### 8.4 Shared Components
@@ -931,7 +932,117 @@ settings.tsx           ← Settings (modified — add tank management)
 
 ---
 
-## 9. Implementation Phases
+## 9. Unit Preferences
+
+### 9.1 Architectural Decision: Metric Storage
+
+**All data is stored in metric units (Celsius for temperature, liters for volume).** Conversion to imperial (°F, gallons) happens exclusively at the display and input layers. This ensures:
+
+- No data corruption when users switch units
+- No ambiguity in stored values — a temperature is always °C, a volume is always liters
+- Simpler service/model layer — no unit tagging on every value
+
+### 9.2 Unit Preference Model
+
+```typescript
+// models/UnitPreference.ts
+
+export type UnitSystem = 'metric' | 'imperial';
+export type TemperatureUnit = '°C' | '°F';
+export type VolumeUnit = 'L' | 'gal';
+
+export interface UnitPreferences {
+  system: UnitSystem;       // master toggle
+  temperature: TemperatureUnit;
+  volume: VolumeUnit;
+}
+
+export const DEFAULT_UNIT_PREFERENCES: UnitPreferences = {
+  system: 'metric',
+  temperature: '°C',
+  volume: 'L',
+};
+```
+
+The default is metric. Users can switch to imperial in Settings, which flips both temperature and volume units. Individual overrides (e.g., metric volume but °F temperature) are supported.
+
+### 9.3 Conversion Utilities
+
+```typescript
+// Bidirectional conversions
+celsiusToFahrenheit(c: number): number
+fahrenheitToCelsius(f: number): number
+litersToGallons(l: number): number
+gallonsToLiters(g: number): number
+
+// Display/storage helpers — convert between stored metric and display unit
+convertTemperatureForDisplay(storedCelsius: number, unit: TemperatureUnit): number
+convertVolumeForDisplay(storedLiters: number, unit: VolumeUnit): number
+convertTemperatureForStorage(displayValue: number, unit: TemperatureUnit): number
+convertVolumeForStorage(displayValue: number, unit: VolumeUnit): number
+
+// Formatted strings
+formatTemperature(celsius: number, unit: TemperatureUnit): string  // "25.6°C" or "78.0°F"
+formatVolume(liters: number, unit: VolumeUnit): string             // "284 L" or "75 gal"
+```
+
+### 9.4 Unit Preference Service
+
+```typescript
+// services/unitPreferenceService.ts
+
+const STORAGE_KEY = '@reef_keeper_unit_preferences';
+
+getUnitPreferences(): Promise<UnitPreferences>    // returns DEFAULT if not set
+saveUnitPreferences(prefs: UnitPreferences): Promise<void>
+```
+
+### 9.5 `useUnitPreferences` Hook
+
+```typescript
+// hooks/useUnitPreferences.ts
+
+export function useUnitPreferences() {
+  preferences: UnitPreferences;
+  loading: boolean;
+  setSystem: (system: UnitSystem) => Promise<void>;        // toggles both temp + volume
+  setTemperatureUnit: (unit: TemperatureUnit) => Promise<void>;
+  setVolumeUnit: (unit: VolumeUnit) => Promise<void>;
+}
+```
+
+### 9.6 Settings Screen — Unit Preferences Section
+
+The Settings screen gains a "Units" section:
+
+```
+┌─────────────────────────────────────┐
+│ ── Units ──                         │
+│                                     │
+│ Unit System:  [Metric ▾]           │
+│   Temperature:  °C                  │
+│   Volume:       Liters              │
+│                                     │
+│ Switching to Imperial will display  │
+│ °F and gallons. Stored data stays   │
+│ in metric — no data is lost.        │
+└─────────────────────────────────────┘
+```
+
+### 9.7 Where Conversion Applies
+
+| Screen / Component | What converts | How |
+|--------------------|---------------|-----|
+| Tank detail / edit | `volumeLiters`, `totalSystemLiters` | `formatVolume()` for display; `convertVolumeForStorage()` on save |
+| Water parameter entry | Temperature reading | `convertTemperatureForDisplay()` / `convertTemperatureForStorage()` |
+| Water parameter history | Temperature chart values | `convertTemperatureForDisplay()` for each data point |
+| Dashboard water summary | Temperature badge | `formatTemperature()` |
+| Creature card / detail | `minTankSizeLiters` | `formatVolume()` for display |
+| Parameter range display | Temperature reef/critical ranges | Convert range values before display |
+
+---
+
+## 10. Implementation Phases
 
 ### Phase 1: Foundation (Backend + Models)
 
@@ -947,7 +1058,10 @@ settings.tsx           ← Settings (modified — add tank management)
 7. Modify `hooks/useCreatures.ts` and `hooks/useTasks.ts` to accept `tankId`
 8. Update `constants/DefaultCreatures.ts` with care levels and compatibility
 9. Add global default tasks and triggered-task defaults to `constants/DefaultTasks.ts`
-10. Write unit tests for all new services and migration logic
+10. Create `models/UnitPreference.ts` (unit system types + conversion utilities)
+11. Create `services/unitPreferenceService.ts` (AsyncStorage persistence)
+12. Create `hooks/useUnitPreferences.ts` (React hook for unit preference state)
+13. Write unit tests for all new services and migration logic
 
 ### Phase 2: Tank Management UI
 
@@ -1010,6 +1124,7 @@ settings.tsx           ← Settings (modified — add tank management)
 | `@reef_keeper_tanks_initialized` | `"true"` | First-run flag |
 | `@reef_keeper_active_tank` | `string` | ID of currently selected tank |
 | `@reef_keeper_water_logs` | `WaterLog[]` | All water test logs |
+| `@reef_keeper_unit_preferences` | `UnitPreferences` | User's unit system preference (metric/imperial) |
 | `@reef_keeper_migration_version` | `string` | Migration version number |
 
 ## Appendix B: Charting Library Recommendation
@@ -1032,7 +1147,7 @@ Install: `npx expo install victory-native react-native-svg`
 | LPS Dominant | Euphyllia, Acanthastrea, Favia | Slightly more flexible | Hammers, torches, acans, clownfish |
 | Soft Coral | Leathers, zoanthids, mushrooms | Most forgiving | Zoas, mushrooms, xenias, GSP |
 | FOWLR | Fish-only with live rock | No coral requirements | Tangs, angels, triggers, wrasses |
-| Nano | Under 30 gallons, any coral | Tighter swings, less stable | Small gobies, shrimp, softies, select LPS |
+| Nano | Under 114 litres, any coral | Tighter swings, less stable | Small gobies, shrimp, softies, select LPS |
 | Quarantine | Bare-bottom, medication-safe | Adjustable | New additions — observe 4+ weeks |
 | Frag | Propagation grow-out | Same as source tank | Coral frags on racks/plugs |
 

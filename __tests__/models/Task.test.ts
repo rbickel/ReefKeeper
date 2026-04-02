@@ -1,4 +1,4 @@
-import { createTask, getTaskUrgency, RecurrenceUnit } from '../../models/Task';
+import { createTask, getTaskUrgency, RecurrenceUnit, TaskScope, ParameterThreshold } from '../../models/Task';
 
 describe('Task', () => {
     describe('createTask', () => {
@@ -126,12 +126,108 @@ describe('Task', () => {
         });
 
         it('should handle tasks with time components correctly', () => {
+            // Use local midnight to avoid timezone shift issues
+            const todayEnd = new Date(2026, 1, 15, 23, 59, 59, 999);
             const task = createTask({
                 title: 'Task with Time',
-                nextDueDate: new Date('2026-02-15T23:59:59.999Z').toISOString(),
+                nextDueDate: todayEnd.toISOString(),
             });
 
             expect(getTaskUrgency(task)).toBe('today');
+        });
+    });
+
+    describe('new Phase 1 fields', () => {
+        it('should create a task with tankId', () => {
+            const task = createTask({
+                title: 'Water Change',
+                tankId: 'tank-1',
+            });
+
+            expect(task.tankId).toBe('tank-1');
+        });
+
+        it('should default tankId to null', () => {
+            const task = createTask({ title: 'Global Task' });
+
+            expect(task.tankId).toBeNull();
+        });
+
+        it('should create a task with scope', () => {
+            const task = createTask({
+                title: 'Water Change',
+                scope: 'tank',
+            });
+
+            expect(task.scope).toBe('tank');
+        });
+
+        it('should default scope to tank', () => {
+            const task = createTask({ title: 'Test Task' });
+
+            expect(task.scope).toBe('tank');
+        });
+
+        it('should support both scope values', () => {
+            const scopes: TaskScope[] = ['tank', 'global'];
+
+            scopes.forEach(scope => {
+                const task = createTask({
+                    title: 'Test',
+                    scope,
+                });
+                expect(task.scope).toBe(scope);
+            });
+        });
+
+        it('should create a task with triggerThreshold', () => {
+            const threshold: ParameterThreshold = {
+                parameterId: 'nitrate',
+                operator: 'above',
+                value: 20,
+            };
+
+            const task = createTask({
+                title: 'Emergency Water Change',
+                triggerThreshold: threshold,
+            });
+
+            expect(task.triggerThreshold).toEqual(threshold);
+            expect(task.triggerThreshold!.parameterId).toBe('nitrate');
+            expect(task.triggerThreshold!.operator).toBe('above');
+            expect(task.triggerThreshold!.value).toBe(20);
+        });
+
+        it('should default triggerThreshold to undefined', () => {
+            const task = createTask({ title: 'Regular Task' });
+
+            expect(task.triggerThreshold).toBeUndefined();
+        });
+
+        it('should support "below" operator in triggerThreshold', () => {
+            const threshold: ParameterThreshold = {
+                parameterId: 'alkalinity',
+                operator: 'below',
+                value: 7.0,
+            };
+
+            const task = createTask({
+                title: 'Dose Alkalinity',
+                triggerThreshold: threshold,
+            });
+
+            expect(task.triggerThreshold!.operator).toBe('below');
+        });
+
+        it('should create a global task with null tankId', () => {
+            const task = createTask({
+                title: 'Mix Saltwater',
+                scope: 'global',
+                tankId: null,
+            });
+
+            expect(task.scope).toBe('global');
+            expect(task.tankId).toBeNull();
         });
     });
 });

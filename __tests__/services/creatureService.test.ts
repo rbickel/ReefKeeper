@@ -413,4 +413,91 @@ describe('creatureService', () => {
             );
         });
     });
+
+    describe('getCreaturesByTank', () => {
+        it('should filter creatures by tankId', async () => {
+            const mockCreatures = [
+                {
+                    id: 'creature-1',
+                    name: 'Nemo',
+                    species: 'Clownfish',
+                    type: 'fish' as CreatureType,
+                    tankId: 'tank-1',
+                    dateAcquired: '2026-01-01T00:00:00Z',
+                    quantity: 1,
+                    notes: '',
+                    healthLog: [],
+                    archived: false,
+                    createdAt: '2026-01-01T00:00:00Z',
+                    updatedAt: '2026-01-01T00:00:00Z',
+                },
+                {
+                    id: 'creature-2',
+                    name: 'Bubbles',
+                    species: 'Yellow Tang',
+                    type: 'fish' as CreatureType,
+                    tankId: 'tank-2',
+                    dateAcquired: '2026-01-01T00:00:00Z',
+                    quantity: 1,
+                    notes: '',
+                    healthLog: [],
+                    archived: false,
+                    createdAt: '2026-01-01T00:00:00Z',
+                    updatedAt: '2026-01-01T00:00:00Z',
+                },
+                {
+                    id: 'creature-3',
+                    name: 'Hammer',
+                    species: 'Hammer Coral',
+                    type: 'coral' as CreatureType,
+                    tankId: 'tank-1',
+                    dateAcquired: '2026-01-01T00:00:00Z',
+                    quantity: 1,
+                    notes: '',
+                    healthLog: [],
+                    archived: false,
+                    createdAt: '2026-01-01T00:00:00Z',
+                    updatedAt: '2026-01-01T00:00:00Z',
+                },
+            ];
+            (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify(mockCreatures));
+
+            const result = await creatureService.getCreaturesByTank('tank-1');
+
+            expect(result).toHaveLength(2);
+            expect(result.every(c => c.tankId === 'tank-1')).toBe(true);
+        });
+
+        it('should return empty array when no creatures match tankId', async () => {
+            const mockCreatures = [
+                {
+                    id: 'creature-1',
+                    name: 'Nemo',
+                    species: 'Clownfish',
+                    type: 'fish' as CreatureType,
+                    tankId: 'tank-1',
+                    dateAcquired: '2026-01-01T00:00:00Z',
+                    quantity: 1,
+                    notes: '',
+                    healthLog: [],
+                    archived: false,
+                    createdAt: '2026-01-01T00:00:00Z',
+                    updatedAt: '2026-01-01T00:00:00Z',
+                },
+            ];
+            (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify(mockCreatures));
+
+            const result = await creatureService.getCreaturesByTank('tank-999');
+
+            expect(result).toEqual([]);
+        });
+
+        it('should return empty array when no creatures exist', async () => {
+            (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
+
+            const result = await creatureService.getCreaturesByTank('tank-1');
+
+            expect(result).toEqual([]);
+        });
+    });
 });

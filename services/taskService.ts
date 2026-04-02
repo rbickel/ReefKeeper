@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaintenanceTask, RecurrenceUnit } from '../models/Task';
+import { WaterReading } from '../models/WaterLog';
 import { v4 as uuidv4 } from 'uuid';
 
 const STORAGE_KEY = '@reef_keeper_tasks';
@@ -106,4 +107,46 @@ function calculateNextDueDate(fromDate: Date, interval: number, unit: Recurrence
             break;
     }
     return next;
+}
+
+export async function getTasksByTank(tankId: string): Promise<MaintenanceTask[]> {
+    const tasks = await getTasks();
+    return tasks.filter((t) => t.tankId === tankId || t.scope === 'global');
+}
+
+export interface TriggeredAlert {
+    task: MaintenanceTask;
+    reading: WaterReading;
+    message: string;
+}
+
+export async function evaluateThresholds(
+    tankId: string,
+    readings: WaterReading[]
+): Promise<TriggeredAlert[]> {
+    const tasks = await getTasksByTank(tankId);
+    const alerts: TriggeredAlert[] = [];
+
+    for (const task of tasks) {
+        if (!task.triggerThreshold) continue;
+        const reading = readings.find(
+            (r) => r.parameterId === task.triggerThreshold!.parameterId
+        );
+        if (!reading) continue;
+
+        const { operator, value } = task.triggerThreshold;
+        const triggered =
+            (operator === 'above' && reading.value > value) ||
+            (operator === 'below' && reading.value < value);
+
+        if (triggered) {
+            alerts.push({
+                task,
+                reading,
+                message: `${task.title} — ${reading.parameterId} is ${reading.value} (threshold: ${operator} ${value})`,
+            });
+        }
+    }
+
+    return alerts;
 }

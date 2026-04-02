@@ -1,10 +1,11 @@
-import { MaintenanceTask, createTask } from '../models/Task';
+import { MaintenanceTask } from '../models/Task';
 
 /**
  * Predefined maintenance tasks that ship with the app.
  * Users can modify or disable these, and add their own.
  */
 export const DEFAULT_TASKS: Omit<MaintenanceTask, 'id' | 'createdAt' | 'updatedAt' | 'completionHistory' | 'nextDueDate'>[] = [
+    // ── Tank-scoped tasks ──────────────────────────────────
     {
         title: 'Water Change (10-20%)',
         description: 'Replace 10-20% of tank water with fresh saltwater mixed to the correct salinity.',
@@ -13,6 +14,8 @@ export const DEFAULT_TASKS: Omit<MaintenanceTask, 'id' | 'createdAt' | 'updatedA
         reminderOffsetHours: 24,
         notificationsEnabled: true,
         isPredefined: true,
+        tankId: null,
+        scope: 'tank',
     },
     {
         title: 'Test Water Parameters',
@@ -22,6 +25,8 @@ export const DEFAULT_TASKS: Omit<MaintenanceTask, 'id' | 'createdAt' | 'updatedA
         reminderOffsetHours: 12,
         notificationsEnabled: true,
         isPredefined: true,
+        tankId: null,
+        scope: 'tank',
     },
     {
         title: 'Clean Glass / Algae Scrub',
@@ -31,6 +36,8 @@ export const DEFAULT_TASKS: Omit<MaintenanceTask, 'id' | 'createdAt' | 'updatedA
         reminderOffsetHours: 12,
         notificationsEnabled: true,
         isPredefined: true,
+        tankId: null,
+        scope: 'tank',
     },
     {
         title: 'Feed Corals',
@@ -40,6 +47,8 @@ export const DEFAULT_TASKS: Omit<MaintenanceTask, 'id' | 'createdAt' | 'updatedA
         reminderOffsetHours: 6,
         notificationsEnabled: true,
         isPredefined: true,
+        tankId: null,
+        scope: 'tank',
     },
     {
         title: 'Top Off (ATO Check)',
@@ -49,6 +58,8 @@ export const DEFAULT_TASKS: Omit<MaintenanceTask, 'id' | 'createdAt' | 'updatedA
         reminderOffsetHours: 6,
         notificationsEnabled: true,
         isPredefined: true,
+        tankId: null,
+        scope: 'tank',
     },
     {
         title: 'Clean Filter Socks / Media',
@@ -58,6 +69,8 @@ export const DEFAULT_TASKS: Omit<MaintenanceTask, 'id' | 'createdAt' | 'updatedA
         reminderOffsetHours: 24,
         notificationsEnabled: true,
         isPredefined: true,
+        tankId: null,
+        scope: 'tank',
     },
     {
         title: 'Dose Calcium & Alkalinity',
@@ -67,6 +80,8 @@ export const DEFAULT_TASKS: Omit<MaintenanceTask, 'id' | 'createdAt' | 'updatedA
         reminderOffsetHours: 6,
         notificationsEnabled: true,
         isPredefined: true,
+        tankId: null,
+        scope: 'tank',
     },
     {
         title: 'Clean Protein Skimmer',
@@ -76,6 +91,8 @@ export const DEFAULT_TASKS: Omit<MaintenanceTask, 'id' | 'createdAt' | 'updatedA
         reminderOffsetHours: 12,
         notificationsEnabled: true,
         isPredefined: true,
+        tankId: null,
+        scope: 'tank',
     },
     {
         title: 'Inspect Livestock Health',
@@ -85,6 +102,8 @@ export const DEFAULT_TASKS: Omit<MaintenanceTask, 'id' | 'createdAt' | 'updatedA
         reminderOffsetHours: 6,
         notificationsEnabled: true,
         isPredefined: true,
+        tankId: null,
+        scope: 'tank',
     },
     {
         title: 'Clean Pumps & Powerheads',
@@ -94,6 +113,8 @@ export const DEFAULT_TASKS: Omit<MaintenanceTask, 'id' | 'createdAt' | 'updatedA
         reminderOffsetHours: 48,
         notificationsEnabled: true,
         isPredefined: true,
+        tankId: null,
+        scope: 'tank',
     },
     {
         title: 'Replace Carbon / GFO Media',
@@ -103,6 +124,8 @@ export const DEFAULT_TASKS: Omit<MaintenanceTask, 'id' | 'createdAt' | 'updatedA
         reminderOffsetHours: 48,
         notificationsEnabled: true,
         isPredefined: true,
+        tankId: null,
+        scope: 'tank',
     },
     {
         title: 'Calibrate Probes',
@@ -112,5 +135,92 @@ export const DEFAULT_TASKS: Omit<MaintenanceTask, 'id' | 'createdAt' | 'updatedA
         reminderOffsetHours: 48,
         notificationsEnabled: true,
         isPredefined: true,
+        tankId: null,
+        scope: 'tank',
+    },
+
+    // ── Global tasks (cross-tank) ──────────────────────────
+    {
+        title: 'Mix Saltwater Batch',
+        description: 'Mix RODI + reef salt to target salinity. Aerate & heat 24h before use.',
+        recurrenceInterval: 1,
+        recurrenceUnit: 'weeks',
+        reminderOffsetHours: 24,
+        notificationsEnabled: true,
+        isPredefined: true,
+        tankId: null,
+        scope: 'global',
+    },
+    {
+        title: 'Check RODI Filter TDS',
+        description: 'Test TDS of RODI output. Replace filters/membrane when >5 TDS.',
+        recurrenceInterval: 1,
+        recurrenceUnit: 'months',
+        reminderOffsetHours: 48,
+        notificationsEnabled: true,
+        isPredefined: true,
+        tankId: null,
+        scope: 'global',
+    },
+    {
+        title: 'Inspect Equipment',
+        description: 'Check return pump, heater, ATO, powerheads for wear or malfunction.',
+        recurrenceInterval: 1,
+        recurrenceUnit: 'months',
+        reminderOffsetHours: 48,
+        notificationsEnabled: true,
+        isPredefined: true,
+        tankId: null,
+        scope: 'global',
+    },
+
+    // ── Triggered tasks (per-tank, threshold-based) ────────
+    {
+        title: 'Emergency Water Change',
+        description: 'Ammonia detected — perform 25-50% water change immediately.',
+        recurrenceInterval: undefined,
+        recurrenceUnit: undefined,
+        reminderOffsetHours: 0,
+        notificationsEnabled: true,
+        isPredefined: true,
+        tankId: null,
+        scope: 'tank',
+        triggerThreshold: {
+            parameterId: 'ammonia',
+            operator: 'above',
+            value: 0.25,
+        },
+    },
+    {
+        title: 'Reduce Nitrates',
+        description: 'Nitrates elevated — increase water changes or adjust feeding.',
+        recurrenceInterval: undefined,
+        recurrenceUnit: undefined,
+        reminderOffsetHours: 0,
+        notificationsEnabled: true,
+        isPredefined: true,
+        tankId: null,
+        scope: 'tank',
+        triggerThreshold: {
+            parameterId: 'nitrate',
+            operator: 'above',
+            value: 20,
+        },
+    },
+    {
+        title: 'Dose Alkalinity',
+        description: 'Alkalinity low — dose buffer per calculator. Retest in 4 hours.',
+        recurrenceInterval: undefined,
+        recurrenceUnit: undefined,
+        reminderOffsetHours: 0,
+        notificationsEnabled: true,
+        isPredefined: true,
+        tankId: null,
+        scope: 'tank',
+        triggerThreshold: {
+            parameterId: 'alkalinity',
+            operator: 'below',
+            value: 7,
+        },
     },
 ];

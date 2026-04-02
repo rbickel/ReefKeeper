@@ -4,21 +4,23 @@ import * as taskService from '../services/taskService';
 import * as notificationService from '../services/notificationService';
 import { DEFAULT_TASKS } from '../constants/DefaultTasks';
 
-export function useTasks() {
+export function useTasks(tankId?: string) {
     const [tasks, setTasks] = useState<MaintenanceTask[]>([]);
     const [loading, setLoading] = useState(true);
 
     const refresh = useCallback(async () => {
         setLoading(true);
         try {
-            const data = await taskService.getTasks();
+            const data = tankId
+                ? await taskService.getTasksByTank(tankId)
+                : await taskService.getTasks();
             setTasks(data);
         } catch (error) {
             console.error('Failed to load tasks:', error);
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [tankId]);
 
     const initializeDefaults = useCallback(async () => {
         const initialized = await taskService.isInitialized();

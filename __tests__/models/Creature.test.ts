@@ -1,4 +1,4 @@
-import { createCreature, CREATURE_TYPE_LABELS, CREATURE_TYPE_ICONS, CreatureType } from '../../models/Creature';
+import { createCreature, CREATURE_TYPE_LABELS, CREATURE_TYPE_ICONS, CreatureType, CareLevel, CARE_LEVEL_LABELS } from '../../models/Creature';
 
 describe('Creature', () => {
     describe('createCreature', () => {
@@ -101,6 +101,102 @@ describe('Creature', () => {
             types.forEach(type => {
                 expect(CREATURE_TYPE_ICONS[type]).toBeDefined();
                 expect(typeof CREATURE_TYPE_ICONS[type]).toBe('string');
+            });
+        });
+    });
+
+    describe('new Phase 1 fields', () => {
+        it('should create a creature with tankId', () => {
+            const creature = createCreature({
+                name: 'Nemo',
+                species: 'Clownfish',
+                type: 'fish',
+                tankId: 'tank-1',
+            });
+
+            expect(creature.tankId).toBe('tank-1');
+        });
+
+        it('should create a creature with careLevel', () => {
+            const creature = createCreature({
+                name: 'Tang',
+                species: 'Yellow Tang',
+                type: 'fish',
+                careLevel: 'expert',
+            });
+
+            expect(creature.careLevel).toBe('expert');
+        });
+
+        it('should default careLevel to intermediate', () => {
+            const creature = createCreature({
+                name: 'Nemo',
+                species: 'Clownfish',
+                type: 'fish',
+            });
+
+            expect(creature.careLevel).toBe('intermediate');
+        });
+
+        it('should create a creature with compatibilityNotes', () => {
+            const creature = createCreature({
+                name: 'Flame Angel',
+                species: 'Centropyge loricula',
+                type: 'fish',
+                compatibilityNotes: 'May nip LPS/SPS coral',
+            });
+
+            expect(creature.compatibilityNotes).toBe('May nip LPS/SPS coral');
+        });
+
+        it('should create a creature with minTankSizeLiters', () => {
+            const creature = createCreature({
+                name: 'Yellow Tang',
+                species: 'Zebrasoma flavescens',
+                type: 'fish',
+                minTankSizeLiters: 284,
+            });
+
+            expect(creature.minTankSizeLiters).toBe(284);
+        });
+
+        it('should default minTankSizeLiters to undefined', () => {
+            const creature = createCreature({
+                name: 'Nemo',
+                species: 'Clownfish',
+                type: 'fish',
+            });
+
+            expect(creature.minTankSizeLiters).toBeUndefined();
+        });
+
+        it('should support all care levels', () => {
+            const levels: CareLevel[] = ['beginner', 'intermediate', 'expert'];
+
+            levels.forEach(level => {
+                const creature = createCreature({
+                    name: 'Test',
+                    species: 'Test Species',
+                    type: 'fish',
+                    careLevel: level,
+                });
+                expect(creature.careLevel).toBe(level);
+            });
+        });
+    });
+
+    describe('CARE_LEVEL_LABELS', () => {
+        it('should have labels for all care levels', () => {
+            expect(CARE_LEVEL_LABELS.beginner).toBe('🟢 Beginner');
+            expect(CARE_LEVEL_LABELS.intermediate).toBe('🟡 Intermediate');
+            expect(CARE_LEVEL_LABELS.expert).toBe('🔴 Expert');
+        });
+
+        it('should have labels for all CareLevel values', () => {
+            const levels: CareLevel[] = ['beginner', 'intermediate', 'expert'];
+            levels.forEach(level => {
+                expect(CARE_LEVEL_LABELS[level]).toBeDefined();
+                expect(typeof CARE_LEVEL_LABELS[level]).toBe('string');
             });
         });
     });

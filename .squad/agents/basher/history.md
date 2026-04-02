@@ -2,6 +2,21 @@
 
 ## Learnings
 
+### 2026-04-02: Metric-first unit conversion — test suite update
+- **Updated 6 existing test files** for metric-first defaults:
+  - `__tests__/models/Tank.test.ts` — `volumeGallons`→`volumeLiters`, `totalSystemGallons`→`totalSystemLiters`, values converted (75gal→284L, 40→151, 20→76, 10→38, 50→189, 100→378, 55→208)
+  - `__tests__/models/Creature.test.ts` — `minTankSizeGallons`→`minTankSizeLiters` (75→284)
+  - `__tests__/models/WaterParameter.test.ts` — Temperature ranges from °F to °C (reefLow 76→24.4, reefHigh 80→26.7, criticalLow 74→23.3, criticalHigh 82→27.8), all getParameterStatus temp test values updated
+  - `__tests__/services/tankService.test.ts` — All Tank objects and addTank calls: `volumeGallons`→`volumeLiters`
+  - `__tests__/services/migrationService.test.ts` — `volumeGallons: 75`→`volumeLiters: 284`, added `getTanks.mockResolvedValue([])` (production migration now calls getTanks for idempotency check)
+  - `__tests__/services/waterLogService.test.ts` — Temperature reading values from °F to °C (78.2→25.7, 78.0→25.6, 77.5→25.3, 77.0→25.0, 80.0→26.7)
+- **Created 2 new test files:**
+  - `__tests__/models/UnitPreference.test.ts` — DEFAULT_UNIT_PREFERENCES (metric), celsiusToFahrenheit, fahrenheitToCelsius, litersToGallons, gallonsToLiters, convertTemperatureForDisplay/Storage, convertVolumeForDisplay/Storage, formatTemperature, formatVolume; edge cases (0, negatives, large volumes)
+  - `__tests__/services/unitPreferenceService.test.ts` — getUnitPreferences (defaults + stored), saveUnitPreferences (persist to AsyncStorage)
+- **Pattern notes:** Used `toBeCloseTo(expected, precision)` for all floating-point conversion assertions. Used `toBe()` for exact matches.
+- **Migration test fix:** Production migrationService now calls `tankService.getTanks()` at start for idempotency — tests needed mock for getTanks returning `[]`.
+- **Pre-existing failure:** Task.test.ts `getTaskUrgency` timing test fails (timezone issue) — not related to metric changes.
+
 ### 2026-04-02: Phase 1 test suite written
 - **New test files created (6):**
   - `__tests__/models/Tank.test.ts` — createTank, TANK_TYPE_LABELS (all 12 types), defaults, salinity units, timestamps

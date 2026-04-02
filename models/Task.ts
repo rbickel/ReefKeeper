@@ -1,5 +1,15 @@
 export type RecurrenceUnit = 'days' | 'weeks' | 'months';
 
+export type TaskScope = 'tank' | 'global';
+
+import { WaterParameterId } from './WaterParameter';
+
+export interface ParameterThreshold {
+    parameterId: WaterParameterId;
+    operator: 'above' | 'below';
+    value: number;
+}
+
 export interface TaskCompletionRecord {
     id: string;
     taskId: string;
@@ -19,6 +29,9 @@ export interface MaintenanceTask {
     isPredefined: boolean;
     completionHistory: TaskCompletionRecord[];
     isCompleted?: boolean; // for non-recurring tasks
+    tankId: string | null;
+    scope: TaskScope;
+    triggerThreshold?: ParameterThreshold;
     createdAt: string;
     updatedAt: string;
 }
@@ -35,6 +48,9 @@ export function createTask(partial: Partial<MaintenanceTask> & Pick<MaintenanceT
         notificationsEnabled: true,
         isPredefined: false,
         completionHistory: [],
+        tankId: null,
+        scope: 'tank',
+        triggerThreshold: undefined,
         createdAt: now,
         updatedAt: now,
         ...partial,

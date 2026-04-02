@@ -59,3 +59,8 @@ export async function deleteCreature(id: string): Promise<void> {
     const creatures = await getCreatures();
     await saveCreatures(creatures.filter((c) => c.id !== id));
 }
+
+export async function getCreaturesByTank(tankId: string): Promise<Creature[]> {
+    const creatures = await getCreatures();
+    return creatures.filter((c) => c.tankId === tankId);
+}

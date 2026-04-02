@@ -5,7 +5,7 @@ import { Creature } from '../models/Creature';
  * Represents a realistic mixed reef aquarium stocking list.
  * Users can modify, archive, or delete these and add their own.
  */
-export const DEFAULT_CREATURES: Omit<Creature, 'id' | 'createdAt' | 'updatedAt' | 'dateAcquired'>[] = [
+export const DEFAULT_CREATURES: Omit<Creature, 'id' | 'createdAt' | 'updatedAt' | 'dateAcquired' | 'tankId'>[] = [
     // ── Fish ──────────────────────────────────────────────
     {
         name: 'Nemo',
@@ -15,6 +15,9 @@ export const DEFAULT_CREATURES: Omit<Creature, 'id' | 'createdAt' | 'updatedAt' 
         notes: 'Mated pair – hosting the Bubble Tip Anemone. Hardy and reef-safe.',
         healthLog: [],
         archived: false,
+        careLevel: 'beginner',
+        compatibilityNotes: 'Reef-safe. May host anemones. Semi-aggressive to other clowns.',
+        minTankSizeLiters: 76,
     },
     {
         name: 'Flash',
@@ -24,6 +27,9 @@ export const DEFAULT_CREATURES: Omit<Creature, 'id' | 'createdAt' | 'updatedAt' 
         notes: 'Peaceful, stays near rock work. Great purple & yellow coloration.',
         healthLog: [],
         archived: false,
+        careLevel: 'beginner',
+        compatibilityNotes: 'Peaceful. Stays near caves. May squabble with similar-shaped fish.',
+        minTankSizeLiters: 114,
     },
     {
         name: 'Blaze',
@@ -33,6 +39,9 @@ export const DEFAULT_CREATURES: Omit<Creature, 'id' | 'createdAt' | 'updatedAt' 
         notes: 'May nip at LPS corals – monitor closely. Feeds on algae and mysis.',
         healthLog: [],
         archived: false,
+        careLevel: 'intermediate',
+        compatibilityNotes: 'May nip LPS/SPS coral. Monitor with expensive corals.',
+        minTankSizeLiters: 208,
     },
     {
         name: 'Dart',
@@ -42,6 +51,9 @@ export const DEFAULT_CREATURES: Omit<Creature, 'id' | 'createdAt' | 'updatedAt' 
         notes: 'Shy jumper – needs a tight-fitting lid. Beautiful red/white gradient.',
         healthLog: [],
         archived: false,
+        careLevel: 'beginner',
+        compatibilityNotes: 'Peaceful. Known jumper — secure lid required. Keep singly or in pairs.',
+        minTankSizeLiters: 76,
     },
     {
         name: 'Blenny',
@@ -51,15 +63,21 @@ export const DEFAULT_CREATURES: Omit<Creature, 'id' | 'createdAt' | 'updatedAt' 
         notes: 'Algae grazer, perches on rocks. Tons of personality.',
         healthLog: [],
         archived: false,
+        careLevel: 'beginner',
+        compatibilityNotes: 'Reef-safe algae grazer. May be territorial with similar blennies.',
+        minTankSizeLiters: 38,
     },
     {
         name: 'Tang',
         species: 'Yellow Tang (Zebrasoma flavescens)',
         type: 'fish',
         quantity: 1,
-        notes: 'Needs a tank of 75 gal+. Excellent algae eater, feeds on nori sheets.',
+        notes: 'Needs a tank of 284 L+. Excellent algae eater, feeds on nori sheets.',
         healthLog: [],
         archived: false,
+        careLevel: 'intermediate',
+        compatibilityNotes: 'Reef-safe. Can be aggressive to other tangs. Needs swimming room.',
+        minTankSizeLiters: 284,
     },
     {
         name: 'Mandarin',
@@ -69,6 +87,9 @@ export const DEFAULT_CREATURES: Omit<Creature, 'id' | 'createdAt' | 'updatedAt' 
         notes: 'Requires a mature tank with copepod population. Slow, deliberate feeder.',
         healthLog: [],
         archived: false,
+        careLevel: 'expert',
+        compatibilityNotes: 'Needs mature tank (6+ months) with copepod population. Slow feeder.',
+        minTankSizeLiters: 114,
     },
 
     // ── Corals ────────────────────────────────────────────
@@ -80,6 +101,9 @@ export const DEFAULT_CREATURES: Omit<Creature, 'id' | 'createdAt' | 'updatedAt' 
         notes: 'LPS – medium flow, moderate light. Sweeper tentacles can sting neighbors.',
         healthLog: [],
         archived: false,
+        careLevel: 'intermediate',
+        compatibilityNotes: 'LPS. 6"+ sweeper tentacles — keep distance from neighbors.',
+        minTankSizeLiters: undefined,
     },
     {
         name: 'Frogspawn',
@@ -89,6 +113,9 @@ export const DEFAULT_CREATURES: Omit<Creature, 'id' | 'createdAt' | 'updatedAt' 
         notes: 'LPS – similar care to Hammer. Give 6″ spacing from other corals.',
         healthLog: [],
         archived: false,
+        careLevel: 'intermediate',
+        compatibilityNotes: 'LPS. Sweeper tentacles — give 6"+ spacing from neighbors.',
+        minTankSizeLiters: undefined,
     },
     {
         name: 'Zoa Garden',
@@ -98,6 +125,9 @@ export const DEFAULT_CREATURES: Omit<Creature, 'id' | 'createdAt' | 'updatedAt' 
         notes: 'Mixed color morphs on a frag plug. Low-moderate light, low flow. Handle with gloves (palytoxin).',
         healthLog: [],
         archived: false,
+        careLevel: 'beginner',
+        compatibilityNotes: 'Soft coral. Handle with gloves — contains palytoxin. Hardy spreader.',
+        minTankSizeLiters: undefined,
     },
     {
         name: 'Montipora Cap',
@@ -107,6 +137,9 @@ export const DEFAULT_CREATURES: Omit<Creature, 'id' | 'createdAt' | 'updatedAt' 
         notes: 'SPS – plating growth form, needs stable alk/cal and high light.',
         healthLog: [],
         archived: false,
+        careLevel: 'intermediate',
+        compatibilityNotes: 'SPS. Needs stable alkalinity and calcium. Good beginner SPS.',
+        minTankSizeLiters: undefined,
     },
     {
         name: 'Green Slimer',
@@ -116,6 +149,9 @@ export const DEFAULT_CREATURES: Omit<Creature, 'id' | 'createdAt' | 'updatedAt' 
         notes: 'SPS – fast grower under high light & strong flow. Good beginner Acro.',
         healthLog: [],
         archived: false,
+        careLevel: 'expert',
+        compatibilityNotes: 'SPS. Demands pristine water, high light, strong flow. Sensitive to swings.',
+        minTankSizeLiters: undefined,
     },
     {
         name: 'Duncan Colony',
@@ -125,6 +161,9 @@ export const DEFAULT_CREATURES: Omit<Creature, 'id' | 'createdAt' | 'updatedAt' 
         notes: 'LPS – feeds well on mysis. Low-moderate light, moderate flow.',
         healthLog: [],
         archived: false,
+        careLevel: 'beginner',
+        compatibilityNotes: 'LPS. Peaceful, short tentacles. Great beginner coral.',
+        minTankSizeLiters: undefined,
     },
     {
         name: 'Candy Cane',
@@ -134,6 +173,9 @@ export const DEFAULT_CREATURES: Omit<Creature, 'id' | 'createdAt' | 'updatedAt' 
         notes: 'Beginner-friendly LPS. Moderate light, low flow. Responds well to target feeding.',
         healthLog: [],
         archived: false,
+        careLevel: 'beginner',
+        compatibilityNotes: 'LPS. Very peaceful, short tentacles. Hardy and beginner-friendly.',
+        minTankSizeLiters: undefined,
     },
     {
         name: 'Torch Coral',
@@ -143,6 +185,9 @@ export const DEFAULT_CREATURES: Omit<Creature, 'id' | 'createdAt' | 'updatedAt' 
         notes: 'LPS – medium flow, moderate light. Long sweeper tentacles, needs space.',
         healthLog: [],
         archived: false,
+        careLevel: 'intermediate',
+        compatibilityNotes: 'LPS. Long sweeper tentacles — needs 6"+ spacing. Can sting neighbors.',
+        minTankSizeLiters: undefined,
     },
     {
         name: 'Mushroom Rock',
@@ -152,6 +197,9 @@ export const DEFAULT_CREATURES: Omit<Creature, 'id' | 'createdAt' | 'updatedAt' 
         notes: 'Soft coral – very hardy. Low light, low flow. Spreads easily.',
         healthLog: [],
         archived: false,
+        careLevel: 'beginner',
+        compatibilityNotes: 'Soft coral. Very hardy. May spread quickly — keep on isolated rock.',
+        minTankSizeLiters: undefined,
     },
     {
         name: 'GSP Mat',
@@ -161,6 +209,9 @@ export const DEFAULT_CREATURES: Omit<Creature, 'id' | 'createdAt' | 'updatedAt' 
         notes: 'Soft coral – fast grower, keep on an isolated rock or back wall to prevent takeover.',
         healthLog: [],
         archived: false,
+        careLevel: 'beginner',
+        compatibilityNotes: 'Soft coral. Will overgrow everything — isolate on separate rock or back wall.',
+        minTankSizeLiters: undefined,
     },
 
     // ── Invertebrates ─────────────────────────────────────
@@ -172,6 +223,9 @@ export const DEFAULT_CREATURES: Omit<Creature, 'id' | 'createdAt' | 'updatedAt' 
         notes: 'Clean-up crew – Trochus eat algae on glass/rocks, Nassarius sift sand.',
         healthLog: [],
         archived: false,
+        careLevel: 'beginner',
+        compatibilityNotes: 'Reef-safe clean-up crew. Peaceful. Essential for algae control.',
+        minTankSizeLiters: 38,
     },
     {
         name: 'Hermits',
@@ -181,6 +235,9 @@ export const DEFAULT_CREATURES: Omit<Creature, 'id' | 'createdAt' | 'updatedAt' 
         notes: 'Clean-up crew – keep extra empty shells so they don\'t attack snails.',
         healthLog: [],
         archived: false,
+        careLevel: 'beginner',
+        compatibilityNotes: 'Reef-safe CUC. Provide extra shells or they may attack snails.',
+        minTankSizeLiters: 38,
     },
     {
         name: 'Peppermint Shrimp',
@@ -190,6 +247,9 @@ export const DEFAULT_CREATURES: Omit<Creature, 'id' | 'createdAt' | 'updatedAt' 
         notes: 'Eats Aiptasia anemones. Nocturnal – hides in rock work during the day.',
         healthLog: [],
         archived: false,
+        careLevel: 'beginner',
+        compatibilityNotes: 'Eats Aiptasia anemones. Reef-safe. Peaceful.',
+        minTankSizeLiters: 38,
     },
     {
         name: 'Skunk Cleaner',
@@ -198,6 +258,9 @@ export const DEFAULT_CREATURES: Omit<Creature, 'id' | 'createdAt' | 'updatedAt' 
         quantity: 1,
         notes: 'Cleaning station for fish. Hand-feeds readily. Sensitive to copper.',
         healthLog: [],
+        careLevel: 'beginner',
+        compatibilityNotes: 'Reef-safe cleaner. Shy; needs caves. Sensitive to copper medications.',
+        minTankSizeLiters: 76,
         archived: false,
     },
     {
@@ -208,6 +271,9 @@ export const DEFAULT_CREATURES: Omit<Creature, 'id' | 'createdAt' | 'updatedAt' 
         notes: 'Hosts the clownfish pair. Needs stable params and moderate-high light. May wander.',
         healthLog: [],
         archived: false,
+        careLevel: 'intermediate',
+        compatibilityNotes: 'Stings nearby corals. May wander. Needs stable params 6+ months.',
+        minTankSizeLiters: 151,
     },
     {
         name: 'Tuxedo Urchin',
@@ -217,6 +283,9 @@ export const DEFAULT_CREATURES: Omit<Creature, 'id' | 'createdAt' | 'updatedAt' 
         notes: 'Excellent algae grazer. Carries fragments and shells on its back. Reef-safe.',
         healthLog: [],
         archived: false,
+        careLevel: 'beginner',
+        compatibilityNotes: 'Reef-safe algae grazer. May knock over unsecured frags.',
+        minTankSizeLiters: 76,
     },
     {
         name: 'Emerald Crab',
@@ -226,5 +295,8 @@ export const DEFAULT_CREATURES: Omit<Creature, 'id' | 'createdAt' | 'updatedAt' 
         notes: 'Eats bubble algae (Valonia). Generally reef-safe but may nip corals if underfed.',
         healthLog: [],
         archived: false,
+        careLevel: 'beginner',
+        compatibilityNotes: 'Eats bubble algae. Generally reef-safe but may nip corals if underfed.',
+        minTankSizeLiters: 76,
     },
 ];
