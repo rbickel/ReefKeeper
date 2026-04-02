@@ -33,6 +33,46 @@
 - New services: tankService, waterLogService, migrationService
 - New hooks: useTanks, useWaterLogs
 
+### 2026-04-02T00:01:00Z: User Directive — Metric Defaults
+
+**By:** Raphael B (via Copilot)
+**Status:** Accepted
+
+Default to metric units (liters, Celsius) throughout the app and documentation. Add a user setting to toggle between metric and imperial. European users are the primary audience.
+
+### 2026-04-02T00:02:00Z: Metric-First Architecture + Unit Preference System
+
+**By:** Rusty (Lead)
+**Status:** Implemented
+
+1. **Storage layer is always metric.** Temperatures stored as °C, volumes as liters. No exceptions.
+2. **Conversion at display/input boundaries only.** The `UnitPreference` model provides conversion utilities used by UI components.
+3. **Default is metric** (`UnitSystem = 'metric'`). Imperial users toggle in Settings.
+4. **Master toggle + individual overrides.** `setSystem('imperial')` flips both temp and volume, but users can independently set `temperature` or `volume` units.
+5. **No data migration needed for unit switch.** Since stored values are always metric, toggling the preference is a display-only change.
+
+**Files created:** `models/UnitPreference.ts`, `services/unitPreferenceService.ts`, `hooks/useUnitPreferences.ts`
+**Files modified:** Tank.ts (volumeLiters), Creature.ts (minTankSizeLiters), WaterParameter.ts (°C ranges), migrationService.ts, useTanks.ts, DefaultCreatures.ts, FEATURE_SPEC.md
+
+### 2026-04-02T00:01:00Z: Phase 1 Foundation — Backend Implementation Decisions
+
+**By:** Livingston (Backend Dev)
+**Status:** Implemented
+
+1. Hooks accept optional tankId — backward compatible for screens not yet updated.
+2. DefaultCreatures/DefaultTasks use tankId: null — actual tankId stamped by hook initialization at runtime.
+3. Migration is idempotent — checks existing tankId and default tank before migrating. Safe to re-run.
+4. evaluateThresholds returns TriggeredAlert[] for dashboard alerts after waterlog saves.
+
+### 2026-04-02T00:01:00Z: Phase 1 Test Approach Decisions
+
+**By:** Basher (Tester)
+**Status:** Implemented
+
+1. migrationService tests mock dependent services at module level (not AsyncStorage directly) — migration orchestrates across services.
+2. getParameterStatus boundary tests assert exact critical boundary values return 'warning' (strict inequality < / >).
+3. getTasksByTank tests verify global tasks (scope: 'global') always included regardless of tankId filter.
+
 ## Governance
 
 - All meaningful changes require team consensus
