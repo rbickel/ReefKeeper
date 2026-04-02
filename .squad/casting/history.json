@@ -1,0 +1,21 @@
+{
+  "universe_usage_history": [
+    {
+      "universe": "Ocean's Eleven",
+      "assignment_id": "reefkeeper-init-001",
+      "used_at": "2026-04-02T00:00:00Z"
+    }
+  ],
+  "assignment_cast_snapshots": {
+    "reefkeeper-init-001": {
+      "universe": "Ocean's Eleven",
+      "agents": {
+        "lead": "Rusty",
+        "frontend": "Linus",
+        "backend": "Livingston",
+        "tester": "Basher"
+      },
+      "created_at": "2026-04-02T00:00:00Z"
+    }
+  }
+}
