@@ -58,8 +58,8 @@ export default function DashboardScreen() {
             return;
         }
         const readings: WaterReading[] = [];
-        latestReadings.forEach((value, parameterId) => {
-            readings.push({ parameterId: parameterId as any, value });
+        latestReadings.forEach((reading, parameterId) => {
+            readings.push({ parameterId: parameterId as any, value: reading.value });
         });
         evaluateThresholds(activeTank.id, readings)
             .then(setTriggeredAlerts)

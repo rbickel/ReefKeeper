@@ -80,6 +80,8 @@ describe('useTasks', () => {
                 notificationsEnabled: true,
                 isPredefined: false,
                 completionHistory: [],
+                tankId: 'tank-1',
+                scope: 'tank' as const,
                 createdAt: '2026-01-01',
                 updatedAt: '2026-01-01',
             },
@@ -135,6 +137,8 @@ describe('useTasks', () => {
             reminderOffsetHours: 24,
             notificationsEnabled: true,
             isPredefined: false,
+            tankId: 'tank-1',
+            scope: 'tank' as const,
         };
 
         const addedTask = {
@@ -173,6 +177,8 @@ describe('useTasks', () => {
             reminderOffsetHours: 24,
             notificationsEnabled: false,
             isPredefined: false,
+            tankId: 'tank-1',
+            scope: 'tank' as const,
         };
 
         const addedTask = {

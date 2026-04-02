@@ -41,6 +41,8 @@ describe('taskService', () => {
                     reminderOffsetHours: 24,
                     notificationsEnabled: true,
                     isPredefined: false,
+                    tankId: null,
+                    scope: 'global' as const,
                     completionHistory: [],
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString(),
@@ -68,6 +70,8 @@ describe('taskService', () => {
                 reminderOffsetHours: 24,
                 notificationsEnabled: true,
                 isPredefined: false,
+                tankId: null,
+                scope: 'global' as const,
             };
 
             const result = await taskService.addTask(newTaskData);
@@ -93,6 +97,8 @@ describe('taskService', () => {
                 reminderOffsetHours: 48,
                 notificationsEnabled: true,
                 isPredefined: false,
+                tankId: null,
+                scope: 'global' as const,
             };
 
             const result = await taskService.addTask(taskData);
@@ -113,6 +119,8 @@ describe('taskService', () => {
                 reminderOffsetHours: 24,
                 notificationsEnabled: true,
                 isPredefined: false,
+                tankId: null,
+                scope: 'global' as const,
             };
 
             const result = await taskService.addTask(taskData);
@@ -131,6 +139,8 @@ describe('taskService', () => {
                 reminderOffsetHours: 24,
                 notificationsEnabled: true,
                 isPredefined: false,
+                tankId: null,
+                scope: 'global' as const,
             };
 
             const result = await taskService.addTask(taskData);
@@ -150,6 +160,8 @@ describe('taskService', () => {
                 reminderOffsetHours: 24,
                 notificationsEnabled: true,
                 isPredefined: false,
+                tankId: null,
+                scope: 'global' as const,
                 completionHistory: [],
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString(),
@@ -165,6 +177,8 @@ describe('taskService', () => {
                 reminderOffsetHours: 24,
                 notificationsEnabled: true,
                 isPredefined: false,
+                tankId: null,
+                scope: 'global' as const,
             };
 
             await taskService.addTask(taskData);
@@ -195,6 +209,8 @@ describe('taskService', () => {
                 reminderOffsetHours: 24,
                 notificationsEnabled: true,
                 isPredefined: false,
+                tankId: null,
+                scope: 'global' as const,
                 completionHistory: [],
                 createdAt: initialDate.toISOString(),
                 updatedAt: initialDate.toISOString(),
@@ -242,6 +258,8 @@ describe('taskService', () => {
                 reminderOffsetHours: 24,
                 notificationsEnabled: true,
                 isPredefined: false,
+                tankId: null,
+                scope: 'global' as const,
                 completionHistory: [],
                 createdAt: initialDate.toISOString(),
                 updatedAt: initialDate.toISOString(),
@@ -280,6 +298,8 @@ describe('taskService', () => {
                 reminderOffsetHours: 24,
                 notificationsEnabled: true,
                 isPredefined: false,
+                tankId: null,
+                scope: 'global' as const,
                 completionHistory: [],
                 createdAt: now.toISOString(),
                 updatedAt: now.toISOString(),
@@ -310,6 +330,8 @@ describe('taskService', () => {
                 reminderOffsetHours: 24,
                 notificationsEnabled: true,
                 isPredefined: false,
+                tankId: null,
+                scope: 'global' as const,
                 completionHistory: [],
                 createdAt: now.toISOString(),
                 updatedAt: now.toISOString(),
@@ -339,6 +361,8 @@ describe('taskService', () => {
                 reminderOffsetHours: 24,
                 notificationsEnabled: true,
                 isPredefined: false,
+                tankId: null,
+                scope: 'global' as const,
                 completionHistory: [],
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString(),
@@ -364,6 +388,8 @@ describe('taskService', () => {
                 reminderOffsetHours: 24,
                 notificationsEnabled: true,
                 isPredefined: false,
+                tankId: null,
+                scope: 'global' as const,
                 completionHistory: [],
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString(),
@@ -388,6 +414,8 @@ describe('taskService', () => {
                 reminderOffsetHours: 24,
                 notificationsEnabled: true,
                 isPredefined: false,
+                tankId: null,
+                scope: 'global' as const,
                 completionHistory: [
                     {
                         id: 'completion-1',
@@ -457,6 +485,8 @@ describe('taskService', () => {
                     reminderOffsetHours: 24,
                     notificationsEnabled: true,
                     isPredefined: false,
+                    tankId: null,
+                    scope: 'global' as const,
                     completionHistory: [],
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString(),
@@ -626,11 +656,11 @@ describe('taskService', () => {
                     reminderOffsetHours: 24,
                     notificationsEnabled: true,
                     isPredefined: false,
+                    tankId: 'tank-1',
+                    scope: 'tank' as const,
                     completionHistory: [],
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString(),
-                    tankId: 'tank-1',
-                    scope: 'tank',
                     triggerThreshold: {
                         parameterId: 'ammonia',
                         operator: 'above',
@@ -647,11 +677,11 @@ describe('taskService', () => {
                     reminderOffsetHours: 24,
                     notificationsEnabled: true,
                     isPredefined: false,
+                    tankId: 'tank-1',
+                    scope: 'tank' as const,
                     completionHistory: [],
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString(),
-                    tankId: 'tank-1',
-                    scope: 'tank',
                     triggerThreshold: {
                         parameterId: 'alkalinity',
                         operator: 'below',
@@ -662,8 +692,8 @@ describe('taskService', () => {
             (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify(mockTasks));
 
             const readings = [
-                { parameterId: 'ammonia', value: 0.5 },   // above threshold
-                { parameterId: 'alkalinity', value: 6.5 }, // below threshold
+                { parameterId: 'ammonia' as const, value: 0.5 },   // above threshold
+                { parameterId: 'alkalinity' as const, value: 6.5 }, // below threshold
             ];
 
             const alerts = await taskService.evaluateThresholds('tank-1', readings);
@@ -685,11 +715,11 @@ describe('taskService', () => {
                     reminderOffsetHours: 24,
                     notificationsEnabled: true,
                     isPredefined: false,
+                    tankId: 'tank-1',
+                    scope: 'tank' as const,
                     completionHistory: [],
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString(),
-                    tankId: 'tank-1',
-                    scope: 'tank',
                     triggerThreshold: {
                         parameterId: 'ammonia',
                         operator: 'above',
@@ -700,7 +730,7 @@ describe('taskService', () => {
             (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify(mockTasks));
 
             const readings = [
-                { parameterId: 'ammonia', value: 0.0 },  // within threshold
+                { parameterId: 'ammonia' as const, value: 0.0 },  // within threshold
             ];
 
             const alerts = await taskService.evaluateThresholds('tank-1', readings);
@@ -720,18 +750,18 @@ describe('taskService', () => {
                     reminderOffsetHours: 24,
                     notificationsEnabled: true,
                     isPredefined: true,
+                    tankId: 'tank-1',
+                    scope: 'tank' as const,
                     completionHistory: [],
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString(),
-                    tankId: 'tank-1',
-                    scope: 'tank',
                     // no triggerThreshold
                 },
             ];
             (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify(mockTasks));
 
             const readings = [
-                { parameterId: 'nitrate', value: 50 },
+                { parameterId: 'nitrate' as const, value: 50 },
             ];
 
             const alerts = await taskService.evaluateThresholds('tank-1', readings);
@@ -751,11 +781,11 @@ describe('taskService', () => {
                     reminderOffsetHours: 24,
                     notificationsEnabled: true,
                     isPredefined: false,
+                    tankId: 'tank-1',
+                    scope: 'tank' as const,
                     completionHistory: [],
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString(),
-                    tankId: 'tank-1',
-                    scope: 'tank',
                     triggerThreshold: {
                         parameterId: 'nitrate',
                         operator: 'above',
@@ -767,7 +797,7 @@ describe('taskService', () => {
 
             // Reading for a different parameter — no nitrate reading
             const readings = [
-                { parameterId: 'temperature', value: 78.0 },
+                { parameterId: 'temperature' as const, value: 78.0 },
             ];
 
             const alerts = await taskService.evaluateThresholds('tank-1', readings);

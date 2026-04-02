@@ -26,11 +26,15 @@ export function useCreatures(tankId?: string) {
         if (!initialized) {
             const now = new Date().toISOString();
             for (const template of DEFAULT_CREATURES) {
-                await creatureService.addCreature({ ...template, dateAcquired: now });
+                await creatureService.addCreature({
+                    ...template,
+                    dateAcquired: now,
+                    tankId: tankId || 'default-tank'
+                });
             }
             await creatureService.markInitialized();
         }
-    }, []);
+    }, [tankId]);
 
     useEffect(() => {
         (async () => {
