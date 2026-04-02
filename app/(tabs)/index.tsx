@@ -9,6 +9,8 @@ import { useWaterLogs } from '../../hooks/useWaterLogs';
 import { useUnitPreferences } from '../../hooks/useUnitPreferences';
 import { getTaskUrgency } from '../../models/Task';
 import { CREATURE_TYPE_LABELS } from '../../models/Creature';
+import { WaterReading } from '../../models/WaterLog';
+import { evaluateThresholds, TriggeredAlert } from '../../services/taskService';
 import { WaterSummaryCard } from '../../components/WaterSummaryCard';
 import { AlertBanner } from '../../components/AlertBanner';
 import type { AppTheme } from '../../constants/Colors';
@@ -47,6 +49,22 @@ export default function DashboardScreen() {
     const overdueTasks = tasks.filter((t) => getTaskUrgency(t) === 'overdue');
     const todayTasks = tasks.filter((t) => getTaskUrgency(t) === 'today');
     const upcomingTasks = tasks.filter((t) => getTaskUrgency(t) === 'upcoming');
+
+    const [triggeredAlerts, setTriggeredAlerts] = React.useState<TriggeredAlert[]>([]);
+
+    React.useEffect(() => {
+        if (!activeTank || !latestReadings || latestReadings.size === 0) {
+            setTriggeredAlerts([]);
+            return;
+        }
+        const readings: WaterReading[] = [];
+        latestReadings.forEach((value, parameterId) => {
+            readings.push({ parameterId: parameterId as any, value });
+        });
+        evaluateThresholds(activeTank.id, readings)
+            .then(setTriggeredAlerts)
+            .catch(() => setTriggeredAlerts([]));
+    }, [latestReadings, activeTank]);
 
     const creatureCounts = creatures.reduce(
         (acc, c) => {
@@ -136,6 +154,25 @@ export default function DashboardScreen() {
 
                 {/* Water Parameters Summary */}
                 <AlertBanner latestReadings={latestReadings} temperatureUnit={preferences.temperature} />
+
+                {triggeredAlerts.length > 0 && (
+                    <Card style={[styles.card, { backgroundColor: theme.colors.surface }]} mode="elevated">
+                        <Card.Title title="⚡ Triggered Alerts" titleVariant="titleMedium" />
+                        <Card.Content>
+                            {triggeredAlerts.map((alert) => (
+                                <View key={alert.task.id} style={[styles.taskRow, { borderLeftColor: theme.custom.overdue }]}>
+                                    <Text variant="bodyMedium" style={{ color: theme.custom.overdue, fontWeight: '600' }}>
+                                        {alert.task.title}
+                                    </Text>
+                                    <Text variant="bodySmall" style={{ color: theme.colors.onSurfaceVariant, marginLeft: 8 }}>
+                                        {alert.message}
+                                    </Text>
+                                </View>
+                            ))}
+                        </Card.Content>
+                    </Card>
+                )}
+
                 <WaterSummaryCard latestReadings={latestReadings} temperatureUnit={preferences.temperature} />
                 <View style={styles.waterActions}>
                     <Button

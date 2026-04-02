@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, ScrollView, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, ScrollView, StyleSheet, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { Text, useTheme, TextInput, Button, ActivityIndicator, Surface } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { useTanks } from '../../hooks/useTanks';
@@ -8,9 +8,9 @@ import { useUnitPreferences } from '../../hooks/useUnitPreferences';
 import { WATER_PARAMETERS, WaterParameterId, getParameterStatus } from '../../models/WaterParameter';
 import { WaterReading } from '../../models/WaterLog';
 import {
-    convertTemperatureForDisplay,
     convertTemperatureForStorage,
 } from '../../models/UnitPreference';
+import { evaluateThresholds } from '../../services/taskService';
 import type { AppTheme } from '../../constants/Colors';
 
 const STATUS_EMOJI: Record<string, string> = {
@@ -69,6 +69,17 @@ export default function AddWaterLogScreen() {
                 readings,
                 notes: notes.trim(),
             });
+
+            // Evaluate threshold triggers
+            try {
+                const alerts = await evaluateThresholds(tankId, readings);
+                if (alerts.length > 0) {
+                    Alert.alert('⚡ Threshold Alerts', alerts.map((a) => a.message).join('\n'));
+                }
+            } catch (e) {
+                console.error('Threshold evaluation failed:', e);
+            }
+
             router.back();
         } catch (error) {
             console.error('Failed to save water log:', error);

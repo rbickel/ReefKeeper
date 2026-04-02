@@ -3,6 +3,7 @@ import { ScrollView, View, StyleSheet } from 'react-native';
 import { Text, useTheme, Card, Button, Divider, ActivityIndicator } from 'react-native-paper';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { MaintenanceTask, getTaskUrgency } from '../../models/Task';
+import { WATER_PARAMETERS } from '../../models/WaterParameter';
 import * as taskService from '../../services/taskService';
 import type { AppTheme } from '../../constants/Colors';
 
@@ -105,6 +106,23 @@ export default function TaskDetailScreen() {
                         <Text variant="labelMedium" style={{ color: theme.colors.onSurfaceVariant }}>Times completed</Text>
                         <Text variant="bodyMedium" style={{ color: theme.colors.primary, fontWeight: '600' }}>
                             {task.completionHistory.length}
+                        </Text>
+                    </View>
+                    <View style={styles.detailRow}>
+                        <Text variant="labelMedium" style={{ color: theme.colors.onSurfaceVariant }}>Scope</Text>
+                        <Text variant="bodyMedium" style={{ color: theme.colors.onSurface }}>
+                            {task.scope === 'global' ? '🌍 Global' : '🔗 This Tank'}
+                        </Text>
+                    </View>
+                    <View style={styles.detailRow}>
+                        <Text variant="labelMedium" style={{ color: theme.colors.onSurfaceVariant }}>Trigger</Text>
+                        <Text variant="bodyMedium" style={{ color: theme.colors.onSurface }}>
+                            {task.triggerThreshold
+                                ? (() => {
+                                    const param = WATER_PARAMETERS.find((p) => p.id === task.triggerThreshold!.parameterId);
+                                    return `${param?.label ?? task.triggerThreshold.parameterId} ${task.triggerThreshold.operator} ${task.triggerThreshold.value}${param?.unit ?? ''}`;
+                                })()
+                                : 'None'}
                         </Text>
                     </View>
                 </Card.Content>

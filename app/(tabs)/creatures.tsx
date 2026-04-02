@@ -91,6 +91,7 @@ export default function CreaturesScreen() {
                         <CreatureCard
                             creature={item}
                             onPress={() => router.push(`/creature/${item.id}`)}
+                            tankVolumeLiters={activeTank?.volumeLiters}
                         />
                     )}
                 />

@@ -1,15 +1,16 @@
 import React from 'react';
 import { Card, Text, useTheme, IconButton } from 'react-native-paper';
 import { View, StyleSheet, Image, Pressable } from 'react-native';
-import { Creature, CREATURE_TYPE_LABELS } from '../models/Creature';
+import { Creature, CREATURE_TYPE_LABELS, CARE_LEVEL_LABELS } from '../models/Creature';
 import type { AppTheme } from '../constants/Colors';
 
 interface Props {
     creature: Creature;
     onPress: () => void;
+    tankVolumeLiters?: number;
 }
 
-export function CreatureCard({ creature, onPress }: Props) {
+export function CreatureCard({ creature, onPress, tankVolumeLiters }: Props) {
     const theme = useTheme<AppTheme>();
 
     return (
@@ -41,6 +42,17 @@ export function CreatureCard({ creature, onPress }: Props) {
                                     ×{creature.quantity}
                                 </Text>
                             )}
+                            {creature.careLevel && (
+                                <Text variant="labelSmall">
+                                    {CARE_LEVEL_LABELS[creature.careLevel]}
+                                </Text>
+                            )}
+                            {creature.compatibilityNotes ? (
+                                <Text variant="labelSmall">⚠️</Text>
+                            ) : null}
+                            {creature.minTankSizeLiters != null && tankVolumeLiters != null && creature.minTankSizeLiters > tankVolumeLiters ? (
+                                <Text variant="labelSmall" style={{ color: theme.custom?.overdue }}>📏 Tank too small</Text>
+                            ) : null}
                         </View>
                     </View>
                     <IconButton icon="chevron-right" size={20} iconColor={theme.colors.onSurfaceVariant} />

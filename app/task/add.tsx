@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
 import { ScrollView, View, StyleSheet } from 'react-native';
-import { TextInput, Button, SegmentedButtons, useTheme, Text, Switch } from 'react-native-paper';
+import { TextInput, Button, SegmentedButtons, useTheme, Text, Switch, Chip } from 'react-native-paper';
 import { useRouter } from 'expo-router';
-import { RecurrenceUnit } from '../../models/Task';
+import { RecurrenceUnit, TaskScope } from '../../models/Task';
+import { WATER_PARAMETERS, WaterParameterId } from '../../models/WaterParameter';
+import { useTanks } from '../../hooks/useTanks';
 import * as taskService from '../../services/taskService';
 import type { AppTheme } from '../../constants/Colors';
+
+const TRIGGER_PARAMS: WaterParameterId[] = ['nitrate', 'ammonia', 'nitrite', 'phosphate', 'alkalinity', 'calcium', 'temperature', 'ph'];
 
 export default function AddTaskScreen() {
     const theme = useTheme<AppTheme>();
     const router = useRouter();
+    const { activeTank } = useTanks();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [isRecurring, setIsRecurring] = useState(true);
@@ -17,6 +22,11 @@ export default function AddTaskScreen() {
     const [reminderHours, setReminderHours] = useState('24');
     const [notificationsEnabled, setNotificationsEnabled] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [scope, setScope] = useState<TaskScope>('tank');
+    const [hasTrigger, setHasTrigger] = useState(false);
+    const [triggerParamId, setTriggerParamId] = useState<WaterParameterId>('nitrate');
+    const [triggerOperator, setTriggerOperator] = useState<'above' | 'below'>('above');
+    const [triggerValue, setTriggerValue] = useState('');
 
     const canSave = title.trim().length > 0;
 
@@ -53,6 +63,9 @@ export default function AddTaskScreen() {
                 reminderOffsetHours: Math.max(1, parseInt(reminderHours) || 24),
                 notificationsEnabled,
                 isPredefined: false,
+                tankId: scope === 'global' ? null : (activeTank?.id ?? null),
+                scope,
+                triggerThreshold: hasTrigger && triggerValue ? { parameterId: triggerParamId, operator: triggerOperator, value: Number.parseFloat(triggerValue) } : undefined,
             });
             router.back();
         } catch (error) {
@@ -140,6 +153,76 @@ export default function AddTaskScreen() {
                 style={styles.input}
             />
 
+            {/* Task Scope */}
+            <Text variant="labelLarge" style={[styles.label, { color: theme.colors.onSurface }]}>
+                Task Scope
+            </Text>
+            <SegmentedButtons
+                value={scope}
+                onValueChange={(v: string) => setScope(v as TaskScope)}
+                buttons={[
+                    { value: 'tank', label: '🔗 This Tank' },
+                    { value: 'global', label: '🌍 Global' },
+                ]}
+                style={{ marginBottom: 12 }}
+            />
+
+            {/* Parameter Trigger */}
+            <View style={styles.switchRow}>
+                <Text variant="labelLarge" style={{ color: theme.colors.onSurface }}>
+                    Parameter Trigger
+                </Text>
+                <Switch value={hasTrigger} onValueChange={setHasTrigger} />
+            </View>
+
+            {hasTrigger && (
+                <View style={{ marginBottom: 12 }}>
+                    <Text variant="labelMedium" style={[styles.label, { color: theme.colors.onSurfaceVariant }]}>
+                        Parameter
+                    </Text>
+                    <View style={styles.chipRow}>
+                        {TRIGGER_PARAMS.map((pid) => {
+                            const param = WATER_PARAMETERS.find((p) => p.id === pid);
+                            if (!param) return null;
+                            return (
+                                <Chip
+                                    key={pid}
+                                    selected={triggerParamId === pid}
+                                    onPress={() => setTriggerParamId(pid)}
+                                    style={{ marginRight: 6, marginBottom: 6 }}
+                                    compact
+                                >
+                                    {param.emoji} {param.label}
+                                </Chip>
+                            );
+                        })}
+                    </View>
+
+                    <Text variant="labelMedium" style={[styles.label, { color: theme.colors.onSurfaceVariant }]}>
+                        Condition
+                    </Text>
+                    <View style={styles.recurrenceRow}>
+                        <SegmentedButtons
+                            value={triggerOperator}
+                            onValueChange={(v: string) => setTriggerOperator(v as 'above' | 'below')}
+                            buttons={[
+                                { value: 'above', label: 'Above' },
+                                { value: 'below', label: 'Below' },
+                            ]}
+                            style={{ flex: 1 }}
+                        />
+                        <TextInput
+                            value={triggerValue}
+                            onChangeText={setTriggerValue}
+                            mode="outlined"
+                            keyboardType="number-pad"
+                            placeholder="Value"
+                            style={[styles.input, { flex: 1, marginBottom: 0 }]}
+                        />
+                    </View>
+                </View>
+            )}
+
             <View style={styles.switchRow}>
                 <Text variant="bodyMedium" style={{ color: theme.colors.onSurface }}>
                     Enable notifications
@@ -182,4 +265,5 @@ const styles = StyleSheet.create({
     },
     buttons: { flexDirection: 'row', gap: 12, marginTop: 16 },
     button: { flex: 1, borderRadius: 12 },
+    chipRow: { flexDirection: 'row', flexWrap: 'wrap', marginBottom: 8 },
 });

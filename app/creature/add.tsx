@@ -2,18 +2,23 @@ import React, { useState } from 'react';
 import { ScrollView, View, StyleSheet } from 'react-native';
 import { TextInput, Button, SegmentedButtons, useTheme, Text } from 'react-native-paper';
 import { useRouter } from 'expo-router';
-import { CreatureType, CREATURE_TYPE_LABELS } from '../../models/Creature';
+import { CreatureType, CareLevel, CARE_LEVEL_LABELS } from '../../models/Creature';
 import * as creatureService from '../../services/creatureService';
+import { useTanks } from '../../hooks/useTanks';
 import type { AppTheme } from '../../constants/Colors';
 
 export default function AddCreatureScreen() {
     const theme = useTheme<AppTheme>();
     const router = useRouter();
+    const { activeTank } = useTanks();
     const [name, setName] = useState('');
     const [species, setSpecies] = useState('');
     const [type, setType] = useState<CreatureType>('fish');
     const [quantity, setQuantity] = useState('1');
     const [notes, setNotes] = useState('');
+    const [careLevel, setCareLevel] = useState<CareLevel>('intermediate');
+    const [compatibilityNotes, setCompatibilityNotes] = useState('');
+    const [minTankSizeLiters, setMinTankSizeLiters] = useState('');
     const [saving, setSaving] = useState(false);
 
     const canSave = name.trim().length > 0 && species.trim().length > 0;
@@ -32,6 +37,10 @@ export default function AddCreatureScreen() {
                 healthLog: [],
                 archived: false,
                 photoUri: undefined,
+                tankId: activeTank?.id ?? '',
+                careLevel,
+                compatibilityNotes: compatibilityNotes.trim(),
+                minTankSizeLiters: minTankSizeLiters ? Number.parseFloat(minTankSizeLiters) : undefined,
             });
             router.back();
         } catch (error) {
@@ -102,6 +111,41 @@ export default function AddCreatureScreen() {
                 numberOfLines={3}
                 style={styles.input}
                 placeholder="Any additional notes..."
+            />
+
+            <Text variant="labelLarge" style={[styles.label, { color: theme.colors.onSurface }]}>
+                Care Level
+            </Text>
+            <SegmentedButtons
+                value={careLevel}
+                onValueChange={(v) => setCareLevel(v as CareLevel)}
+                buttons={[
+                    { value: 'beginner', label: CARE_LEVEL_LABELS.beginner },
+                    { value: 'intermediate', label: CARE_LEVEL_LABELS.intermediate },
+                    { value: 'expert', label: CARE_LEVEL_LABELS.expert },
+                ]}
+                style={styles.segments}
+            />
+
+            <TextInput
+                label="Compatibility Notes"
+                value={compatibilityNotes}
+                onChangeText={setCompatibilityNotes}
+                mode="outlined"
+                multiline
+                numberOfLines={2}
+                style={styles.input}
+                placeholder="e.g. May nip SPS corals"
+            />
+
+            <TextInput
+                label="Min Tank Size (liters)"
+                value={minTankSizeLiters}
+                onChangeText={setMinTankSizeLiters}
+                mode="outlined"
+                keyboardType="number-pad"
+                style={styles.input}
+                placeholder="e.g. 284"
             />
 
             <View style={styles.buttons}>

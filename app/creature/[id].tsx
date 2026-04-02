@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ScrollView, View, StyleSheet, Image } from 'react-native';
 import { Text, useTheme, Button, Card, Divider, IconButton, ActivityIndicator } from 'react-native-paper';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Creature, CREATURE_TYPE_LABELS } from '../../models/Creature';
+import { Creature, CREATURE_TYPE_LABELS, CARE_LEVEL_LABELS } from '../../models/Creature';
 import * as creatureService from '../../services/creatureService';
 import type { AppTheme } from '../../constants/Colors';
 
@@ -95,6 +95,26 @@ export default function CreatureDetailScreen() {
                             {new Date(creature.dateAcquired).toLocaleDateString()}
                         </Text>
                     </View>
+                    <View style={styles.detailRow}>
+                        <Text variant="labelMedium" style={{ color: theme.colors.onSurfaceVariant }}>Care Level</Text>
+                        <Text variant="bodyMedium" style={{ color: theme.colors.onSurface }}>
+                            {CARE_LEVEL_LABELS[creature.careLevel]}
+                        </Text>
+                    </View>
+                    <View style={styles.detailRow}>
+                        <Text variant="labelMedium" style={{ color: theme.colors.onSurfaceVariant }}>Min Tank Size</Text>
+                        <Text variant="bodyMedium" style={{ color: theme.colors.onSurface }}>
+                            {creature.minTankSizeLiters == null ? 'Not specified' : `${creature.minTankSizeLiters} L`}
+                        </Text>
+                    </View>
+                    {creature.compatibilityNotes ? (
+                        <View style={{ marginTop: 12 }}>
+                            <Text variant="labelMedium" style={{ color: theme.colors.onSurfaceVariant }}>Compatibility Notes</Text>
+                            <Text variant="bodyMedium" style={{ color: theme.colors.onSurface, marginTop: 4 }}>
+                                ⚠️ {creature.compatibilityNotes}
+                            </Text>
+                        </View>
+                    ) : null}
                     {creature.notes ? (
                         <View style={{ marginTop: 12 }}>
                             <Text variant="labelMedium" style={{ color: theme.colors.onSurfaceVariant }}>Notes</Text>

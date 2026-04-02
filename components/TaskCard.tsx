@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, Text, useTheme, IconButton, Checkbox } from 'react-native-paper';
 import { View, StyleSheet, Pressable } from 'react-native';
 import { MaintenanceTask, getTaskUrgency } from '../models/Task';
+import { WATER_PARAMETERS } from '../models/WaterParameter';
 import type { AppTheme } from '../constants/Colors';
 
 interface Props {
@@ -85,16 +86,24 @@ export function TaskCard({ task, isCompleting, renderAsCompleted, onPress, onCom
                         disabled={completed}
                     />
                     <View style={styles.info}>
-                        <Text
-                            variant="titleSmall"
-                            style={{
-                                color: theme.colors.onSurface,
-                                fontWeight: '700',
-                                textDecorationLine: completed ? 'line-through' : 'none',
-                            }}
-                        >
-                            {task.title}
-                        </Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                            <Text
+                                variant="titleSmall"
+                                style={{
+                                    color: theme.colors.onSurface,
+                                    fontWeight: '700',
+                                    textDecorationLine: completed ? 'line-through' : 'none',
+                                    flex: 1,
+                                }}
+                            >
+                                {task.title}
+                            </Text>
+                            {task.scope === 'global' && (
+                                <Text variant="labelSmall" style={{ color: theme.colors.tertiary }}>
+                                    🌍 Global
+                                </Text>
+                            )}
+                        </View>
                         <Text
                             variant="bodySmall"
                             style={{ color: task.isCompleted ? theme.colors.onSurfaceVariant : (urgency === 'overdue' ? urgencyColor : theme.colors.onSurfaceVariant) }}
@@ -102,6 +111,14 @@ export function TaskCard({ task, isCompleting, renderAsCompleted, onPress, onCom
                             {formatDue()}
                             {!task.isCompleted && task.recurrenceInterval !== undefined && task.recurrenceInterval > 0 && ` · Every ${task.recurrenceInterval} ${task.recurrenceUnit}${getLastDoneText()}`}
                         </Text>
+                        {task.triggerThreshold && (() => {
+                            const param = WATER_PARAMETERS.find((p) => p.id === task.triggerThreshold!.parameterId);
+                            return (
+                                <Text variant="labelSmall" style={{ color: theme.colors.onSurfaceVariant, marginTop: 2 }}>
+                                    ⚡ {param?.label ?? task.triggerThreshold.parameterId} {task.triggerThreshold.operator} {task.triggerThreshold.value}
+                                </Text>
+                            );
+                        })()}
                     </View>
                     <IconButton icon="chevron-right" size={18} iconColor={theme.colors.onSurfaceVariant} />
                 </View>
