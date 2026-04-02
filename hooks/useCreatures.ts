@@ -22,6 +22,11 @@ export function useCreatures(tankId?: string) {
     }, [tankId]);
 
     const initializeDefaults = useCallback(async () => {
+        // Only initialize defaults when we have a valid tankId
+        if (!tankId) {
+            return;
+        }
+
         const initialized = await creatureService.isInitialized();
         if (!initialized) {
             const now = new Date().toISOString();
@@ -29,7 +34,7 @@ export function useCreatures(tankId?: string) {
                 await creatureService.addCreature({
                     ...template,
                     dateAcquired: now,
-                    tankId: tankId || 'default-tank'
+                    tankId: tankId
                 });
             }
             await creatureService.markInitialized();

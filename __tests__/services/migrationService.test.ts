@@ -113,7 +113,7 @@ describe('migrationService', () => {
                     createdAt: '2026-01-01T00:00:00Z',
                     updatedAt: '2026-01-01T00:00:00Z',
                 },
-            ] as Creature[];
+            ] as unknown as Creature[];
             mockedCreatureService.getCreatures.mockResolvedValue(existingCreatures);
             mockedCreatureService.updateCreature.mockResolvedValue(null);
             mockedTaskService.getTasks.mockResolvedValue([]);
@@ -318,7 +318,7 @@ describe('migrationService', () => {
                 archived: false,
                 createdAt: '2026-01-01T00:00:00Z',
                 updatedAt: '2026-01-01T00:00:00Z',
-            } as Creature;
+            } as unknown as Creature;
             mockedCreatureService.getCreatures.mockResolvedValue([creature]);
             mockedCreatureService.updateCreature.mockResolvedValue(null);
             mockedTaskService.getTasks.mockResolvedValue([]);
