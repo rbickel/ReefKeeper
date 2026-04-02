@@ -85,7 +85,8 @@ describe('migrationService', () => {
             mockedTankService.getTanks.mockResolvedValue([]);
             mockedTankService.addTank.mockResolvedValue(defaultTank);
 
-            const existingCreatures: Creature[] = [
+            // These creatures represent old schema before migration (missing tankId, careLevel, compatibilityNotes)
+            const existingCreatures = [
                 {
                     id: 'creature-1',
                     name: 'Nemo',
@@ -96,9 +97,6 @@ describe('migrationService', () => {
                     notes: '',
                     healthLog: [],
                     archived: false,
-                    tankId: 'tank-1',
-                    careLevel: 'beginner',
-                    compatibilityNotes: 'Reef-safe',
                     createdAt: '2026-01-01T00:00:00Z',
                     updatedAt: '2026-01-01T00:00:00Z',
                 },
@@ -112,13 +110,10 @@ describe('migrationService', () => {
                     notes: '',
                     healthLog: [],
                     archived: false,
-                    tankId: 'tank-1',
-                    careLevel: 'intermediate',
-                    compatibilityNotes: 'Needs large tank',
                     createdAt: '2026-01-01T00:00:00Z',
                     updatedAt: '2026-01-01T00:00:00Z',
                 },
-            ];
+            ] as Creature[];
             mockedCreatureService.getCreatures.mockResolvedValue(existingCreatures);
             mockedCreatureService.updateCreature.mockResolvedValue(null);
             mockedTaskService.getTasks.mockResolvedValue([]);
@@ -310,7 +305,8 @@ describe('migrationService', () => {
             mockedTankService.getTanks.mockResolvedValue([]);
             mockedTankService.addTank.mockResolvedValue(defaultTank);
 
-            const creature: Creature = {
+            // This creature represents old schema before migration (missing tankId, careLevel, compatibilityNotes)
+            const creature = {
                 id: 'creature-1',
                 name: 'Nemo',
                 species: 'Clownfish',
@@ -320,12 +316,9 @@ describe('migrationService', () => {
                 notes: '',
                 healthLog: [],
                 archived: false,
-                tankId: 'tank-1',
-                careLevel: 'beginner',
-                compatibilityNotes: 'Reef-safe',
                 createdAt: '2026-01-01T00:00:00Z',
                 updatedAt: '2026-01-01T00:00:00Z',
-            };
+            } as Creature;
             mockedCreatureService.getCreatures.mockResolvedValue([creature]);
             mockedCreatureService.updateCreature.mockResolvedValue(null);
             mockedTaskService.getTasks.mockResolvedValue([]);
