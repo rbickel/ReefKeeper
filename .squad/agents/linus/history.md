@@ -2,6 +2,20 @@
 
 ## Learnings
 
+### 2026-04-02: Phase 4 — Enhanced Livestock & Task UI
+- **Phase 4A — Creature forms + CreatureCard enhancements:**
+  - Added careLevel SegmentedButtons (beginner/intermediate/expert), compatibilityNotes TextInput, minTankSizeLiters numeric input, tankId binding to activeTank
+  - CreatureCard now shows care-level badge (CARE_LEVEL_LABELS), ⚠️ compatibility warning when notes exist, 📏 "Tank too small" when minTankSizeLiters > tankVolumeLiters
+  - Creatures tab passes activeTank?.volumeLiters as tankVolumeLiters prop to CreatureCard
+  - Detail screen (creature/[id].tsx) displays all new fields
+- **Phase 4B — Task forms + TaskCard + threshold wiring:**
+  - Task add/detail: scope SegmentedButtons (tank/global), hasTrigger Switch toggle, Chip-based parameter selector, operator toggle (above/below), numeric value input
+  - TaskCard: 🌍 Global scope badge, ⚡ trigger threshold indicator (param label + operator + value)
+  - waterlog/add.tsx: calls evaluateThresholds(tankId, readings) after save, shows Alert.alert with triggered messages
+  - Dashboard (index.tsx): useEffect evaluates thresholds on latestReadings change, renders triggered alerts card
+  - Global tasks use tankId: null; tank-scoped tasks use activeTank.id
+- Key pattern: SegmentedButtons for 2–3 option selectors, Chip for multi-option parameter pickers, Alert.alert for post-save notifications
+
 ### 2026-04-02: Phase 3 — Water Parameter Tracking UI
 - Built 4 new screens: parameters tab, waterlog/add, waterlog/[id], waterlog/history
 - Built 3 new components: ParameterStatusBadge, WaterSummaryCard, AlertBanner
